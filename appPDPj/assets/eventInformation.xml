@@ -82,7 +82,7 @@
 	
 	
 	<event methodSignature="&lt;android.telephony.SmsManager: void sendTextMessage(java.lang.String,java.lang.String,java.lang.String,android.app.PendingIntent,android.app.PendingIntent)&gt;">
-		<eventname name="sentTextMessage" />
+		<eventname name="sendTextMessage" />
 		<instrumentationpos>before</instrumentationpos>
 		<data>
 			<param pos="0" name="destination" />
