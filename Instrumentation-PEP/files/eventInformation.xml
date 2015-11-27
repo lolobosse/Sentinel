@@ -16,7 +16,7 @@
 	</event>
     
 	<event methodSignature="&lt;android.location.Location: double getLatitude()&gt;">
-		<eventname name="latitiude" />
+		<eventname name="latitude" />
 		<instrumentationpos>before</instrumentationpos>
 	</event>
     
