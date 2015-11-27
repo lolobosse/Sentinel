@@ -13,7 +13,7 @@
         <timestep amount="3" unit="SECONDS" />
         
         <!-- Event -->
-        <trigger action="sentTextMessage" tryEvent="true" >
+        <trigger action="sendTextMessage" tryEvent="true" >
             <paramMatch name="destination" value="+49 1234" />
         </trigger>
         

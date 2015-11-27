@@ -8,7 +8,7 @@
     <interfaceDescriptions />
     <actionDescriptions>
         <actionDescription
-            name="sentTextMessage"
+            name="sendTextMessage"
             pep="pep1" />
     </actionDescriptions>
     <preventiveMechanism name="test" >
@@ -18,7 +18,7 @@ IMEI should not be sent to 12345        </description>
             amount="3"
             unit="SECONDS" />
         <trigger
-            action="sentTextMessage"
+            action="sendTextMessage"
             isTry="true" >
             <paramMatch
                 name="destination"

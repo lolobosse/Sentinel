@@ -217,7 +217,7 @@ public class pdpService extends Service
     {
       /*
        * lpdp = PolicyDecisionPoint.getInstance(); for (int i = 1; i < 20; i++)
-       * { Event event = new Event("sentTextMessage", true);
+       * { Event event = new Event("sendTextMessage", true);
        * event.addStringParameter("message", "xxx");
        * event.addStringParameter("destination", "12345");
        * event.addStringParameter("DATA_UNIQUE_IDENTIFIER", "true");

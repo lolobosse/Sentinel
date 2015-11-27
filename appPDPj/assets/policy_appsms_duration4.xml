@@ -14,14 +14,14 @@
         <description>New Policy</description>
         <timestep amount="500" unit="MILLISECONDS" />
         
-        <trigger action="sentTextMessage" tryEvent="true" >
+        <trigger action="sendTextMessage" tryEvent="true" >
             <paramMatch name="destination" value="12345" />
         </trigger>
         
         <condition> 
             <not>
 				<repLim amount="20" unit="SECONDS" lowerLimit="0" upperLimit="1">
-		           	<eventMatch action="sentTextMessage" tryEvent="true" >
+		           	<eventMatch action="sendTextMessage" tryEvent="true" >
 						<paramMatch name="destination" value="12345" />
                     </eventMatch>
                 </repLim>
