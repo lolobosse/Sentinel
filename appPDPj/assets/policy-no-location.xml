@@ -14,16 +14,13 @@
     <preventiveMechanism name="test" >
         <description>
 Latitude and Longitude of device should not be given to apps        </description>
-        <timestep
-            amount="3"
-            unit="SECONDS" />
         <trigger
             action="latitude"
-            isTry="true" >
+            tryEvent="true" >
         </trigger>
         <trigger
             action="longitude"
-            isTry="true" >
+            tryEvent="true" >
         </trigger>
         <condition>
 			<true/>
