@@ -13,19 +13,14 @@
     </actionDescriptions>
     <preventiveMechanism name="test" >
         <description>
-IMEI should not be sent to 12345        </description>
-        <timestep
-            amount="3"
-            unit="SECONDS" />
+Latitude and Longitude of device should not be given to apps        </description>
         <trigger
-            action="sendTextMessage"
-            isTry="true" >
-            <paramMatch
-                name="destination"
-                value="12345" />
-             <paramMatch
-                name="DATA_UNIQUE_IDENTIFIER"
-                value="true" />
+            action="latitude"
+            tryEvent="true" >
+        </trigger>
+        <trigger
+            action="longitude"
+            tryEvent="true" >
         </trigger>
         <condition>
 			<true/>
