@@ -1,0 +1,68 @@
+#%RAML 1.0
+title: IaaS
+description: Instrumentation As A Service API
+version: v1
+protocols: [http, https]
+baseUri: http://api.iaas.sentinel.de/{version}
+
+/config
+	get:
+		description: Get a list of all config files based on file name and ID
+		responses:
+			200:
+				body:
+					application/json:
+						example: |
+							{
+								"cfgFiles": [
+									{
+										"name": "cfg1.xml",
+										"cfgId": 3
+									},
+									{
+										"name": "cfg2.xml",
+										"cfgId": 4
+
+									}
+								]
+							}
+			400:
+				application/json:
+					example: |
+						{
+							"errorId": 1
+							"msg": "Bad format"
+						}
+	post:
+		description: Add new config file to the server
+		queryParameters:
+			cfgName:
+				displayName: Config file's name
+				type: String
+				description: Optional config file's name, if not provided, then server will select one.
+				example: "cfg1.xml"
+				required: false
+		responses:
+			200:
+				body:
+					application/json:
+						example: |
+							{
+								"cfgId": 1
+							}
+	/{cfgId}
+		get:
+/instrument
+	post:
+		queryParameters:
+			cfgId:
+				displayName: Config file ID
+				type: Number
+				description: Config file ID obtained from /config end point
+				example: 1
+				required: true
+		responses:
+			200:
+				application/json:
+
+
