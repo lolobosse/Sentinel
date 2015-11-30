@@ -113,7 +113,7 @@ public class PolicyEnforcementPoint implements ResultsAvailableHandler{
 		if (log.isDebugEnabled()) {
 			log.debug("");
 			log.debug("InfoFlow Results");
-			MultiMap<ResultSinkInfo, ResultSourceInfo> r = results.getResults();
+			MultiMap<ResultSinkInfo, ResultSourceInfo> r = (MultiMap<ResultSinkInfo, ResultSourceInfo>) results.getResults();
 			for (ResultSinkInfo k : r.keySet()) {
 				log.debug("ResultSinkInfo: "+ k);
 
