@@ -1,0 +1,12 @@
+{
+	"cfgFiles": [
+		{
+			"name": "cfg1.xml",
+			"cfgId": "3"
+		}, {
+			"name": "cfg2.xml",
+			"cfgId": "4"
+
+		}
+	]
+}

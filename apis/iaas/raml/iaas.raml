@@ -4,65 +4,96 @@ description: Instrumentation As A Service API
 version: v1
 protocols: [http, https]
 baseUri: http://api.iaas.sentinel.de/{version}
+/config:
+  description: |
+    Handle all configuration files which contain the rules to be applied
+    during the instrumentation phase
+  get:
+    description: Retrieve a list of all config files
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/configGet-response.json
+      404:
+        body:
+          application/json:
+            example: !include examples/error-response.json
+  post:
+    description: Add a new config file to the server
+    body:
+      multipart/form-data:
+        formParameters:
+          name:
+            displayName: Config file's name
+            type: string
+            description: Optional config file's name.
+            example: "cfg.xml"
+            required: false
+          file:
+            type: file
+            description: Configuration file with the instrumentation rules
+            example: !include examples/cfg.xml
+            required: true
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/configPost-response.json
+      404:
+        body:
+          application/json:
+            example: !include examples/error-response.json
+  /{cfgId}:
+    get:
+      description: Retrieve the config file with id cfgId
+      responses:
+        200:
+          body:
+            application/xml:
+            text/html:
+              example: !include examples/cfg.xml
+        404:
+          body:
+            application/json:
+              example: !include examples/error-response.json
+    put:
+      description: Update the config file with id cfgId
+      body:
+        multipart/form-data:
+          formParameters:
+            name:
+              displayName: Config file's name
+              type: string
+              description: Optional config file's name.
+              example: "cfg.xml"
+              required: false
+            file:
+              type: file
+              description: Configuration file with the instrumentation rules
+              example: !include examples/cfg.xml
+              required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/configPost-response.json
+        404:
+          body:
+            application/json:
+              example: !include examples/error-response.json
 
-/config
-	get:
-		description: Get a list of all config files based on file name and ID
-		responses:
-			200:
-				body:
-					application/json:
-						example: |
-							{
-								"cfgFiles": [
-									{
-										"name": "cfg1.xml",
-										"cfgId": 3
-									},
-									{
-										"name": "cfg2.xml",
-										"cfgId": 4
-
-									}
-								]
-							}
-			400:
-				application/json:
-					example: |
-						{
-							"errorId": 1
-							"msg": "Bad format"
-						}
-	post:
-		description: Add new config file to the server
-		queryParameters:
-			cfgName:
-				displayName: Config file's name
-				type: String
-				description: Optional config file's name, if not provided, then server will select one.
-				example: "cfg1.xml"
-				required: false
-		responses:
-			200:
-				body:
-					application/json:
-						example: |
-							{
-								"cfgId": 1
-							}
-	/{cfgId}
-		get:
-/instrument
-	post:
-		queryParameters:
-			cfgId:
-				displayName: Config file ID
-				type: Number
-				description: Config file ID obtained from /config end point
-				example: 1
-				required: true
-		responses:
-			200:
-				application/json:
-
-
+#/instrument/{cfgId}:
+# post:
+#   binary/octet-stream:
+#   multipart/form-data:
+#       formParameters:
+#         apk:
+#           type: file
+#           description: Apk file to be instrumented using the configuration file represented by cfgId
+#           example: !include examples/test.apk
+#           required: true
+#   responses:
+#     200:
+#       application/json:
+#}
