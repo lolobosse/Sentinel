@@ -1,5 +1,6 @@
 # Built application files
 *.apk
+!testing/**/*.apk
 *.ap_
 
 # Files for the Dalvik VM

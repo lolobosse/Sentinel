@@ -19,26 +19,61 @@
 	  </initialRepresentations>
   -->
 
-  <preventiveMechanism name="preventiveDraft">
-  	<description>Draft policy</description>
-  	<timestep amount="1" unit="TIMESTEPS" />
-  	<trigger action="" tryEvent="true">
+  <preventiveMechanism name="preventiveHttpRequest">
+  	<description>Inhibit HTTP Request Policy</description>
+  	<!-- <timestep amount="1" unit="TIMESTEPS" /> -->
+  	<trigger action="executeHttpRequest" tryEvent="true">
+  		<!-- 
   		<paramMatch
-  			name=""
+  			name="request"
   			value=""
   			type="string|dataUsage|container|data"
   			cmpOp="equals"
   			dataID="" />
+		 -->
   	</trigger>
-  	<condition></condition> <!-- check this condition -->
+  	<condition>
+  	    <true />
+  	</condition> <!-- check this condition -->
 
   	<!-- how can we use this? -->
+  	<!--
   	<executeAsyncAction name="" id="" processor="pep|pxp">
   		<parameter name="" value="" type="string|xpath" />
   	</executeAsyncAction>
+  	-->
 
-  	<authorizationAction name="" start="" fallback="">
-  		<allow />
+  	<authorizationAction name="inhibitHttpRequest">
+  		<inhibit />
+  	</authorizationAction>
+
+  </preventiveMechanism>
+  
+  <preventiveMechanism name="preventiveInternet">
+  	<description>Inhibit Internet Policy</description>
+  	<!-- <timestep amount="1" unit="TIMESTEPS" /> -->
+  	<trigger action="internet" tryEvent="true">
+  		<!-- 
+  		<paramMatch
+  			name="request"
+  			value=""
+  			type="string|dataUsage|container|data"
+  			cmpOp="equals"
+  			dataID="" />
+		 -->
+  	</trigger>
+  	<condition>
+  	    <true />
+  	</condition> <!-- check this condition -->
+
+  	<!-- how can we use this? -->
+  	<!--
+  	<executeAsyncAction name="" id="" processor="pep|pxp">
+  		<parameter name="" value="" type="string|xpath" />
+  	</executeAsyncAction>
+  	-->
+
+  	<authorizationAction name="inhibitInternet">
   		<inhibit />
   	</authorizationAction>
 
