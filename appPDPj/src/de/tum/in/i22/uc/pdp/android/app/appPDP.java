@@ -1,4 +1,4 @@
-package de.tum.in.i22.uc.pdp.android;
+package de.tum.in.i22.uc.pdp.android.app;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,6 +23,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import de.tum.in.i22.uc.pdp.android.app.R;
+import de.tum.in.i22.uc.pdp.android.RemoteServiceConnection;
+import de.tum.in.i22.uc.pdp.android.ServiceBoundListener;
+import de.tum.in.i22.uc.pdp.android.pdpService;
 import de.util.FileUtil;
 
 public class appPDP extends Activity {
@@ -55,7 +60,7 @@ public class appPDP extends Activity {
 			Log.i(TAG, "pdpService not yet bound; binding...");
 			Intent intent = new Intent();
 			intent.setClassName("de.tum.in.i22.uc.pdp.android",
-					"de.tum.in.i22.uc.pdp.android.pdpService");
+					"pdpService");
 			intent.setAction(pdpService.ACTION_PDP_SETPOLICY);
 			getApplicationContext().bindService(intent, deployPolicyConnection,
 					Context.BIND_AUTO_CREATE);

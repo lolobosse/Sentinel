@@ -10,14 +10,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application>
-        <service android:name=".pdpService">
+        <!--<service android:name=".pdpService">
                 <intent-filter>
                         <action android:name="de.tum.in.i22.uc.pdp.android.pdpService"/>
                 </intent-filter>
                 <intent-filter>
                         <action android:name="de.tum.in.i22.uc.pdp.android.setPolicy"/>
                 </intent-filter>
-        </service>
+        </service>-->
         
     </application>
 
