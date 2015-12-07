@@ -1,99 +1,76 @@
 #%RAML 1.0
 title: IaaS
-description: Instrumentation As A Service API
+# description: Instrumentation As A Service
 version: v1
 protocols: [http, https]
 baseUri: http://api.iaas.sentinel.de/{version}
-/config:
+schemas:
+  - error: !include schemas/error-schema.json
+/instrument:
   description: |
-    Handle all configuration files which contain the rules to be applied
-    during the instrumentation phase
+    Instrument apk based on the configuration files contained in the request.
   get:
-    description: Retrieve a list of all config files
+    description: Retrieve a list of instrumented apk files
     responses:
       200:
         body:
           application/json:
-            example: !include examples/configGet-response.json
-      404:
-        body:
-          application/json:
-            example: !include examples/error-response.json
+            example: !include examples/instrumentGet-response.json
   post:
-    description: Add a new config file to the server
+    description: |
+      Instrument an apk file based on the configuration files attached
+      to the request
     body:
       multipart/form-data:
         formParameters:
-          name:
-            displayName: Config file's name
-            type: string
-            description: Optional config file's name.
-            example: "cfg.xml"
-            required: false
-          file:
+          sourceFile:
+            description: Source file containing the android's source methods
+            displayName: Source File
             type: file
-            description: Configuration file with the instrumentation rules
-            example: !include examples/cfg.xml
+            required: true
+            example: !include examples/sources.txt
+          sinkFile:
+            description: Sink file containing the android's sink methods
+            displayName: Sink File
+            type: file
+            required: true
+            example: !include examples/sinks.txt
+          easyTaintWrapperSource:
+            description: |
+              Taint wrapper file containing the android's package names that
+              should be considered during the instrumentation phase
+            displayName: Easy Taint Wrapper File
+            type: file
+            required: true
+            example: !include examples/taintWrapperSource.txt
+          apkFile:
+            description: APK file that should be instrumented
+            displayName: APK File
+            type: file
             required: true
     responses:
-      200:
+      202:
         body:
           application/json:
-            example: !include examples/configPost-response.json
-      404:
+            example: !include examples/instrumentPost-response.json
+      400:
         body:
           application/json:
+            schema: error
             example: !include examples/error-response.json
-  /{cfgId}:
+  /{apkHash}:
     get:
-      description: Retrieve the config file with id cfgId
-      responses:
-        200:
-          body:
-            application/xml:
-            text/html:
-              example: !include examples/cfg.xml
-        404:
-          body:
-            application/json:
-              example: !include examples/error-response.json
-    put:
-      description: Update the config file with id cfgId
-      body:
-        multipart/form-data:
-          formParameters:
-            name:
-              displayName: Config file's name
-              type: string
-              description: Optional config file's name.
-              example: "cfg.xml"
-              required: false
-            file:
-              type: file
-              description: Configuration file with the instrumentation rules
-              example: !include examples/cfg.xml
-              required: true
+      description: |
+        Retrieve the location of the instrumented apk file based its hash sum value.
+        The hash value is calculated from the non-instrumented apk with sha512.
       responses:
         200:
           body:
             application/json:
-              example: !include examples/configPost-response.json
+              example: !include examples/instrumentApkHashGet-response.json
         404:
           body:
             application/json:
+              schema: error
               example: !include examples/error-response.json
 
-#/instrument/{cfgId}:
-# post:
-#   binary/octet-stream:
-#   multipart/form-data:
-#       formParameters:
-#         apk:
-#           type: file
-#           description: Apk file to be instrumented using the configuration file represented by cfgId
-#           example: !include examples/test.apk
-#           required: true
-#   responses:
-#     200:
-#       application/json:
-#}
