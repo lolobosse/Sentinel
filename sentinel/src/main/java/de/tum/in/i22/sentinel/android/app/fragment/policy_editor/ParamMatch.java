@@ -6,9 +6,9 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 public class ParamMatch extends XMLElement {
 
     String name;
+    private String nameKey = "name";
     String value;
-    String nameKey = "name";
-    String valueKey = "value";
+    private String valueKey = "value";
 
     ParamMatch(){
         isContainer = false;
@@ -26,5 +26,21 @@ public class ParamMatch extends XMLElement {
     @Override
     String createValueString() {
         return "";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

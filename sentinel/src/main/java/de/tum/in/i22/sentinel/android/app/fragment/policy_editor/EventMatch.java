@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class EventMatch extends XMLElement{
 
     String action;
+    private String actionKey = "action";
+
     boolean tryEvent;
+    private String tryEventKey = "tryEvent";
 
     ArrayList<ParamMatch> paramMatches;
-
-    String actionKey = "action";
-    String tryEventKey = "tryEvent";
 
     public EventMatch() {
         elementXMLName = "eventMatch";
@@ -36,4 +36,29 @@ public class EventMatch extends XMLElement{
         }
         return b.toString();
     }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public ArrayList<ParamMatch> getParamMatches() {
+        return paramMatches;
+    }
+
+    public void setParamMatches(ArrayList<ParamMatch> paramMatches) {
+        this.paramMatches = paramMatches;
+    }
+
+    public boolean isTryEvent() {
+        return tryEvent;
+    }
+
+    public void setTryEvent(boolean tryEvent) {
+        this.tryEvent = tryEvent;
+    }
+
 }

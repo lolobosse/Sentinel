@@ -14,6 +14,35 @@ public class PreventiveMechanism extends XMLElement{
     ArrayList<SuperCondition> conditions;
     AuthorizationAction authorizationAction;
 
+    @Override
+    String createAttributeString() {
+        return Utils.createAttributeString("name", name);
+    }
+
+    @Override
+    String createValueString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(description + "\n");
+        builder.append(timestep + "\n");
+        for (Trigger t : triggers) {
+            builder.append(t + "\n");
+        }
+        for (SuperCondition c : conditions) {
+            builder.append(c + "\n");
+        }
+        builder.append(authorizationAction + "\n");
+        return builder.toString();
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
+
+
     public String getName() {
         return name;
     }
@@ -52,25 +81,5 @@ public class PreventiveMechanism extends XMLElement{
 
     public void setTriggers(ArrayList<Trigger> triggers) {
         this.triggers = triggers;
-    }
-
-    @Override
-    String createAttributeString() {
-        return Utils.createAttributeString("name", name);
-    }
-
-    @Override
-    String createValueString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(description + "\n");
-        builder.append(timestep + "\n");
-        for (Trigger t : triggers) {
-            builder.append(t + "\n");
-        }
-        for (SuperCondition c : conditions) {
-            builder.append(c + "\n");
-        }
-        builder.append(authorizationAction + "\n");
-        return builder.toString();
     }
 }

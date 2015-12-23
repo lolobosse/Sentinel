@@ -22,4 +22,12 @@ public class WithinCondition extends SuperCondition {
         }
         return sb.toString();
     }
+
+    public ArrayList<Within> getWithins() {
+        return withins;
+    }
+
+    public void setWithins(ArrayList<Within> withins) {
+        this.withins = withins;
+    }
 }

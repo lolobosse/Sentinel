@@ -6,10 +6,10 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 public class Within extends EventMatchConditionContainer{
 
     int amount;
-    String unit;
+    private String amountKey = "amount";
 
-    String unitKey = "unit";
-    String amountKey = "amount";
+    String unit;
+    private String unitKey = "unit";
 
     Within(){
         super();
@@ -22,5 +22,21 @@ public class Within extends EventMatchConditionContainer{
         b.append(Utils.createAttributeString(amountKey, String.valueOf(amount)))
                 .append(Utils.createAttributeString(unitKey, unit));
         return b.toString();
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

@@ -20,4 +20,12 @@ public abstract class SuperCondition extends XMLElement {
             return "<" + elementXMLName + " " + createAttributeString() + ">" + "<not>" + createValueString() + "</not>" + "</" + elementXMLName + ">";
         }
     }
+
+    public boolean isNot() {
+        return isNot;
+    }
+
+    public void setIsNot(boolean isNot) {
+        this.isNot = isNot;
+    }
 }

@@ -5,6 +5,14 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
  */
 public class Description extends XMLElement {
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     String description;
 
     public Description() {

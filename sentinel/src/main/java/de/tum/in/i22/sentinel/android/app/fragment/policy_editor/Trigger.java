@@ -8,12 +8,12 @@ import java.util.ArrayList;
 public class Trigger extends XMLElement{
 
     String action;
+    private String actionKey = "action";
+
     boolean tryEvent;
+    private String tryEventKey = "tryEvent";
 
     ArrayList<ParamMatch> paramMatches;
-
-    String actionKey = "action";
-    String tryEventKey = "tryEvent";
 
     public Trigger() {
         isContainer = true;
@@ -35,5 +35,29 @@ public class Trigger extends XMLElement{
             b.append(paramMatches+"\n");
         }
         return b.toString();
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public boolean isTryEvent() {
+        return tryEvent;
+    }
+
+    public void setTryEvent(boolean tryEvent) {
+        this.tryEvent = tryEvent;
+    }
+
+    public ArrayList<ParamMatch> getParamMatches() {
+        return paramMatches;
+    }
+
+    public void setParamMatches(ArrayList<ParamMatch> paramMatches) {
+        this.paramMatches = paramMatches;
     }
 }

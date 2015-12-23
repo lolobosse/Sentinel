@@ -22,4 +22,12 @@ public class RepLimCondition extends SuperCondition {
         }
         return builder.toString();
     }
+
+    public ArrayList<RepLim> getRepLims() {
+        return repLims;
+    }
+
+    public void setRepLims(ArrayList<RepLim> repLims) {
+        this.repLims = repLims;
+    }
 }

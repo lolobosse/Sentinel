@@ -10,10 +10,10 @@ public class RepLim extends EventMatchConditionContainer{
     String amount, unit;
     int lowerLimit, upperLimit;
 
-    String amountKey = "amount";
-    String unitKey = "unit";
-    String lowerLimitKey = "lowerLimit";
-    String upperLimitKey = "upperLimit";
+    private String amountKey = "amount";
+    private String unitKey = "unit";
+    private String lowerLimitKey = "lowerLimit";
+    private String upperLimitKey = "upperLimit";
 
     RepLim(){
         super();
@@ -28,5 +28,37 @@ public class RepLim extends EventMatchConditionContainer{
                 .append(Utils.createAttributeString(lowerLimitKey, String.valueOf(lowerLimit)))
                 .append(Utils.createAttributeString(upperLimitKey, String.valueOf(upperLimit)));
         return sb.toString();
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public int getLowerLimit() {
+        return lowerLimit;
+    }
+
+    public void setLowerLimit(int lowerLimit) {
+        this.lowerLimit = lowerLimit;
+    }
+
+    public int getUpperLimit() {
+        return upperLimit;
+    }
+
+    public void setUpperLimit(int upperLimit) {
+        this.upperLimit = upperLimit;
     }
 }

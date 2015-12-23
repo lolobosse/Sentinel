@@ -15,6 +15,22 @@ public class Policy extends XMLElement {
         elementXMLName = "policy";
     }
 
+    @Override
+    public String toString() {
+        return "<?xml version='1.0' standalone='" + (standalone ? "yes" : "no") + "'?>\n" + super.toString();
+    }
+
+    @Override
+    String createAttributeString() {
+        return Utils.createAttributeString("name", name);
+    }
+
+    @Override
+    String createValueString() {
+        return mechanism.toString();
+    }
+
+
     public boolean isDeployed() {
         return deployed;
     }
@@ -47,19 +63,4 @@ public class Policy extends XMLElement {
         this.standalone = standalone;
     }
 
-
-    @Override
-    public String toString() {
-        return "<?xml version='1.0' standalone='" + (standalone ? "yes" : "no") + "'?>\n" + super.toString();
-    }
-
-    @Override
-    String createAttributeString() {
-        return null;
-    }
-
-    @Override
-    String createValueString() {
-        return null;
-    }
 }

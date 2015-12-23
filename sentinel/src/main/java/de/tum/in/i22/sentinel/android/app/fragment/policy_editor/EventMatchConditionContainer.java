@@ -22,4 +22,12 @@ public abstract class EventMatchConditionContainer extends XMLElement {
         }
         return sb.toString();
     }
+
+    public ArrayList<EventMatch> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(ArrayList<EventMatch> matches) {
+        this.matches = matches;
+    }
 }

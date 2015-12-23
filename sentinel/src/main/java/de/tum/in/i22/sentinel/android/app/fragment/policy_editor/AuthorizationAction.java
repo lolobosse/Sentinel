@@ -5,8 +5,24 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
  */
 public class AuthorizationAction extends XMLElement {
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Behavior getB() {
+        return b;
+    }
+
+    public void setB(Behavior b) {
+        this.b = b;
+    }
+
     String name;
-    String nameKey = "name";
+    private String nameKey = "name";
 
     Behavior b;
 
