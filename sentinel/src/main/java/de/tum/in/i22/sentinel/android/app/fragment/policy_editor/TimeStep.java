@@ -11,7 +11,7 @@ public class TimeStep extends XMLElement{
     private String amountKey = "amount";
     private String unitKey = "unit";
 
-    TimeStep(){
+    public TimeStep(){
         isContainer = false;
         elementXMLName = "timestep";
     }
@@ -24,8 +24,8 @@ public class TimeStep extends XMLElement{
     @Override
     String createAttributeString() {
         CustomStringBuilder sb = new CustomStringBuilder();
-        sb.append(Utils.createAttributeString(unitKey, unit));
         sb.append(Utils.createAttributeString(amountKey, String.valueOf(amount)));
+        sb.append(Utils.createAttributeString(unitKey, unit));
         return sb.toString();
     }
 

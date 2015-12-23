@@ -32,7 +32,7 @@ public class Trigger extends XMLElement{
     String createValueString() {
         CustomStringBuilder b = new CustomStringBuilder();
         for (ParamMatch match : paramMatches){
-            b.append(paramMatches+"\n");
+            b.append(match+"\n");
         }
         return b.toString();
     }

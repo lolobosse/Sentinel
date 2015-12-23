@@ -17,7 +17,7 @@ public class Description extends XMLElement {
 
     public Description() {
         elementXMLName = "description";
-        isContainer = false;
+        isContainer = true;
     }
 
     @Override

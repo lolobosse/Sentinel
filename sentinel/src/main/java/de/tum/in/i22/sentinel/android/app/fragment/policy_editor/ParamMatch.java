@@ -1,5 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 
+import android.util.Log;
+
 /**
  * Created by laurentmeyer on 23/12/15.
  */
@@ -10,7 +12,7 @@ public class ParamMatch extends XMLElement {
     String value;
     private String valueKey = "value";
 
-    ParamMatch(){
+    public ParamMatch(){
         isContainer = false;
         elementXMLName = "paramMatch";
     }
@@ -20,6 +22,7 @@ public class ParamMatch extends XMLElement {
         CustomStringBuilder b = new CustomStringBuilder();
         b.append(Utils.createAttributeString(nameKey, name));
         b.append(Utils.createAttributeString(valueKey, value));
+        Log.d("ParamMatch", b.toString());
         return b.toString();
     }
 

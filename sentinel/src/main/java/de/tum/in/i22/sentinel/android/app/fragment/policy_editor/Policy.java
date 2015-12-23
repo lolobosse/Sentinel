@@ -33,7 +33,10 @@ public class Policy extends XMLElement {
 
     @Override
     String createValueString() {
-        return mechanism.toString();
+        if (mechanism != null) {
+            return mechanism.toString();
+        }
+        return "";
     }
 
 
