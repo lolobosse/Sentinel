@@ -5,12 +5,13 @@ import java.util.ArrayList;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class PreventiveMechanism {
+public class PreventiveMechanism extends XMLElement{
 
-    String name, description;
+    String name;
     TimeStep timestep;
+    Description description;
     ArrayList<Trigger> triggers;
-    ArrayList<Condition> conditions;
+    ArrayList<SuperCondition> conditions;
     AuthorizationAction authorizationAction;
 
     public String getName() {
@@ -29,20 +30,12 @@ public class PreventiveMechanism {
         this.authorizationAction = authorizationAction;
     }
 
-    public ArrayList<Condition> getConditions() {
+    public ArrayList<SuperCondition> getConditions() {
         return conditions;
     }
 
-    public void setConditions(ArrayList<Condition> conditions) {
+    public void setConditions(ArrayList<SuperCondition> conditions) {
         this.conditions = conditions;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public TimeStep getTimestep() {
@@ -59,5 +52,25 @@ public class PreventiveMechanism {
 
     public void setTriggers(ArrayList<Trigger> triggers) {
         this.triggers = triggers;
+    }
+
+    @Override
+    String createAttributeString() {
+        return Utils.createAttributeString("name", name);
+    }
+
+    @Override
+    String createValueString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(description + "\n");
+        builder.append(timestep + "\n");
+        for (Trigger t : triggers) {
+            builder.append(t + "\n");
+        }
+        for (SuperCondition c : conditions) {
+            builder.append(c + "\n");
+        }
+        builder.append(authorizationAction + "\n");
+        return builder.toString();
     }
 }
