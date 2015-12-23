@@ -16,6 +16,7 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.RepLimCondition
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.SuperCondition;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.TimeStep;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Trigger;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.parser.PolicyParser;
 
 /**
  * Created by laurentmeyer on 23/12/15.
@@ -124,5 +125,9 @@ public class PolicyTest extends AndroidTestCase {
         result = result.replace(" ", "");
         result = result.replace("\n", "");
         assertEquals(original, result);
+    }
+
+    public void testParser() throws Exception {
+        PolicyParser.c(getContext());
     }
 }

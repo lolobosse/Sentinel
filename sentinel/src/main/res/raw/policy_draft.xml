@@ -1,0 +1,82 @@
+<?xml version='1.0' standalone='yes'?>
+<!-- TODOs / Comments -->
+<!-- enfLanguage contains EventMatchingOperatorType.tryEvent instead of isTry -->
+<!-- isTry is used in event.xsd (EventType.isTry) -->
+<!-- MechanismBaseType/authorizationAction has min/max occurs equals 0, is needed? -->
+<policy
+	xmlns="http://www22.in.tum.de/enforcementLanguage"
+  xmlns:tns="http://www22.in.tum.de/enforcementLanguage" 
+  xmlns:a="http://www22.in.tum.de/action"
+  xmlns:e="http://www22.in.tum.de/event" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  name="draft">
+
+  <!-- Ask what's the use of the below element -->
+  <!-- 
+	  <initialRepresentations> 
+	  	<container name="conteinerTest" cmpOp="gt">
+			</container>
+	  </initialRepresentations>
+  -->
+
+  <preventiveMechanism name="preventiveHttpRequest">
+  	<description>Inhibit HTTP Request Policy</description>
+  	<!-- <timestep amount="1" unit="TIMESTEPS" /> -->
+  	<trigger action="executeHttpRequest" tryEvent="true">
+  		<!-- 
+  		<paramMatch
+  			name="request"
+  			value=""
+  			type="string|dataUsage|container|data"
+  			cmpOp="equals"
+  			dataID="" />
+		 -->
+  	</trigger>
+  	<condition>
+  	    <true />
+  	</condition> <!-- check this condition -->
+
+  	<!-- how can we use this? -->
+  	<!--
+  	<executeAsyncAction name="" id="" processor="pep|pxp">
+  		<parameter name="" value="" type="string|xpath" />
+  	</executeAsyncAction>
+  	-->
+
+  	<authorizationAction name="inhibitHttpRequest">
+  		<inhibit />
+  	</authorizationAction>
+
+  </preventiveMechanism>
+  
+  <preventiveMechanism name="preventiveInternet">
+  	<description>Inhibit Internet Policy</description>
+  	<!-- <timestep amount="1" unit="TIMESTEPS" /> -->
+  	<trigger action="internet" tryEvent="true">
+  		<!-- 
+  		<paramMatch
+  			name="request"
+  			value=""
+  			type="string|dataUsage|container|data"
+  			cmpOp="equals"
+  			dataID="" />
+		 -->
+  	</trigger>
+  	<condition>
+  	    <true />
+  	</condition> <!-- check this condition -->
+
+  	<!-- how can we use this? -->
+  	<!--
+  	<executeAsyncAction name="" id="" processor="pep|pxp">
+  		<parameter name="" value="" type="string|xpath" />
+  	</executeAsyncAction>
+  	-->
+
+  	<authorizationAction name="inhibitInternet">
+  		<inhibit />
+  	</authorizationAction>
+
+  </preventiveMechanism>
+
+</policy>

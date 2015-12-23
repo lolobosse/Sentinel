@@ -1,0 +1,47 @@
+<?xml version='1.0' standalone='yes'?>
+<policy     
+    xmlns="http://www22.in.tum.de/enforcementLanguage"
+    xmlns:tns="http://www22.in.tum.de/enforcementLanguage" 
+    xmlns:a="http://www22.in.tum.de/action"
+    xmlns:e="http://www22.in.tum.de/event" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+    name="policy_no_location">
+    <preventiveMechanism name="no_latitude_and_longitude" >
+        <description>
+Latitude of device should not be given to apps
+        </description>
+        <timestep
+            amount="3"
+            unit="SECONDS" />
+        <trigger
+            action="latitude"
+            tryEvent="true" >
+        </trigger>
+        <condition>
+			<true/>
+        </condition>
+        <authorizationAction name="default" >
+            <inhibit />
+        </authorizationAction>
+    </preventiveMechanism>
+        <preventiveMechanism name="no_latitude" >
+        <description>
+Longitude of device should not be given to apps
+        </description>
+        <timestep
+            amount="3"
+            unit="SECONDS" />
+        <trigger
+            action="longitude"
+            tryEvent="true" >
+        </trigger>
+        <condition>
+			<true/>
+        </condition>
+        <authorizationAction name="default" >
+            <inhibit />
+        </authorizationAction>
+    </preventiveMechanism>
+
+</policy>
