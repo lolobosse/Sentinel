@@ -16,7 +16,7 @@ public abstract class EventMatchConditionContainer extends XMLElement {
 
     @Override
     String createValueString() {
-        StringBuilder sb = new StringBuilder();
+        CustomStringBuilder sb = new CustomStringBuilder();
         for (EventMatch match : matches){
             sb.append(match+"\n");
         }

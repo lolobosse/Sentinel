@@ -23,7 +23,7 @@ public class TimeStep extends XMLElement{
 
     @Override
     String createAttributeString() {
-        StringBuilder sb = new StringBuilder();
+        CustomStringBuilder sb = new CustomStringBuilder();
         sb.append(Utils.createAttributeString(unitKey, unit));
         sb.append(Utils.createAttributeString(amountKey, String.valueOf(amount)));
         return sb.toString();

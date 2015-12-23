@@ -22,7 +22,7 @@ public class RepLim extends EventMatchConditionContainer{
 
     @Override
     String createAttributeString() {
-        StringBuilder sb = new StringBuilder();
+        CustomStringBuilder sb = new CustomStringBuilder();
         sb.append(Utils.createAttributeString(amountKey, amount))
                 .append(Utils.createAttributeString(unitKey, unit))
                 .append(Utils.createAttributeString(lowerLimitKey, String.valueOf(lowerLimit)))

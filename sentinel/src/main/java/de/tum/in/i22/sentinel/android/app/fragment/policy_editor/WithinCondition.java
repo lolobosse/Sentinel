@@ -16,7 +16,7 @@ public class WithinCondition extends SuperCondition {
 
     @Override
     String createValueString() {
-        StringBuilder sb = new StringBuilder();
+        CustomStringBuilder sb = new CustomStringBuilder();
         for (Within w : withins) {
             sb.append(w + "\n");
         }

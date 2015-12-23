@@ -6,6 +6,6 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 public class Utils {
 
     public static String createAttributeString(String key, String value){
-        return key + "= \""+value+"\" ";
+        return key + "=\""+value+"\" ";
     }
 }

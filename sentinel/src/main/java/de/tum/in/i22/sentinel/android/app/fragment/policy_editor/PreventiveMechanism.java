@@ -1,11 +1,13 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class PreventiveMechanism extends XMLElement{
+public class PreventiveMechanism extends XMLElement {
 
     String name;
     TimeStep timestep;
@@ -14,6 +16,11 @@ public class PreventiveMechanism extends XMLElement{
     ArrayList<SuperCondition> conditions;
     AuthorizationAction authorizationAction;
 
+    public PreventiveMechanism() {
+        isContainer = true;
+        elementXMLName = "preventiveMechanism";
+    }
+
     @Override
     String createAttributeString() {
         return Utils.createAttributeString("name", name);
@@ -21,16 +28,23 @@ public class PreventiveMechanism extends XMLElement{
 
     @Override
     String createValueString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(description + "\n");
-        builder.append(timestep + "\n");
-        for (Trigger t : triggers) {
-            builder.append(t + "\n");
+        CustomStringBuilder builder = new CustomStringBuilder();
+        builder.append(description);
+        builder.append("\n");
+        builder.append(timestep);
+        builder.append("\n");
+        if (triggers!=null) {
+            for (Trigger t : triggers) {
+                builder.append(t + "\n");
+            }
         }
-        for (SuperCondition c : conditions) {
-            builder.append(c + "\n");
+        if (conditions != null) {
+            for (SuperCondition c : conditions) {
+                builder.append(c + "\n");
+            }
         }
-        builder.append(authorizationAction + "\n");
+        builder.append(authorizationAction)
+                .append("\n");
         return builder.toString();
     }
 

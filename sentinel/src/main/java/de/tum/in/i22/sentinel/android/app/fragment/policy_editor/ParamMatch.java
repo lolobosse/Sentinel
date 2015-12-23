@@ -17,7 +17,7 @@ public class ParamMatch extends XMLElement {
 
     @Override
     String createAttributeString() {
-        StringBuilder b = new StringBuilder();
+        CustomStringBuilder b = new CustomStringBuilder();
         b.append(Utils.createAttributeString(nameKey, name));
         b.append(Utils.createAttributeString(valueKey, value));
         return b.toString();

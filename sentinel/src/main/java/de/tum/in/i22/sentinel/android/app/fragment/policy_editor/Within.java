@@ -18,7 +18,7 @@ public class Within extends EventMatchConditionContainer{
 
     @Override
     String createAttributeString() {
-        StringBuilder b = new StringBuilder();
+        CustomStringBuilder b = new CustomStringBuilder();
         b.append(Utils.createAttributeString(amountKey, String.valueOf(amount)))
                 .append(Utils.createAttributeString(unitKey, unit));
         return b.toString();

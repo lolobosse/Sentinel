@@ -22,7 +22,7 @@ public class Trigger extends XMLElement{
 
     @Override
     String createAttributeString() {
-        StringBuilder builder = new StringBuilder();
+        CustomStringBuilder builder = new CustomStringBuilder();
         builder.append(Utils.createAttributeString(actionKey, action))
                 .append(Utils.createAttributeString(tryEventKey, String.valueOf(tryEvent)));
         return builder.toString();
@@ -30,7 +30,7 @@ public class Trigger extends XMLElement{
 
     @Override
     String createValueString() {
-        StringBuilder b = new StringBuilder();
+        CustomStringBuilder b = new CustomStringBuilder();
         for (ParamMatch match : paramMatches){
             b.append(paramMatches+"\n");
         }

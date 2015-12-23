@@ -16,7 +16,7 @@ public class RepLimCondition extends SuperCondition {
 
     @Override
     String createValueString() {
-        StringBuilder builder = new StringBuilder();
+        CustomStringBuilder builder = new CustomStringBuilder();
         for (RepLim rl : repLims){
             builder.append(rl+"\n");
         }
