@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.MainViewFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,16 +57,25 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_editor) {
+        if (id == R.id.nav_editor) { // Editor fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PolicyEditorFragment());
             ft.commit();
 
-        } else if (id == R.id.status) {
+        } else if (id == R.id.nav_status) { // Status fragment
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainViewContainer, new StatusFragment());
+            ft.commit();
 
-        } else if (id == R.id.nav_instrument) {
+        } else if (id == R.id.nav_instrument) { // Instrument fragment
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainViewContainer, new InstrumentFragment());
+            ft.commit();
 
-        } else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) { // Settings fragment
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainViewContainer, new SettingsFragment());
+            ft.commit();
 
         }
 
