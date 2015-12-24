@@ -11,7 +11,7 @@ public class Within extends EventMatchConditionContainer{
     String unit;
     private String unitKey = "unit";
 
-    Within(){
+    public Within(){
         super();
         elementXMLName = "within";
     }
