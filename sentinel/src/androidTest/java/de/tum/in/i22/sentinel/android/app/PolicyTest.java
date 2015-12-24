@@ -23,19 +23,19 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.parser.PolicyPa
  */
 public class PolicyTest extends AndroidTestCase {
 
+    private static final String policySms4Trimmed = "<?xmlversion='1.0'standalone='yes'?><policyxmlns=\"http://www22.in.tum.de/enforcementLanguage\"xmlns:tns=\"http://www22.in.tum.de/enforcementLanguage\"xmlns:a=\"http://www22.in.tum.de/action\"xmlns:e=\"http://www22.in.tum.de/event\"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"name=\"bliblablub\"><preventiveMechanismname=\"test2\"><description>NewPolicy</description><timestepamount=\"500\"unit=\"MILLISECONDS\"/><triggeraction=\"sendTextMessage\"tryEvent=\"true\"><paramMatchname=\"destination\"value=\"12345\"/></trigger><condition><not><repLimamount=\"20\"unit=\"SECONDS\"lowerLimit=\"0\"upperLimit=\"1\"><eventMatchaction=\"sendTextMessage\"tryEvent=\"true\"><paramMatchname=\"destination\"value=\"12345\"/></eventMatch></repLim></not></condition><authorizationActionname=\"default\"><inhibit/></authorizationAction></preventiveMechanism></policy>";
+
+
     public void testGetterAndSetterOfPolicy() throws Exception {
         Policy p = new Policy();
         String name = "name";
         p.setName(name);
-        boolean standalone = true;
-        p.setStandalone(standalone);
         PreventiveMechanism mechanism = new PreventiveMechanism();
         p.setMechanism(mechanism);
         boolean deployed = true;
         p.setDeployed(deployed);
 
         assertEquals(name, p.getName());
-        assertEquals(standalone, p.isStandalone());
         assertEquals(mechanism, p.getMechanism());
         assertEquals(deployed, p.isDeployed());
     }
@@ -57,11 +57,8 @@ public class PolicyTest extends AndroidTestCase {
      * @throws Exception
      */
     public void testPolicyAppDurationSMS4() throws Exception {
-        String original = "<?xmlversion='1.0'standalone='yes'?><policyxmlns=\"http://www22.in.tum.de/enforcementLanguage\"xmlns:tns=\"http://www22.in.tum.de/enforcementLanguage\"xmlns:a=\"http://www22.in.tum.de/action\"xmlns:e=\"http://www22.in.tum.de/event\"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"name=\"bliblablub\"><preventiveMechanismname=\"test2\"><description>NewPolicy</description><timestepamount=\"500\"unit=\"MILLISECONDS\"/><triggeraction=\"sentTextMessage\"tryEvent=\"true\"><paramMatchname=\"destination\"value=\"12345\"/></trigger><condition><not><repLimamount=\"20\"unit=\"SECONDS\"lowerLimit=\"0\"upperLimit=\"1\"><eventMatchaction=\"sentTextMessage\"tryEvent=\"true\"><paramMatchname=\"destination\"value=\"12345\"/></eventMatch></repLim></not></condition><authorizationActionname=\"default\"><inhibit/></authorizationAction></preventiveMechanism></policy>";
-
         Policy p = new Policy();
         p.setName("bliblablub");
-        p.setStandalone(true);
 
         PreventiveMechanism pm = new PreventiveMechanism();
         pm.setName("test2");
@@ -77,7 +74,7 @@ public class PolicyTest extends AndroidTestCase {
 
         ArrayList triggers = new ArrayList<>();
         Trigger trigger = new Trigger();
-        trigger.setAction("sentTextMessage");
+        trigger.setAction("sendTextMessage");
         trigger.setTryEvent(true);
         triggers.add(trigger);
         ParamMatch paramMatch = new ParamMatch();
@@ -98,7 +95,7 @@ public class PolicyTest extends AndroidTestCase {
         repLim.setUpperLimit(1);
         replims.add(repLim);
         EventMatch e = new EventMatch();
-        e.setAction("sentTextMessage");
+        e.setAction("sendTextMessage");
         e.setTryEvent(true);
         ParamMatch paramMatch1 = new ParamMatch();
         paramMatch1.setName("destination");
@@ -124,10 +121,14 @@ public class PolicyTest extends AndroidTestCase {
         String result = p.toString();
         result = result.replace(" ", "");
         result = result.replace("\n", "");
-        assertEquals(original, result);
+        assertEquals(policySms4Trimmed, result);
     }
 
     public void testParser() throws Exception {
-        PolicyParser.c(getContext());
+        Policy p = PolicyParser.parsePolicyFromResId(getContext(), R.raw.policy_appsms_duration4);
+        String result = p.toString();
+        result = result.replace(" ", "");
+        result = result.replace("\n", "");
+        assertEquals(policySms4Trimmed, result);
     }
 }

@@ -14,7 +14,6 @@ public class Policy extends XMLElement {
     boolean deployed;
     String name;
     PreventiveMechanism mechanism;
-    boolean standalone;
 
     public Policy() {
         isContainer = true;
@@ -23,7 +22,7 @@ public class Policy extends XMLElement {
 
     @Override
     public String toString() {
-        return "<?xml version='1.0' standalone='" + (standalone ? "yes" : "no") + "'?>\n" + super.toString();
+        return "<?xml version='1.0' standalone='yes'?>\n" + super.toString();
     }
 
     @Override
@@ -63,13 +62,4 @@ public class Policy extends XMLElement {
     public void setName(String name) {
         this.name = name;
     }
-
-    public boolean isStandalone() {
-        return standalone;
-    }
-
-    public void setStandalone(boolean standalone) {
-        this.standalone = standalone;
-    }
-
 }

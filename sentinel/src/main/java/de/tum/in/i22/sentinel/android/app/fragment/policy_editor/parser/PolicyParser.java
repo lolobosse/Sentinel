@@ -11,6 +11,7 @@ import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -19,7 +20,8 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.AuthorizationAction;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Behavior;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Description;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.EventMatch;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.EventMatchCondition;
@@ -39,43 +41,33 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.WithinCondition
  */
 public class PolicyParser {
 
-    public static void c(Context c) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder b = factory.newDocumentBuilder();
-            InputStream s = c.getResources().openRawResource(R.raw.policy_appsms_duration4);
+    public static Policy parsePolicyFromFile(File f) throws Exception {
+        return parsePolicy(getStringFromFile(f));
+    }
+
+    public static Policy parsePolicyFromString(String s) throws Exception {
+        return parsePolicy(s);
+    }
+
+    public static Policy parsePolicyFromResId(Context c, int resId) throws Exception {
+            InputStream s = c.getResources().openRawResource(resId);
             BufferedReader reader = new BufferedReader(new InputStreamReader(s));
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-            parsePolicy(sb.toString());
-        } catch (Exception e) {
-        }
+            return parsePolicy(sb.toString());
     }
 
-    public static Policy parsePolicyFromFile(File f) {
-        return null;
-    }
-
-    public static Policy parsePolicyFromString(String s) {
-        return null;
-    }
-
-    public static Policy parsePolicyFromResId(Context c, int resId) {
-        return null;
-    }
-
-    private static Policy parsePolicy(String s) {
-        try {
+    private static Policy parsePolicy(String s) throws Exception {
             Document d = loadXMLFromString(s);
             // TODO: Extract the keys
             Element root =  d.getDocumentElement();
             if (isTheMainElementAPolicy(d)){
                 Policy p = new Policy();
+                p.setName(root.getAttribute("name"));
                 NodeList rootChildren = root.getChildNodes();
-                ArrayList<PreventiveMechanism> mechanisms = new ArrayList<>();
                 for (int i = 0; i< rootChildren.getLength(); i++){
                     Node child = rootChildren.item(i);
                     if (isPreventiveMechanism(child)){
@@ -85,15 +77,25 @@ public class PolicyParser {
                         setTimeStep(child, mechanism);
                         setTriggers(child, mechanism);
                         setConditions(child, mechanism);
-                        mechanisms.add(mechanism);
+                        setAuthorizationAction(child, mechanism);
+                        p.setMechanism(mechanism);
                     }
-
                 }
+                return p;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString());
-        }
         return null;
+    }
+
+    private static void setAuthorizationAction(Node child, PreventiveMechanism mechanism) {
+        for (int i = 0; i<child.getChildNodes().getLength(); i++) {
+            Node subnode = child.getChildNodes().item(i);
+            if (subnode.getNodeName().equals("authorizationAction")) {
+                AuthorizationAction action = new AuthorizationAction();
+                action.setName(((Element) subnode).getAttribute("name"));
+                action.setB(new Behavior());
+                mechanism.setAuthorizationAction(action);
+            }
+        }
     }
 
     private static void setConditions(Node child, PreventiveMechanism mechanism) {
@@ -265,4 +267,24 @@ public class PolicyParser {
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
     }
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    public static String getStringFromFile (File f) throws Exception {
+        FileInputStream fin = new FileInputStream(f);
+        String ret = convertStreamToString(fin);
+        //Make sure you close all streams.
+        fin.close();
+        return ret;
+    }
+
 }
