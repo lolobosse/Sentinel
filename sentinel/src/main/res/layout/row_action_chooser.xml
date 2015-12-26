@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:text="Title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Java Method"
+        android:layout_below="@+id/title"
+        android:textSize="10dp"
+        android:id="@+id/javaMTV"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/javaMTV"
+        android:text="&lt;android.telephony.SmsManager: void sendTextMessage(java.lang.String,java.lang.String,java.lang.String,android.app.PendingIntent,android.app.PendingIntent)&gt;"
+        android:layout_below="@+id/title"
+        android:paddingLeft="4dp"
+        android:textSize="8dp"
+        android:id="@+id/javaM"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Before"
+        android:textSize="10dp"
+        android:id="@+id/beforeTV"
+        android:layout_below="@+id/javaM"
+        android:layout_alignBaseline="@id/checkbox"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:id="@+id/checkbox"
+        android:clickable="false"
+        android:layout_toRightOf="@id/javaMTV"
+        android:layout_below="@id/javaM"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dataContainer"
+        android:layout_below="@+id/javaM"
+        android:layout_toRightOf="@id/checkbox"
+        android:orientation="vertical"
+        android:padding="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retrievable parameters of this method:"
+            android:id="@+id/parameterTitle"
+            android:textSize="10dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</RelativeLayout>
