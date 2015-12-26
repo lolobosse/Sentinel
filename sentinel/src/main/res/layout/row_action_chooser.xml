@@ -38,22 +38,20 @@
         android:id="@+id/beforeTV"
         android:layout_below="@+id/javaM"
         android:layout_alignBaseline="@id/checkbox"/>
-    <CheckBox
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
         android:id="@+id/checkbox"
         android:clickable="false"
         android:layout_toRightOf="@id/javaMTV"
-        android:layout_below="@id/javaM"/>
+        android:layout_below="@id/javaM"
+        android:textSize="10dp"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dataContainer"
-        android:layout_below="@+id/javaM"
-        android:layout_toRightOf="@id/checkbox"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:layout_below="@+id/beforeTV"
+        android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

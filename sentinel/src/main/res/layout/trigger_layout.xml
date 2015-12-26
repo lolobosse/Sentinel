@@ -12,10 +12,9 @@
 
     <de.tum.in.i22.sentinel.android.app.customViews.ActionChooser
         android:layout_width="wrap_content"
-        android:layout_height="100px"
+        android:layout_height="wrap_content"
         android:id="@+id/actionChooser"
-        android:layout_toRightOf="@+id/actionTv">
-    </de.tum.in.i22.sentinel.android.app.customViews.ActionChooser>
+        android:layout_toRightOf="@+id/actionTv"/>
 
     <TextView
         android:layout_width="wrap_content"

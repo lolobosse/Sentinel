@@ -3,10 +3,13 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -23,7 +26,24 @@ public class PolicyEditorFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.trigger_layout, container, false);
+
+        View view = inflater.inflate(R.layout.trigger_layout, container, false);
+
+        Spinner s = (Spinner) view.findViewById(R.id.actionChooser);
+
+        AdapterView.OnItemSelectedListener l = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("ActionChooser", "i:" + i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("ActionChooser", "nothing");
+            }
+        };
+        s.setOnItemSelectedListener(l);
+        return view;
     }
 
 //    private class CustomAdapter extends BaseExpandableListAdapter{

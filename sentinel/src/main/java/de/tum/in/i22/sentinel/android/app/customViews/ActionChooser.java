@@ -5,12 +5,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -40,6 +39,8 @@ public class ActionChooser extends Spinner {
     private Context c;
 
     ArrayList<Event> events;
+
+    OnItemSelectedListener listener;
 
     public ActionChooser(Context context) {
         super(context);
@@ -97,14 +98,30 @@ public class ActionChooser extends Spinner {
             }
             Log.d("ActionChooser", "Set adapter");
             Log.d("ActionChooser", "events.size():" + events.size());
-            setAdapter(new CustomAdapter());
-        } catch (Exception e) {
-            Log.d("ActionChooser", "e:" + e);
-        }
+            BaseAdapter a = new CustomAdapter();
+            a.notifyDataSetChanged();
+            setAdapter(a);
+            OnItemSelectedListener l = new OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("ActionChooser", "i:" + i);
+                }
 
-//        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, this); //selected item will look like a spinner set from XML
-//        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        this.setAdapter(spinnerArrayAdapter);
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    Log.d("ActionChooser", "nothing");
+                }
+            };
+            setOnItemSelectedListener(l);
+        }catch (Exception e){
+
+        }
+    }
+
+    @Override
+    public void setSelection(int position) {
+        super.setSelection(position);
+        Log.d("ActionChooser", "set selection");
     }
 
     private Node getNodeByTag(Node superNode, String tag) {
@@ -129,8 +146,7 @@ public class ActionChooser extends Spinner {
         String name;
     }
 
-    private class CustomAdapter extends BaseAdapter implements SpinnerAdapter {
-
+    private class CustomAdapter extends BaseAdapter{
 
         @Override
         public int getCount() {
@@ -152,20 +168,21 @@ public class ActionChooser extends Spinner {
             View row = inflate(c, R.layout.row_action_chooser, null);
             TextView tv = (TextView) row.findViewById(R.id.title);
             TextView methodName = (TextView) row.findViewById(R.id.javaM);
-            CheckBox cb = (CheckBox) row.findViewById(R.id.checkbox);
+            TextView cb = (TextView) row.findViewById(R.id.checkbox);
             LinearLayout ll = (LinearLayout) row.findViewById(R.id.dataContainer);
             tv.setText(WordUtils.capitalize(events.get(i).name));
             methodName.setText(events.get(i).methodSignature);
-            cb.setChecked(events.get(i).isBefore);
-            for (Param p : events.get(i).data){
+            cb.setText(events.get(i).isBefore?"true":"false");
+            for (Param p : events.get(i).data) {
                 TextView pt = (TextView) row.findViewById(R.id.parameterTitle);
                 pt.setVisibility(VISIBLE);
                 TextView ptv = new TextView(c);
-                ptv.setText(p.name+" (pos: "+p.pos+")");
+                ptv.setText(p.name + " (pos: " + p.pos + ")");
                 ptv.setTextSize(10);
                 ll.addView(ptv);
             }
             return row;
         }
     }
+
 }
