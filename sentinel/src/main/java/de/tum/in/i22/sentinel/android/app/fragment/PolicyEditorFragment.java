@@ -93,38 +93,41 @@ public class PolicyEditorFragment extends Fragment{
 
         @Override
         public boolean hasStableIds() {
-            return false;
+            return true;
         }
 
         @Override
-        public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-            TextView tv = new TextView(getActivity());
-            switch (i){
-                case 0:
-                    tv.setText("Description");
-                    break;
-                case 1:
-                    tv.setText("Timestep");
-                    break;
-                case 2:
-                    tv.setText("Trigger");
-                    break;
-                case 3:
-                    tv.setText("Condition");
-                    break;
-                case 4:
-                    tv.setText("Authorization");
-                    break;
+        public View getGroupView(int i, boolean b, View convertView, ViewGroup viewGroup) {
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.policy_expandable_list_view_layout, null);
+                TextView tv = (TextView) convertView.findViewById(R.id.categoryTitle);
+                switch (i) {
+                    case 0:
+                        tv.setText("Description");
+                        break;
+                    case 1:
+                        tv.setText("Timestep");
+                        break;
+                    case 2:
+                        tv.setText("Trigger");
+                        break;
+                    case 3:
+                        tv.setText("Condition");
+                        break;
+                    case 4:
+                        tv.setText("Authorization");
+                        break;
+                }
             }
-            return tv;
+            return convertView;
         }
 
         @Override
         public View getChildView(int i, int i1, boolean b, View convertView, ViewGroup viewGroup) {
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            View v;
             if (convertView == null) {
-                switch (i) {
+                switch (getChildType(i, i1)) {
                     case 0:
                         return inflater.inflate(R.layout.description_layout, null);
                     case 1:
@@ -142,6 +145,16 @@ public class PolicyEditorFragment extends Fragment{
             else{
                 return convertView;
             }
+        }
+
+        @Override
+        public int getChildTypeCount() {
+            return getGroupCount();
+        }
+
+        @Override
+        public int getChildType(int groupPosition, int childPosition) {
+            return groupPosition;
         }
 
         @Override
