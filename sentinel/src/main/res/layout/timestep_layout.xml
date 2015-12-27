@@ -12,7 +12,7 @@
         android:padding="12dp"
         />
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="20"
         android:id="@+id/amountET"
@@ -24,17 +24,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/unitTV"
         android:text="Unit"
-        android:layout_below="@+id/amountTV"
+        android:layout_toRightOf="@+id/amountET"
         android:padding="12dp"/>
 
-    <de.tum.in.i22.sentinel.android.app.customViews.DurationChooser
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/amountTV"
-        android:layout_below="@+id/amountET"
-        android:id="@+id/durationChooser">
-
-    </de.tum.in.i22.sentinel.android.app.customViews.DurationChooser>
+   <Spinner
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:entries="@array/spinnerItems"
+       android:layout_toRightOf="@+id/unitTV"
+       android:layout_alignBaseline="@+id/unitTV"/>
 
 
 

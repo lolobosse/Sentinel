@@ -31,9 +31,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinner_type_action"
         android:layout_below="@id/notCheckbox"
-        android:layout_toRightOf="@id/kindOfCTV">
-
-    </de.tum.in.i22.sentinel.android.app.customViews.TypeConditionChooser>
-
+        android:layout_toRightOf="@id/kindOfCTV"/>
 
 </RelativeLayout>
