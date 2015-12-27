@@ -60,21 +60,25 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_editor) { // Editor fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PolicyEditorFragment());
+            setTitle("Editor");
             ft.commit();
 
         } else if (id == R.id.nav_status) { // Status fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new StatusFragment());
+            setTitle("Status");
             ft.commit();
 
         } else if (id == R.id.nav_instrument) { // Instrument fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new InstrumentFragment());
+            setTitle("Instrument");
             ft.commit();
 
         } else if (id == R.id.nav_settings) { // Settings fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new SettingsFragment());
+            setTitle("Settings");
             ft.commit();
 
         }
