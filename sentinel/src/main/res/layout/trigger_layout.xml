@@ -29,11 +29,13 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/tryEventLabel"
         android:checked="true"
+        android:id="@+id/checkboxTry"
         android:layout_alignBaseline="@+id/tryEventLabel"
         android:layout_below="@+id/actionChooser"/>
 
     <Button
         android:layout_below="@+id/tryEventLabel"
+        android:id="@+id/parametersButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Parameters"

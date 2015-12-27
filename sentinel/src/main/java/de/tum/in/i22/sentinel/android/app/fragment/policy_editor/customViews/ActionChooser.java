@@ -132,7 +132,7 @@ public class ActionChooser extends Spinner {
         return null;
     }
 
-    private class Event {
+    public static class Event {
 
         String methodSignature;
         String name;

@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,11 +12,12 @@
         android:padding="12dp"
         />
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="20"
         android:id="@+id/amountET"
         android:layout_toRightOf="@+id/amountTV"
+        android:maxLength="5"
         android:inputType="number"/>
 
     <TextView
@@ -24,7 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/unitTV"
         android:text="Unit"
-        android:layout_toRightOf="@+id/amountET"
+        android:layout_below="@+id/amountET"
         android:padding="12dp"/>
 
    <Spinner
@@ -32,6 +33,7 @@
        android:layout_height="wrap_content"
        android:entries="@array/spinnerItems"
        android:layout_toRightOf="@+id/unitTV"
+       android:id="@+id/unitSpinner"
        android:layout_alignBaseline="@+id/unitTV"/>
 
 

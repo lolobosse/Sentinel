@@ -10,7 +10,6 @@
         android:text="Title"
         android:id="@+id/categoryTitle"
         android:textAllCaps="true"
-        android:layout_marginLeft="16dp"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:textColor="@android:color/darker_gray"/>
 

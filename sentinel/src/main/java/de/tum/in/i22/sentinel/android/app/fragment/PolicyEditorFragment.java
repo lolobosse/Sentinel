@@ -9,11 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.DescriptionLayout;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.PolicyEditorLayout;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.TimeStepLayout;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.parser.PolicyParser;
 
@@ -27,15 +32,24 @@ public class PolicyEditorFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.policy_editor_fragment, container, false);
-        ExpandableListView elv = (ExpandableListView) view.findViewById(R.id.expLv);
+//
+//        View view = inflater.inflate(R.layout.policy_editor_fragment, container, false);
+//        ExpandableListView elv = (ExpandableListView) view.findViewById(R.id.expLv);
+//        try {
+//            elv.setAdapter(new CustomAdapter(PolicyParser.parsePolicyFromResId(getActivity(), R.raw.policy_appsms_duration4)));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return view;
         try {
-            elv.setAdapter(new CustomAdapter(PolicyParser.parsePolicyFromResId(getActivity(), R.raw.policy_appsms_duration4)));
+            PolicyEditorLayout layout = new PolicyEditorLayout(getActivity(), PolicyParser.parsePolicyFromResId(getActivity(), R.raw.policy_appsms_duration4));
+            ScrollView sv = new ScrollView(getActivity());
+            sv.setLayoutParams(new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT));
+            sv.addView(layout);
+            return sv;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-        return view;
     }
 
     private class CustomAdapter extends BaseExpandableListAdapter implements PolicyChanger {
@@ -129,7 +143,7 @@ public class PolicyEditorFragment extends Fragment{
                     case 0:
                         return new DescriptionLayout(getActivity(), p, this);
                     case 1:
-                        return inflater.inflate(R.layout.timestep_layout, null);
+                        return new TimeStepLayout(getActivity(), p, this);
                     case 2:
                         return inflater.inflate(R.layout.trigger_layout, null);
                     case 3:
