@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -58,6 +59,8 @@ public class PolicyEditorLayout extends LinearLayout implements PolicyChanger {
 
     @Override
     public void onPolicyChange() {
+
+        Log.d("PolicyEditorLayout", p.toString());
 
     }
 

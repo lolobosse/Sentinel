@@ -2,6 +2,7 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -50,6 +51,19 @@ public class TimeStepLayout extends RelativeLayout {
         s.setSelection(pos);
         // Not to call a wrapper toString
         et.setText(p.getMechanism().getTimestep().getAmount()+ "");
+
+        s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                p.getMechanism().getTimestep().setUnit(s.getSelectedItem().toString());
+                pc.onPolicyChange();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private class FocusListener implements OnFocusChangeListener{
@@ -57,9 +71,8 @@ public class TimeStepLayout extends RelativeLayout {
         @Override
         public void onFocusChange(View view, boolean b) {
             // If it is the spinner or the editText and the focus is not on one of this element anymore
-            if ((view.getId() == et.getId() || view.getId() == s.getId()) && !b){
+            if (view.getId() == et.getId() && !b){
                 p.getMechanism().getTimestep().setAmount(Integer.parseInt(et.getText().toString()));
-                p.getMechanism().getTimestep().setUnit(s.getSelectedItem().toString());
                 pc.onPolicyChange();
             }
         }
