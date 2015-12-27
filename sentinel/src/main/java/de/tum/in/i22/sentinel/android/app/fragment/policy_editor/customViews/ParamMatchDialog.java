@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.DialogSet;
 
 /**
  * Created by laurentmeyer on 27/12/15.
@@ -22,10 +25,13 @@ public class ParamMatchDialog {
     HashMap<String, String> map;
     Context c;
     AlertDialog.Builder b;
+    DialogSet ds;
+    HashMap<TextView, TextView> textViews;
 
-    public ParamMatchDialog(Context context, HashMap<String, String> mapToBeSet) {
+    public ParamMatchDialog(Context context, HashMap<String, String> mapToBeSet, DialogSet ds) {
         map = mapToBeSet;
         c = context;
+        this.ds = ds;
         init();
     }
 
@@ -36,6 +42,7 @@ public class ParamMatchDialog {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        textViews = new HashMap<>();
         for (String key : map.keySet()) {
             LinearLayout ll = (LinearLayout) li.inflate(R.layout.row_param_match_dialog_layout, linearLayout);
             TextView tv = (TextView) ll.findViewById(R.id.key);
@@ -43,12 +50,17 @@ public class ParamMatchDialog {
             TextView tv2 = (TextView) ll.findViewById(R.id.value);
             if (map.get(key) != null && map.get(key) != "")
                 tv2.setText(map.get(key));
+            textViews.put(tv, tv2);
         }
         b.setView(linearLayout);
         b.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d("ParamMatchDialog", "Ok clicked");
+                HashMap<String, String> results = new HashMap<>();
+                for (TextView t : textViews.keySet()){
+                    results.put(t.getText().toString(), textViews.get(t).getText().toString());
+                }
+                ds.parametersDefined(results);
             }
         });
         b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
