@@ -88,7 +88,12 @@ public class PolicyEditorLayout extends LinearLayout implements PolicyChanger {
                         break;
                     case 2:
                         createViewAndMakeVisible(new TriggerContainer(getContext(), p, PolicyEditorLayout.this));
-
+                        break;
+                    case 3:
+                        createViewAndMakeVisible(new ConditionContainerLayout(getContext(), p, PolicyEditorLayout.this));
+                        break;
+                    case 4:
+                        createViewAndMakeVisible(new AuthorizationLayout(getContext(), p, PolicyEditorLayout.this));
                 }
             }
 
