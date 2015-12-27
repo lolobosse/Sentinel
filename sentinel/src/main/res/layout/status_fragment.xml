@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECEFF1"
+    android:id="@+id/statusScrollView"
+    android:fillViewport="false">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:elevation="4dp"
+        android:background="#f1f1f1"
+        android:id="@+id/statusLinearLayout">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="#fff"
+            android:layout_weight="0.5"
+            android:id="@+id/statusLeftFrame">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="60"
+                android:id="@+id/statusLeftFrameNmr"
+                android:layout_gravity="center"
+                android:textSize="50sp"
+                android:textColor="#000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Apps"
+                android:id="@+id/statusLeftFrameText"
+                android:layout_gravity="center|top"
+                android:textSize="20dp"
+                android:textColor="#000"
+                android:layout_marginTop="12dp" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="#fff"
+            android:layout_weight="0.5"
+            android:elevation="1dp"
+            android:id="@+id/statusRightFrame">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="3"
+                android:id="@+id/statusRightFrameNmr"
+                android:layout_gravity="center"
+                android:textSize="50sp"
+                android:textColor="#000"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Instrumented"
+                android:id="@+id/statusRightFrameText"
+                android:layout_gravity="center|top"
+                android:textSize="20dp"
+                android:textColor="#000"
+                android:layout_marginTop="12dp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</ScrollView>
