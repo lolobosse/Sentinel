@@ -7,16 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.DescriptionLayout;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.parser.PolicyParser;
 
 /**
@@ -40,7 +38,7 @@ public class PolicyEditorFragment extends Fragment{
         return view;
     }
 
-    private class CustomAdapter extends BaseExpandableListAdapter{
+    private class CustomAdapter extends BaseExpandableListAdapter implements PolicyChanger {
 
         Policy p;
         CustomAdapter(Policy p){
@@ -129,7 +127,7 @@ public class PolicyEditorFragment extends Fragment{
             if (convertView == null) {
                 switch (getChildType(i, i1)) {
                     case 0:
-                        return inflater.inflate(R.layout.description_layout, null);
+                        return new DescriptionLayout(getActivity(), p, this);
                     case 1:
                         return inflater.inflate(R.layout.timestep_layout, null);
                     case 2:
@@ -160,6 +158,12 @@ public class PolicyEditorFragment extends Fragment{
         @Override
         public boolean isChildSelectable(int i, int i1) {
             return false;
+        }
+
+        @Override
+        public void onPolicyChange() {
+            Log.d("CustomAdapter", "Policy change called in the PolicyEditorFragment");
+            notifyDataSetChanged();
         }
     }
 }

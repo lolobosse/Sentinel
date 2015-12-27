@@ -10,7 +10,7 @@
         android:padding="12dp"
         android:id="@+id/actionTv"/>
 
-    <de.tum.in.i22.sentinel.android.app.customViews.ActionChooser
+    <de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.ActionChooser
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/actionChooser"

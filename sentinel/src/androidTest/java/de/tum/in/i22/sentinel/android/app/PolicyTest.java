@@ -4,7 +4,7 @@ import android.test.AndroidTestCase;
 
 import java.util.ArrayList;
 
-import de.tum.in.i22.sentinel.android.app.customViews.ActionChooser;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.ActionChooser;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.AuthorizationAction;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Behavior;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Description;

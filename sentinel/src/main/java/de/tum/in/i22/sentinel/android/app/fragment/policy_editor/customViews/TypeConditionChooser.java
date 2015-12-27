@@ -1,4 +1,4 @@
-package de.tum.in.i22.sentinel.android.app.customViews;
+package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
 import android.content.Context;
 import android.util.AttributeSet;

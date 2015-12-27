@@ -1,4 +1,4 @@
-package de.tum.in.i22.sentinel.android.app.customViews;
+package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
