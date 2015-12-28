@@ -140,7 +140,7 @@ public class ActionChooser extends Spinner {
         ArrayList<Param> data;
     }
 
-    private class Param {
+    public static class Param {
         int pos;
         String name;
     }

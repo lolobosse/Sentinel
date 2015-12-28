@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 
 import de.tum.in.i22.sentinel.android.app.R;
@@ -44,13 +42,14 @@ public class ParamMatchDialog {
         LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         textViews = new HashMap<>();
         for (String key : map.keySet()) {
-            LinearLayout ll = (LinearLayout) li.inflate(R.layout.row_param_match_dialog_layout, linearLayout);
+            LinearLayout ll = (LinearLayout) li.inflate(R.layout.key_value_layout_tv, null);
             TextView tv = (TextView) ll.findViewById(R.id.key);
             tv.setText(key);
             TextView tv2 = (TextView) ll.findViewById(R.id.value);
             if (map.get(key) != null && map.get(key) != "")
                 tv2.setText(map.get(key));
             textViews.put(tv, tv2);
+            linearLayout.addView(ll);
         }
         b.setView(linearLayout);
         b.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

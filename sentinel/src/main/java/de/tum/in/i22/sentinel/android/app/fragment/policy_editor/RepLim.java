@@ -9,7 +9,6 @@ public class RepLim extends EventMatchConditionContainer {
     String unit;
     int lowerLimit, upperLimit;
 
-    
     private String amountKey = "amount";
     private String unitKey = "unit";
     private String lowerLimitKey = "lowerLimit";
@@ -60,5 +59,37 @@ public class RepLim extends EventMatchConditionContainer {
 
     public void setUpperLimit(int upperLimit) {
         this.upperLimit = upperLimit;
+    }
+
+    public String getAmountKey() {
+        return amountKey;
+    }
+
+    public void setAmountKey(String amountKey) {
+        this.amountKey = amountKey;
+    }
+
+    public String getUnitKey() {
+        return unitKey;
+    }
+
+    public void setUnitKey(String unitKey) {
+        this.unitKey = unitKey;
+    }
+
+    public String getLowerLimitKey() {
+        return lowerLimitKey;
+    }
+
+    public void setLowerLimitKey(String lowerLimitKey) {
+        this.lowerLimitKey = lowerLimitKey;
+    }
+
+    public String getUpperLimitKey() {
+        return upperLimitKey;
+    }
+
+    public void setUpperLimitKey(String upperLimitKey) {
+        this.upperLimitKey = upperLimitKey;
     }
 }
