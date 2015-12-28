@@ -2,12 +2,14 @@ package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.tum.in.i22.sentinel.android.app.R;
@@ -41,7 +43,7 @@ public class ConditionLayout extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.condition_layout, this);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner_type_action);
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner_type_action);
         CheckBox not = (CheckBox) findViewById(R.id.notCheckbox);
         not.setChecked(sc.isNot());
         if (sc instanceof EventMatchCondition) {
@@ -51,7 +53,54 @@ public class ConditionLayout extends RelativeLayout {
         } else if (sc instanceof WithinCondition) {
             spinner.setSelection(2);
         }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        // If it change the type of object
+                        if (!(sc instanceof EventMatchCondition)){
+                            sc = new EventMatchCondition();
+                        }
+                        break;
+                    case 1:
+                        if (!(sc instanceof RepLimCondition)){
+                            RepLim r = new RepLim();
+                            ArrayList<RepLim> reps = new ArrayList<>();
+                            reps.add(r);
+                            RepLimCondition blank = new RepLimCondition();
+                            blank.setRepLims(reps);
+                            sc = blank;
+
+                        }
+                        break;
+                    case 2:
+                        if (!(sc instanceof WithinCondition)){
+                            Within r = new Within();
+                            ArrayList<Within> reps = new ArrayList<>();
+                            reps.add(r);
+                            WithinCondition blank = new WithinCondition();
+                            blank.setWithins(reps);
+                            sc = blank;
+                        }
+                        break;
+                }
+                createSubAttrs();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         subConditionAttrs = (LinearLayout) findViewById(R.id.subConditionAttrs);
+        createSubAttrs();
+
+
+    }
+
+    private void createSubAttrs() {
+        subConditionAttrs.removeAllViews();
         HashMap<String, String> map = new HashMap<>();
         if (sc instanceof RepLimCondition) {
             RepLim repLim = ((RepLimCondition) sc).getRepLims().get(0);
@@ -89,8 +138,6 @@ public class ConditionLayout extends RelativeLayout {
                 subConditionAttrs.addView(v);
             }
         }
-
-
     }
 
 

@@ -12,21 +12,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.text.WordUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParseEventInformationTask;
 
 /**
  * Created by laurentmeyer on 26/12/15.
@@ -38,8 +28,6 @@ public class ActionChooser extends Spinner {
     private Context c;
 
     ArrayList<Event> events;
-
-    OnItemSelectedListener listener;
 
     public ActionChooser(Context context) {
         super(context);
@@ -54,67 +42,25 @@ public class ActionChooser extends Spinner {
     }
 
     private void init() {
-        try {
-            InputStream s = c.getResources().openRawResource(BASED_ON);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(s));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
+        events = ParseEventInformationTask.ResultGetter.getInstance().getResults();
+        Log.d("ActionChooser", "Set adapter");
+        Log.d("ActionChooser", "events.size():" + events.size());
+        BaseAdapter a = new CustomAdapter();
+        a.notifyDataSetChanged();
+        setAdapter(a);
+        OnItemSelectedListener l = new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("ActionChooser", "i:" + i);
             }
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(sb.toString()));
-            Document d = builder.parse(is);
-            events = new ArrayList<>();
-            if (d.getFirstChild() != null && d.getFirstChild().getNodeName().equals("events")) {
-                for (int i = 0; i < d.getFirstChild().getChildNodes().getLength(); i++) {
-                    Node event = d.getFirstChild().getChildNodes().item(i);
-                    if (event.getAttributes() != null) {
-                        Event e = new Event();
-                        e.methodSignature = event.getAttributes().getNamedItem("methodSignature").getNodeValue();
-                        e.name = getNodeByTag(event, "eventname").getAttributes().getNamedItem("name").getNodeValue();
-                        e.isBefore = getNodeByTag(event, "instrumentationpos").getFirstChild().getNodeValue().equals("before") ? true : false;
-                        if (getNodeByTag(event, "data") == null) {
-                            e.data = new ArrayList<>();
-                        } else {
-                            ArrayList<Param> params = new ArrayList<>();
-                            NodeList allParams = getNodeByTag(event, "data").getChildNodes();
-                            for (int j = 0; j < allParams.getLength(); j++) {
-                                Node param = allParams.item(j);
-                                if (param.getNodeName().equals("param")) {
-                                    Param p = new Param();
-                                    p.name = param.getAttributes().getNamedItem("name").getNodeValue();
-                                    p.pos = Integer.parseInt(param.getAttributes().getNamedItem("pos").getNodeValue());
-                                    params.add(p);
-                                }
-                            }
-                            e.data = params;
-                        }
-                        events.add(e);
-                    }
-                }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("ActionChooser", "nothing");
             }
-            Log.d("ActionChooser", "Set adapter");
-            Log.d("ActionChooser", "events.size():" + events.size());
-            BaseAdapter a = new CustomAdapter();
-            a.notifyDataSetChanged();
-            setAdapter(a);
-            OnItemSelectedListener l = new OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d("ActionChooser", "i:" + i);
-                }
+        };
+        setOnItemSelectedListener(l);
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    Log.d("ActionChooser", "nothing");
-                }
-            };
-            setOnItemSelectedListener(l);
-        }catch (Exception e){
-
-        }
     }
 
     @Override
@@ -123,29 +69,20 @@ public class ActionChooser extends Spinner {
         Log.d("ActionChooser", "set selection");
     }
 
-    private Node getNodeByTag(Node superNode, String tag) {
-        for (int i = 0; i < superNode.getChildNodes().getLength(); i++) {
-            if (superNode.getChildNodes().item(i).getNodeName().equals(tag)) {
-                return superNode.getChildNodes().item(i);
-            }
-        }
-        return null;
-    }
-
     public static class Event {
 
-        String methodSignature;
-        String name;
-        boolean isBefore;
-        ArrayList<Param> data;
+        public String methodSignature;
+        public String name;
+        public boolean isBefore;
+        public ArrayList<Param> data;
     }
 
     public static class Param {
-        int pos;
-        String name;
+        public int pos;
+        public String name;
     }
 
-    private class CustomAdapter extends BaseAdapter{
+    private class CustomAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -171,7 +108,7 @@ public class ActionChooser extends Spinner {
             LinearLayout ll = (LinearLayout) row.findViewById(R.id.dataContainer);
             tv.setText(WordUtils.capitalize(events.get(i).name));
             methodName.setText(events.get(i).methodSignature);
-            cb.setText(events.get(i).isBefore?"true":"false");
+            cb.setText(events.get(i).isBefore ? "true" : "false");
             for (Param p : events.get(i).data) {
                 TextView pt = (TextView) row.findViewById(R.id.parameterTitle);
                 pt.setVisibility(VISIBLE);

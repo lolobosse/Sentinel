@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParamMatch;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Trigger;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
@@ -40,7 +43,12 @@ public class TriggerContainer extends LinearLayout {
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TriggerContainer", "New Trigger condition requested");
+                Trigger t = new Trigger();
+                t.setTryEvent(true);
+                // Bookmarks is the first one
+                t.setAction("bookmarks");
+                t.setParamMatches(new ArrayList<ParamMatch>());
+                addView(new TriggerView(c, t, pc), getChildCount()-1);
             }
         });
     }

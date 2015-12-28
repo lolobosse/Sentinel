@@ -1,6 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -75,6 +76,7 @@ public class TriggerView extends RelativeLayout implements DialogSet {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 t.setAction(((ActionChooser.Event) (s.getSelectedItem())).name);
+                refreshParams(s);
                 b.setEnabled(!((ActionChooser.Event) s.getAdapter().getItem(i)).data.isEmpty());
                 b.setOnClickListener(new OnClickListener() {
                     @Override
@@ -100,6 +102,14 @@ public class TriggerView extends RelativeLayout implements DialogSet {
     }
 
     private void makeDialogAppear(Spinner s) {
+        HashMap<String, String> map = refreshParams(s);
+        ParamMatchDialog pmd = new ParamMatchDialog(getContext(), map, TriggerView.this);
+        pc.onPolicyChange();
+        pmd.getDialog().show();
+    }
+
+    @NonNull
+    private HashMap<String, String> refreshParams(Spinner s) {
         HashMap<String, String> map = new HashMap<>();
         int i = s.getSelectedItemPosition();
         if (s.getAdapter().getItem(i) instanceof ActionChooser.Event && !((ActionChooser.Event) s.getAdapter().getItem(i)).data.isEmpty()) {
@@ -111,19 +121,25 @@ public class TriggerView extends RelativeLayout implements DialogSet {
             if (map.get(param.getName()) != null)
                 map.put(param.getName(), param.getValue());
         }
-        ParamMatchDialog pmd = new ParamMatchDialog(getContext(), map, TriggerView.this);
-        pmd.getDialog().show();
+        refreshTrigger(map);
+        return map;
     }
 
     @Override
     public void parametersDefined(HashMap<String, String> map) {
+        refreshTrigger(map);
+        pc.onPolicyChange();
+    }
+
+    private void refreshTrigger(HashMap<String, String> map) {
         t.getParamMatches().clear();
         for (String key : map.keySet()) {
-            ParamMatch pm = new ParamMatch();
-            pm.setName(key);
-            pm.setValue(map.get(key));
-            t.getParamMatches().add(pm);
+            if (map.get(key) != null && !map.get(key).isEmpty()) {
+                ParamMatch pm = new ParamMatch();
+                pm.setName(key);
+                pm.setValue(map.get(key));
+                t.getParamMatches().add(pm);
+            }
         }
-        pc.onPolicyChange();
     }
 }

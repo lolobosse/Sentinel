@@ -15,6 +15,7 @@ import de.tum.in.i22.sentinel.android.app.fragment.MainViewFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParseEventInformationTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        initParser();
     }
 
     @Override
@@ -86,5 +89,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void initParser() {
+        ParseEventInformationTask peit = new ParseEventInformationTask(this, R.raw.event_information);
+        peit.execute();
     }
 }
