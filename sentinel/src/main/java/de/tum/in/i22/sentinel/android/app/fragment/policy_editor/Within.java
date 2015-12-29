@@ -39,4 +39,20 @@ public class Within extends EventMatchConditionContainer{
     public void setUnit(String unit) {
         this.unit = unit;
     }
+
+    public String getAmountKey() {
+        return amountKey;
+    }
+
+    public void setAmountKey(String amountKey) {
+        this.amountKey = amountKey;
+    }
+
+    public String getUnitKey() {
+        return unitKey;
+    }
+
+    public void setUnitKey(String unitKey) {
+        this.unitKey = unitKey;
+    }
 }

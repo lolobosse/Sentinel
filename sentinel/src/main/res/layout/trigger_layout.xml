@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action"
+        android:padding="12dp"
+        android:id="@+id/actionTv"/>
+
+    <de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews.ActionChooser
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/actionChooser"
+        android:layout_toRightOf="@+id/actionTv"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TryEvent"
+        android:padding="12dp"
+        android:id="@+id/tryEventLabel"
+        android:layout_below="@+id/actionChooser"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tryEventLabel"
+        android:checked="true"
+        android:id="@+id/checkboxTry"
+        android:layout_alignBaseline="@+id/tryEventLabel"
+        android:layout_below="@+id/actionChooser"/>
+
+    <Button
+        android:layout_below="@+id/tryEventLabel"
+        android:id="@+id/parametersButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Parameters"
+        />
+
+</RelativeLayout>
