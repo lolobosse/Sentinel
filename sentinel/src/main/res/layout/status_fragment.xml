@@ -6,11 +6,15 @@
     android:id="@+id/statusScrollView"
     android:fillViewport="false">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:elevation="4dp"
         android:background="#f1f1f1"
@@ -38,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Apps"
+                android:text="APPS"
                 android:id="@+id/statusLeftFrameText"
                 android:layout_gravity="center|top"
                 android:textSize="20dp"
@@ -70,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Instrumented"
+                android:text="INSTRUMENTED"
                 android:id="@+id/statusRightFrameText"
                 android:layout_gravity="center|top"
                 android:textSize="20dp"
@@ -79,5 +83,33 @@
         </FrameLayout>
 
     </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/statusLinearLayout"
+            android:background="#f1f1f1"
+            android:elevation="3dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="#fff">
+
+                <Switch
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PDP Service"
+                    android:id="@+id/pdpSwitch"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:checked="false"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.Switch" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </ScrollView>
