@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
 
 /**
  * Created by laurentmeyer on 23/12/15.
@@ -58,7 +59,10 @@ public class InstrumentFragment extends Fragment{
         pickApplicationB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applicationChooser("application/vnd.android.*");
+//                applicationChooser("application/vnd.android.*");
+                AppPickerDialog d = new AppPickerDialog(getActivity());
+                d.show();
+
             }
         });
         applicationPath.setText(dataPath);
