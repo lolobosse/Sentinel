@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
-import de.tum.in.i22.sentinel.android.app.fragment.MainViewFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         // Set the content main as the content at the creation of the activity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainViewContainer, new MainViewFragment());
+        ft.replace(R.id.mainViewContainer, new StatusFragment());
         ft.commit();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
