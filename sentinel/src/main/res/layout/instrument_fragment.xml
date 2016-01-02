@@ -14,26 +14,16 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="150dp"
         android:background="#fff"
         android:elevation="1dp"
         android:id="@+id/applicationFrame">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="ANDROID APPLICATION"
-            android:id="@+id/applicationText"
-            android:layout_gravity="left|top"
-            android:padding="12dp"
-            android:textSize="16sp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/applicationInput"
-            android:layout_gravity="bottom|left"
+            android:layout_gravity="left|bottom"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="18dp"
             android:layout_marginRight="112dp"
@@ -51,9 +41,21 @@
             android:layout_height="wrap_content"
             android:text="Browse"
             android:id="@+id/applicationButton"
-            android:layout_gravity="right|center_vertical"
+            android:layout_gravity="right|bottom"
             android:textSize="16sp"
-            android:layout_marginRight="8dp" />
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="18dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ANDROID APPLICATION"
+            android:id="@+id/applicationText"
+            android:layout_gravity="center_horizontal|top"
+            android:padding="12dp"
+            android:textSize="16sp" />
+
     </FrameLayout>
 
     <FrameLayout
@@ -62,16 +64,6 @@
         android:background="#fff"
         android:elevation="1dp"
         android:id="@+id/sinksFrame">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="SINKS"
-            android:id="@+id/sinksText"
-            android:layout_gravity="left|top"
-            android:padding="12dp"
-            android:textSize="16sp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -98,6 +90,16 @@
             android:layout_gravity="right|center_vertical"
             android:textSize="16sp"
             android:layout_marginRight="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="SINKS"
+            android:id="@+id/sinksText"
+            android:layout_gravity="left|top"
+            android:padding="12dp"
+            android:textSize="16sp" />
 
     </FrameLayout>
 

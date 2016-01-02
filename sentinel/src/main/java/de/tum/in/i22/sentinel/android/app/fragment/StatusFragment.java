@@ -21,7 +21,7 @@ import de.tum.in.i22.sentinel.android.app.R;
  */
 public class StatusFragment extends Fragment{
 
-    public final String SENTINEL = "sentinel";
+    public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
 
     @Nullable
     @Override
@@ -31,12 +31,12 @@ public class StatusFragment extends Fragment{
         // Displays the amount of packages installed on the device
         TextView applicationCounter = (TextView) view.findViewById(R.id.statusLeftFrameNmr);
         int numberOfApps = installedApplications().size();
-        applicationCounter.setText("" + numberOfApps);
+        applicationCounter.setText(String.valueOf(numberOfApps));
 
         // Displays the amount of instrumented applications on the device
         TextView instrumentedCounter = (TextView) view.findViewById(R.id.statusRightFrameNmr);
         int numberOfInstrumentedApps = instrumentedApplications();
-        instrumentedCounter.setText("" + numberOfInstrumentedApps);
+        instrumentedCounter.setText(String.valueOf(numberOfInstrumentedApps));
 
         return view;
     }
@@ -57,7 +57,7 @@ public class StatusFragment extends Fragment{
      */
     public int instrumentedApplications(){
         SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-        int retrievedAmount = sp.getInt("instrumentedApplications", 0);
+        int retrievedAmount = sp.getInt(INSTRUMENTED_APPLICATIONS, 0);
         return retrievedAmount;
     }
 
