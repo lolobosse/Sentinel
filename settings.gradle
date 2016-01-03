@@ -1,4 +1,4 @@
-include ':sentinel'
+include ':sentinel', ':XSDParser', ':Jibx'
 include ':uclib4Android'
 include ':cm4Android'
 include ':appPDPj-lib'
