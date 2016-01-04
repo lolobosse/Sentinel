@@ -1,5 +1,4 @@
 package de.tum.in.i22.sentinel.android.app.package_getter;
-import android.graphics.drawable.Drawable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -16,7 +16,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParseEventInformationTask;
 
 /**
  * Created by laurentmeyer on 26/12/15.
@@ -27,7 +26,7 @@ public class ActionChooser extends Spinner {
 
     private Context c;
 
-    ArrayList<Event> events;
+//    ArrayList<Event> events;
 
     public ActionChooser(Context context) {
         super(context);
@@ -42,9 +41,6 @@ public class ActionChooser extends Spinner {
     }
 
     private void init() {
-        events = ParseEventInformationTask.ResultGetter.getInstance().getResults();
-        Log.d("ActionChooser", "Set adapter");
-        Log.d("ActionChooser", "events.size():" + events.size());
         BaseAdapter a = new CustomAdapter();
         a.notifyDataSetChanged();
         setAdapter(a);
@@ -86,12 +82,12 @@ public class ActionChooser extends Spinner {
 
         @Override
         public int getCount() {
-            return events.size();
+            return 0;
         }
 
         @Override
         public Object getItem(int i) {
-            return events.get(i);
+            return new Object();
         }
 
         @Override
@@ -101,23 +97,24 @@ public class ActionChooser extends Spinner {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            View row = inflate(c, R.layout.row_action_chooser, null);
-            TextView tv = (TextView) row.findViewById(R.id.title);
-            TextView methodName = (TextView) row.findViewById(R.id.javaM);
-            TextView cb = (TextView) row.findViewById(R.id.checkbox);
-            LinearLayout ll = (LinearLayout) row.findViewById(R.id.dataContainer);
-            tv.setText(WordUtils.capitalize(events.get(i).name));
-            methodName.setText(events.get(i).methodSignature);
-            cb.setText(events.get(i).isBefore ? "true" : "false");
-            for (Param p : events.get(i).data) {
-                TextView pt = (TextView) row.findViewById(R.id.parameterTitle);
-                pt.setVisibility(VISIBLE);
-                TextView ptv = new TextView(c);
-                ptv.setText(p.name + " (pos: " + p.pos + ")");
-                ptv.setTextSize(10);
-                ll.addView(ptv);
-            }
-            return row;
+//            View row = inflate(c, R.layout.row_action_chooser, null);
+//            TextView tv = (TextView) row.findViewById(R.id.title);
+//            TextView methodName = (TextView) row.findViewById(R.id.javaM);
+//            TextView cb = (TextView) row.findViewById(R.id.checkbox);
+//            LinearLayout ll = (LinearLayout) row.findViewById(R.id.dataContainer);
+//            tv.setText(WordUtils.capitalize(events.get(i).name));
+//            methodName.setText(events.get(i).methodSignature);
+//            cb.setText(events.get(i).isBefore ? "true" : "false");
+//            for (Param p : events.get(i).data) {
+//                TextView pt = (TextView) row.findViewById(R.id.parameterTitle);
+//                pt.setVisibility(VISIBLE);
+//                TextView ptv = new TextView(c);
+//                ptv.setText(p.name + " (pos: " + p.pos + ")");
+//                ptv.setTextSize(10);
+//                ll.addView(ptv);
+//            }
+//            return row;
+            return null;
         }
     }
 

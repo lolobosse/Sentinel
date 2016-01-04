@@ -13,10 +13,10 @@ import android.widget.Spinner;
 import java.util.HashMap;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParamMatch;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Trigger;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.DialogSet;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
+import de.tum.in.www22.enforcementlanguage.EventMatchingOperatorType;
+import de.tum.in.www22.enforcementlanguage.ParamMatchType;
 
 /**
  * Created by laurentmeyer on 27/12/15.
@@ -24,10 +24,10 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.Poli
 public class TriggerView extends RelativeLayout implements DialogSet {
 
     Context c;
-    Trigger t;
+    EventMatchingOperatorType t;
     PolicyChanger pc;
 
-    public TriggerView(Context c, Trigger t, PolicyChanger pc) {
+    public TriggerView(Context c, EventMatchingOperatorType t, PolicyChanger pc) {
         super(c);
         this.c = c;
         this.t = t;
@@ -49,7 +49,7 @@ public class TriggerView extends RelativeLayout implements DialogSet {
             }
         }
         s.setSelection(pos);
-        c.setChecked(t.isTryEvent());
+        c.setChecked(t.getTryEvent());
 
         final OnClickListener onClickListener = new OnClickListener() {
             @Override
@@ -117,7 +117,7 @@ public class TriggerView extends RelativeLayout implements DialogSet {
                 map.put(p.name, "");
             }
         }
-        for (ParamMatch param : t.getParamMatches()) {
+        for (ParamMatchType param : t.getParamMatchs()) {
             if (map.get(param.getName()) != null)
                 map.put(param.getName(), param.getValue());
         }
@@ -132,13 +132,13 @@ public class TriggerView extends RelativeLayout implements DialogSet {
     }
 
     private void refreshTrigger(HashMap<String, String> map) {
-        t.getParamMatches().clear();
+        t.getParamMatchs().clear();
         for (String key : map.keySet()) {
             if (map.get(key) != null && !map.get(key).isEmpty()) {
-                ParamMatch pm = new ParamMatch();
+                ParamMatchType pm = new ParamMatchType();
                 pm.setName(key);
                 pm.setValue(map.get(key));
-                t.getParamMatches().add(pm);
+                t.getParamMatchs().add(pm);
             }
         }
     }

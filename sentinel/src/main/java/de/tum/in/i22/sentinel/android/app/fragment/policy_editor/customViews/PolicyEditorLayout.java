@@ -1,8 +1,6 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
+import de.tum.in.www22.enforcementlanguage.PolicyType;
 
 /**
  * Created by laurentmeyer on 27/12/15.
@@ -21,9 +19,9 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.Poli
 public class PolicyEditorLayout extends LinearLayout implements PolicyChanger {
 
     Context c;
-    Policy p;
+    PolicyType p;
 
-    public PolicyEditorLayout(Context context, Policy p) {
+    public PolicyEditorLayout(Context context, PolicyType p) {
         super(context);
         this.c = context;
         this.p = p;

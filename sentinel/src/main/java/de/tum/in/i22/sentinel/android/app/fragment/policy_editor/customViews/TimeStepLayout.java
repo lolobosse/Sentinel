@@ -8,8 +8,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
+import de.tum.in.www22.enforcementlanguage.PolicyType;
+import de.tum.in.www22.enforcementlanguage.PreventiveMechanismType;
+import de.tum.in.www22.time.TimeUnitType;
 
 /**
  * Created by laurentmeyer on 27/12/15.
@@ -17,12 +19,12 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.Poli
 public class TimeStepLayout extends RelativeLayout {
 
     Context c;
-    Policy p;
+    PolicyType p;
     PolicyChanger pc;
     EditText et;
     Spinner s;
 
-    public TimeStepLayout(Context context, Policy p, PolicyChanger pc) {
+    public TimeStepLayout(Context context, PolicyType p, PolicyChanger pc) {
         super(context);
         c = context;
         this.p = p;
@@ -40,7 +42,8 @@ public class TimeStepLayout extends RelativeLayout {
 
 
         String [] allPossibleValues = getResources().getStringArray(R.array.spinnerItems);
-        String selected = p.getMechanism().getTimestep().getUnit();
+        final PreventiveMechanismType preventiveMechanism = p.getChoices().get(0).getPreventiveMechanism();
+        String selected = preventiveMechanism.getTimestep().getUnit().name();
         int pos = 0;
 
         for (int i = 0; i<allPossibleValues.length; i++){
@@ -50,12 +53,12 @@ public class TimeStepLayout extends RelativeLayout {
         }
         s.setSelection(pos);
         // Not to call a wrapper toString
-        et.setText(p.getMechanism().getTimestep().getAmount()+ "");
+        et.setText(String.valueOf(preventiveMechanism.getTimestep().getAmount()));
 
         s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                p.getMechanism().getTimestep().setUnit(s.getSelectedItem().toString());
+                preventiveMechanism.getTimestep().setUnit(TimeUnitType.valueOf(TimeUnitType.class, s.getSelectedItem().toString()));
                 pc.onPolicyChange();
             }
 
@@ -72,7 +75,7 @@ public class TimeStepLayout extends RelativeLayout {
         public void onFocusChange(View view, boolean b) {
             // If it is the spinner or the editText and the focus is not on one of this element anymore
             if (view.getId() == et.getId() && !b){
-                p.getMechanism().getTimestep().setAmount(Integer.parseInt(et.getText().toString()));
+                p.getChoices().get(0).getPreventiveMechanism().getTimestep().setAmount(Integer.parseInt(et.getText().toString()));
                 pc.onPolicyChange();
             }
         }

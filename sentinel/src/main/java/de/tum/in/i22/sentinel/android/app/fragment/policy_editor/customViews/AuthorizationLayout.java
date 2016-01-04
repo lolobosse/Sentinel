@@ -5,8 +5,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
+import de.tum.in.www22.enforcementlanguage.PolicyType;
 
 /**
  * Created by laurentmeyer on 27/12/15.
@@ -14,10 +14,10 @@ import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.Poli
 public class AuthorizationLayout extends RelativeLayout {
 
     Context c;
-    Policy p;
+    PolicyType p;
     PolicyChanger pc;
 
-    public AuthorizationLayout(Context context, Policy p, PolicyChanger pc) {
+    public AuthorizationLayout(Context context, PolicyType p, PolicyChanger pc) {
         super(context);
         this.c = context;
         this.p = p;
@@ -28,6 +28,6 @@ public class AuthorizationLayout extends RelativeLayout {
     private void init() {
         inflate(c, R.layout.authorization_layout, this);
         TextView tv = (TextView) findViewById(R.id.authName);
-        tv.setText(p.getMechanism().getAuthorizationAction().getName());
+        tv.setText(p.getChoices().get(0).getPreventiveMechanism().getAuthorizationActions().get(0).getName());
     }
 }

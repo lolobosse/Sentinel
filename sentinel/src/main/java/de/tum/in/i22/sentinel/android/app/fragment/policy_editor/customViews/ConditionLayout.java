@@ -9,31 +9,27 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.EventMatchCondition;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Policy;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.RepLim;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.RepLimCondition;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.SuperCondition;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Within;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.WithinCondition;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
+import de.tum.in.www22.enforcementlanguage.ConditionType;
+import de.tum.in.www22.enforcementlanguage.PolicyType;
+import de.tum.in.www22.enforcementlanguage.RepLimType;
+import de.tum.in.www22.enforcementlanguage.WithinType;
 
 /**
  * Created by laurentmeyer on 27/12/15.
  */
 public class ConditionLayout extends RelativeLayout {
 
-    SuperCondition sc;
+    ConditionType sc;
     PolicyChanger pc;
-    Policy p;
+    PolicyType p;
 
     LinearLayout subConditionAttrs;
 
-    public ConditionLayout(Context c, Policy p, PolicyChanger policyChanger, SuperCondition superCondition) {
+    public ConditionLayout(Context c, PolicyType p, PolicyChanger policyChanger, ConditionType superCondition) {
         super(c);
         this.pc = policyChanger;
         this.sc = superCondition;
@@ -45,43 +41,37 @@ public class ConditionLayout extends RelativeLayout {
         inflate(getContext(), R.layout.condition_layout, this);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_type_action);
         CheckBox not = (CheckBox) findViewById(R.id.notCheckbox);
-        not.setChecked(sc.isNot());
-        if (sc instanceof EventMatchCondition) {
+        not.setChecked(sc.getConditionType().ifNot());
+        if (isNothing()) {
             spinner.setSelection(0);
-        } else if (sc instanceof RepLimCondition) {
+        } else if (isRepLim()) {
             spinner.setSelection(1);
-        } else if (sc instanceof WithinCondition) {
+        } else if (isWithin()) {
             spinner.setSelection(2);
         }
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0:
                         // If it change the type of object
-                        if (!(sc instanceof EventMatchCondition)){
-                            sc = new EventMatchCondition();
+                        if (!isNothing()) {
+                            sc.getConditionType().clearOperatorsSelect();
+                            sc.getConditionType().setRepLim(null);
+                            sc.getConditionType().setWithin(null);
                         }
                         break;
                     case 1:
-                        if (!(sc instanceof RepLimCondition)){
-                            RepLim r = new RepLim();
-                            ArrayList<RepLim> reps = new ArrayList<>();
-                            reps.add(r);
-                            RepLimCondition blank = new RepLimCondition();
-                            blank.setRepLims(reps);
-                            sc = blank;
-
+                        if (isRepLim()) {
+                            sc.getConditionType().clearOperatorsSelect();
+                            sc.getConditionType().setRepLim(new RepLimType());
                         }
                         break;
                     case 2:
-                        if (!(sc instanceof WithinCondition)){
-                            Within r = new Within();
-                            ArrayList<Within> reps = new ArrayList<>();
-                            reps.add(r);
-                            WithinCondition blank = new WithinCondition();
-                            blank.setWithins(reps);
-                            sc = blank;
+                        if (isWithin()) {
+                            sc.getConditionType().clearOperatorsSelect();
+                            sc.getConditionType().setWithin(new WithinType());
                         }
                         break;
                 }
@@ -99,19 +89,32 @@ public class ConditionLayout extends RelativeLayout {
 
     }
 
+    private boolean isWithin() {
+        return !sc.getConditionType().ifWithin() || (!(sc.getConditionType().getNot().getNotType() == null) && !sc.getConditionType().getNot().getNotType().ifRepLim());
+    }
+
+    private boolean isRepLim() {
+        return !sc.getConditionType().ifRepLim() || (!(sc.getConditionType().getNot().getNotType() == null) && !sc.getConditionType().getNot().getNotType().ifRepLim());
+    }
+
+    private boolean isNothing() {
+        return !sc.getConditionType().ifRepLim() && !sc.getConditionType().ifWithin() &&
+                (!(sc.getConditionType().getNot() == null) && (!(sc.getConditionType().getNot().getNotType().ifRepLim())
+                        && !(sc.getConditionType().getNot().getNotType().ifWithin())));
+    }
+
     private void createSubAttrs() {
         subConditionAttrs.removeAllViews();
         HashMap<String, String> map = new HashMap<>();
-        if (sc instanceof RepLimCondition) {
-            RepLim repLim = ((RepLimCondition) sc).getRepLims().get(0);
-            map.put(repLim.getAmountKey(), String.valueOf(repLim.getAmount()));
-            map.put(repLim.getUnitKey(), repLim.getUnit());
-            map.put(repLim.getLowerLimitKey(), String.valueOf(repLim.getLowerLimit()));
-            map.put(repLim.getUpperLimitKey(), String.valueOf(repLim.getUpperLimit()));
-        } else if (sc instanceof WithinCondition) {
-            Within w = ((WithinCondition) sc).getWithins().get(0);
-            map.put(w.getAmountKey(), String.valueOf(w.getAmount()));
-            map.put(w.getUnitKey(), w.getUnit());
+        if (sc.getConditionType().ifRepLim()) {
+            // TODO: Adapt it in relation of the emplacement of the condition
+            map.put("Amount", String.valueOf(sc.getConditionType().getRepLim().getTimeAmountAttributeGroup().getAmount()));
+            map.put("Unit", String.valueOf(sc.getConditionType().getRepLim().getTimeAmountAttributeGroup().getUnit().name()));
+            map.put("Lower Limit", String.valueOf(sc.getConditionType().getRepLim().getLowerLimit()));
+            map.put("Upper Limit", String.valueOf(sc.getConditionType().getRepLim().getUpperLimit()));
+        } else if (sc.getConditionType().ifWithin()) {
+            map.put("Amount", String.valueOf(sc.getConditionType().getWithin().getTimeAmountAttributeGroup().getAmount()));
+            map.put("Unit", String.valueOf(sc.getConditionType().getWithin().getTimeAmountAttributeGroup().getUnit().name()));
         }
 
         for (String key : map.keySet()) {
@@ -122,15 +125,14 @@ public class ConditionLayout extends RelativeLayout {
                 TextView tv2 = (TextView) v.findViewById(R.id.value);
                 tv2.setText(map.get(key));
                 subConditionAttrs.addView(v);
-            }
-            else{
+            } else {
                 View v = inflate(getContext(), R.layout.key_spinner_layout, null);
                 TextView tv = (TextView) v.findViewById(R.id.key);
                 tv.setText(key);
                 int pos = 0;
                 Spinner s = (Spinner) v.findViewById(R.id.unitSpinner);
-                for (int i = 0; i<s.getAdapter().getCount(); i++){
-                    if (s.getAdapter().getItem(i).equals(map.get(key))){
+                for (int i = 0; i < s.getAdapter().getCount(); i++) {
+                    if (s.getAdapter().getItem(i).equals(map.get(key))) {
                         pos = i;
                     }
                 }

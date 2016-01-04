@@ -8,23 +8,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-
-import org.jibx.runtime.BindingDirectory;
-import org.jibx.runtime.IBindingFactory;
-import org.jibx.runtime.IUnmarshallingContext;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Iterator;
 
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.ParseEventInformationTask;
-import de.tum.in.www22.enforcementlanguage.PolicyType;
 
 
 public class MainActivity extends AppCompatActivity
@@ -103,20 +92,5 @@ public class MainActivity extends AppCompatActivity
 
     private void initParser() {
 //        ParseEventInformationTask peit = new ParseEventInformationTask(this, R.raw.event_information);
-//        peit.execute();
-        try {
-
-            // unmarshal customer information from file
-            IBindingFactory bfact = BindingDirectory.getFactory(PolicyType.class);
-            IUnmarshallingContext uctx = bfact.createUnmarshallingContext();
-            InputStream in = getResources().openRawResource(R.raw.policy_appsms_duration4);
-            PolicyType order = (PolicyType) uctx.unmarshalDocument(in, null);
-            for (Iterator<PolicyType.Choice> iter = order.getChoices().iterator(); iter.hasNext(); ) {
-                PolicyType.Choice item = iter.next();
-                Log.d("MainActivity", item.getPreventiveMechanism().getName());
-            }
-        }catch(Exception e){
-
-        }
     }
 }
