@@ -28,12 +28,13 @@ public class SettingsFragment extends Fragment{
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int dark = Color.parseColor("#202020");
-                int light = Color.parseColor("#c5c5c5");
+                // Changes the colour on the saveToFile textview for feedback to user
+                int active = Color.parseColor("#202020");
+                int inactive = Color.parseColor("#c5c5c5");
                 if (isChecked){
-                    saveToPath.setTextColor(dark);
+                    saveToPath.setTextColor(active);
                 } else {
-                    saveToPath.setTextColor(light);
+                    saveToPath.setTextColor(inactive);
                 }
             }
         });

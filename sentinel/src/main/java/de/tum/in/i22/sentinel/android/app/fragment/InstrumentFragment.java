@@ -1,7 +1,6 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import de.tum.in.i22.sentinel.android.app.R;
@@ -31,13 +29,15 @@ public class InstrumentFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.instrument_fragment, container, false);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.instrument_fragment, container, false);
+
+        // View used for setting the path values in the UI
         tempView = view;
 
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
 
         // Test button for instrumented apps counter
+        /* LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
         Button button = new Button(getActivity());
         linearLayout.addView(button);
         button.setText("Counter++");
@@ -52,7 +52,7 @@ public class InstrumentFragment extends Fragment{
                 editor.putInt(INSTRUMENTED_APPLICATIONS, newAmount);
                 editor.commit();
             }
-        });
+        }); */
         // End test
 
         // Finds the buttons
@@ -60,6 +60,8 @@ public class InstrumentFragment extends Fragment{
         Button pickSinksButton = (Button)view.findViewById(R.id.sinksButton);
         Button pickSourceButton = (Button)view.findViewById(R.id.sourcesButton);
         Button pickTaintButton = (Button)view.findViewById(R.id.taintButton);
+        Button nextActivity = (Button)view.findViewById(R.id.nextActivityButton);
+        Button clearInputs = (Button)view.findViewById(R.id.clearButton);
 
         // Applied the listeners
         pickApplicationButton.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +96,24 @@ public class InstrumentFragment extends Fragment{
             }
         });
 
+        nextActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        clearInputs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clears all of the inputs
+                setApplicationPath("");
+                setSinksPath("");
+                setSourcePath("");
+                setTaintPath("");
+            }
+        });
+
         return view;
     }
 
@@ -112,7 +132,7 @@ public class InstrumentFragment extends Fragment{
         sIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
         // Intent chooseIntent;
-        Intent chooseIntent = Intent.createChooser(intent, "Open file");
+        Intent chooseIntent;
         if (getActivity().getPackageManager().resolveActivity(sIntent, 0) != null){
             // File manager for Samsung devices
             chooseIntent = Intent.createChooser(sIntent, "Open file");
@@ -125,7 +145,7 @@ public class InstrumentFragment extends Fragment{
 
         try {
             // fromRequest is assigned 1-4 based on which button element was pressed and will match
-            // with the correct onActivityResult 'if' condition
+            // with the correct onActivityResult 'if requestCode == (1-4)' condition
             startActivityForResult(chooseIntent, fromRequest);
         } catch (android.content.ActivityNotFoundException ex){
             Toast.makeText(getActivity().getApplicationContext(), R.string.activityNoFileManager, Toast.LENGTH_SHORT).show();
@@ -180,7 +200,7 @@ public class InstrumentFragment extends Fragment{
 
     public void setApplicationPath(String applicationPath) {
         EditText appInputText = (EditText)tempView.findViewById(R.id.applicationInput);
-        appInputText.setText(applicationPath);
+        appInputText.setText(String.valueOf(applicationPath));
         this.applicationPath = applicationPath;
     }
 
@@ -190,7 +210,7 @@ public class InstrumentFragment extends Fragment{
 
     public void setSinksPath(String sinksPath) {
         EditText sinksInputText = (EditText) tempView.findViewById(R.id.sinksInput);
-        sinksInputText.setText(sinksPath);
+        sinksInputText.setText(String.valueOf(sinksPath));
         this.sinksPath = sinksPath;
     }
 
@@ -200,7 +220,7 @@ public class InstrumentFragment extends Fragment{
 
     public void setSourcePath(String sourcePath) {
         EditText sourceInputText = (EditText) tempView.findViewById(R.id.sourcesInput);
-        sourceInputText.setText(sourcePath);
+        sourceInputText.setText(String.valueOf(sourcePath));
         this.sourcePath = sourcePath;
     }
 
@@ -210,7 +230,7 @@ public class InstrumentFragment extends Fragment{
 
     public void setTaintPath(String taintPath) {
         EditText taintInputText = (EditText) tempView.findViewById(R.id.taintInput);
-        taintInputText.setText(taintPath);
+        taintInputText.setText(String.valueOf(taintPath));
         this.taintPath = taintPath;
     }
 

@@ -25,8 +25,8 @@
             android:id="@+id/applicationInput"
             android:layout_gravity="left|bottom"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="18dp"
-            android:layout_marginRight="112dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
             android:clickable="false"
             android:cursorVisible="false"
             android:focusable="false"
@@ -34,17 +34,6 @@
             android:singleLine="true"
             android:textSize="14sp"
             android:textColor="#666666" />
-
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Browse"
-            android:id="@+id/applicationButton"
-            android:layout_gravity="right|bottom"
-            android:textSize="16sp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="18dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,6 +44,27 @@
             android:layout_gravity="center_horizontal|top"
             android:padding="12dp"
             android:textSize="16sp" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/tempSpinner"
+            android:layout_gravity="left|center_vertical"
+            android:background="#FFE0E0E0"
+            android:spinnerMode="dialog"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="112dp"
+            android:contentDescription="Application" />
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Browse"
+            android:id="@+id/applicationButton"
+            android:layout_gravity="right|center_vertical"
+            android:textSize="16sp"
+            android:layout_marginRight="8dp" />
 
     </FrameLayout>
 
@@ -190,6 +200,20 @@
             android:textSize="16sp"
             android:layout_marginRight="8dp" />
     </FrameLayout>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:id="@+id/nextActivityButton"
+            android:background="#fafafa" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear inputs"
+            android:id="@+id/clearButton"
+            android:background="#FFFAFAFA" />
 
     </LinearLayout>
 
