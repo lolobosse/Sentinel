@@ -32,7 +32,7 @@ public class ConditionContainerLayout extends LinearLayout {
         final LinearLayout ll = (LinearLayout) vg.findViewById(R.id.conditionContainer);
         setOrientation(VERTICAL);
         ConditionType c = p.getChoices().get(0).getPreventiveMechanism().getCondition();
-        ll.addView(new ConditionLayout(this.c, p, policyChanger, c));
+        ll.addView(new ConditionLayout(this.c, p, policyChanger));
         addView(vg);
     }
 
