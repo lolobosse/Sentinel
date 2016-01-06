@@ -90,7 +90,8 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/statusLinearLayout"
             android:background="#f1f1f1"
-            android:elevation="3dp">
+            android:elevation="3dp"
+            android:id="@+id/linearLayoutVertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
