@@ -1,16 +1,23 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor.customViews;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,13 +47,15 @@ public class ConditionLayout extends LinearLayout {
         setOrientation(VERTICAL);
         ConditionType condition = p.getChoices().get(0).getPreventiveMechanism().getCondition();
         Operators o = condition.getConditionType();
-        ArrayList<NamedMap> named = defineCondition(o);
+        defineCondition(o);
         // Because of the recursion the element are not in order.
-        Collections.reverse(named);
-        for(NamedMap m : named){
+        Collections.reverse(maps);
+        for(NamedMap m : maps){
             LinearLayout ll = (LinearLayout) inflate(getContext(), R.layout.condition_level_layout, null);
             TextView tv = (TextView) ll.findViewById(R.id.nameOfCondition);
             tv.setText(m.getName());
+            Button plus = (Button) ll.findViewById(R.id.addCondition);
+            plus.setOnClickListener(new PlusListener(maps.indexOf(m), condition));
             addView(ll);
             for (String key : m.keySet()) {
                 ViewGroup vg = (ViewGroup) inflate(this.getContext(), R.layout.key_value_layout_tv, null);
@@ -122,6 +131,77 @@ public class ConditionLayout extends LinearLayout {
         return maps;
     }
 
+    private class PlusListener implements OnClickListener{
+
+        int layerIndex;
+        ConditionType ct;
+
+        PlusListener(int layer, ConditionType c){
+            layerIndex = layer;
+            ct = c;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Object parentOfTheNew = getObjectAtThisLevel(layerIndex, ct.getConditionType());
+            Object childOfTheNew = getObjectAtThisLevel(layerIndex+1, ct.getConditionType());
+            try{
+                TypeChooser.createChooserDialog(getContext(), ct.getConditionType(), new OnTypeChosen() {
+                    @Override
+                    public void onTypeChosen(String name, Object type) {
+                        Log.d("PlusListener", name);
+                    }
+                }).show();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            // TODO: Create a middle state of the type the dialog defined
+            // TODO: Create a dialog also with a regex and reflexion (on the #Operators class)
+        }
+    }
+
+    private Object getObjectAtThisLevel(int level, Operators c){
+        try {
+            Pattern p = Pattern.compile("(class de.tum.in.www22.enforcementlanguage.)([\\D]+Type)");
+            int currentLevel = 0;
+            Object toAnalyse = c;
+            for (; currentLevel<=level; currentLevel++){
+                toAnalyse = levelSearch(toAnalyse, p);
+            }
+            Log.d("ConditionLayout", "toAnalyse:" + toAnalyse);
+            return toAnalyse;
+        }catch (Exception e){
+
+        }
+        return null;
+    }
+
+    @Nullable
+    private Object levelSearch(Object o, Pattern p) throws IllegalAccessException, InvocationTargetException {
+        Class conditionClass = o.getClass();
+        for (Method m : conditionClass.getMethods()) {
+            Matcher matcher = p.matcher(m.getReturnType().toString());
+            String type = null;
+            if (matcher.matches()) {
+                type = matcher.group(2);
+            }
+            if (type != null) {
+                Object typeFromGet = m.invoke(o);
+                if (typeFromGet != null) {
+                    for (Method m1 : typeFromGet.getClass().getMethods()) {
+                        if (m1.getReturnType().getSimpleName().equals("Operators")) {
+                            Object toBeReturned = m1.invoke(typeFromGet);
+                            if (toBeReturned != null){
+                                return toBeReturned;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private class NamedMap extends HashMap<String, String>{
         public String getName() {
             return name;
@@ -132,6 +212,70 @@ public class ConditionLayout extends LinearLayout {
         }
 
         private String name;
+    }
+
+    private static class NamedType {
+        String name;
+        Object type;
+
+        public Object getType() {
+            return type;
+        }
+
+        public void setType(Object type) {
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    private static class TypeChooser {
+
+        private static Dialog createChooserDialog(Context c, Operators o, final OnTypeChosen otc) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+            AlertDialog.Builder b = new AlertDialog.Builder(c);
+            final List<NamedType> allItems = getAllPossibleVariations(o);
+            String[] allNames = new String[allItems.size()];
+            for (NamedType item: allItems){
+                allNames[allItems.indexOf(item)] = item.getName();
+            }
+            b.setItems(allNames, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    otc.onTypeChosen(allItems.get(which).getName(), allItems.get(which).getType());
+                }
+            });
+            return b.create();
+        }
+
+        private static List<NamedType> getAllPossibleVariations(Operators o) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+            ArrayList<NamedType> toBeReturned = new ArrayList<>();
+            Class oClass = o.getClass();
+            for (Method m : oClass.getMethods()){
+                if (m.getName().matches("get[\\D]+") && m.getReturnType().getSimpleName().matches("[\\D]+Type")){
+                    Pattern p = Pattern.compile("(class de.tum.in.www22.enforcementlanguage.)([\\D]+)Type");
+                    Matcher matcher = p.matcher(m.getReturnType().toString());
+                    if (matcher.matches()){
+                        NamedType type = new NamedType();
+                        type.setName(matcher.group(2));
+                        Class toBeInstantied = Class.forName(m.getReturnType().getName());
+                        Object instantiedType = toBeInstantied.newInstance();
+                        type.setType(instantiedType);
+                        toBeReturned.add(type);
+                    }
+                }
+            }
+            return toBeReturned;
+        }
+    }
+
+    private interface OnTypeChosen{
+        void onTypeChosen(String name, Object type);
     }
 
 }
