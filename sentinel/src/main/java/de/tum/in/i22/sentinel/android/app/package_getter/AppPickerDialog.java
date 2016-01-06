@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -31,8 +32,11 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     List<PackageGetter.Package> packages;
     AllApkAdapter adapter;
 
-    public AppPickerDialog(Context context) {
+    OnPackageChosen callback;
+
+    public AppPickerDialog(Context context, OnPackageChosen callback) {
         super(context);
+        this.callback = callback;
         init();
     }
 
@@ -81,6 +85,14 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
                 AppPickerDialog.this.packages = packages;
                 adapter.notifyDataSetChanged();
                 lv.setVisibility(View.VISIBLE);
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        if (callback != null){
+                            callback.onPackageSet(packages.get(i));
+                        }
+                    }
+                });
                 tv.setVisibility(View.VISIBLE);
                 b.setVisibility(View.VISIBLE);
                 pb.setVisibility(View.GONE);
@@ -111,5 +123,9 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
             t.setText(getItem(i).toString());
             return t;
         }
+    }
+
+    public interface OnPackageChosen{
+        void onPackageSet(PackageGetter.Package selectedPackage);
     }
 }
