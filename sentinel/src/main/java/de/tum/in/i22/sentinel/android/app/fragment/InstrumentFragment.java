@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
+import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
+import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 
 /**
  * Created by laurentmeyer on 23/12/15.
@@ -21,21 +24,16 @@ import de.tum.in.i22.sentinel.android.app.R;
 public class InstrumentFragment extends Fragment{
 
     public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
-    private final String LOG = "InstrumentFragment", INPUT_APPLICATION = "application/vnd.android.*", INPUT_TXT = "text/plain";
+    private final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt";
     public String applicationPath, sinksPath, sourcePath, taintPath;
-    static final int PICK_APP_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
-    private int fromRequest = 0;
-    private View tempView;
+    static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
+    private View view;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.instrument_fragment, container, false);
-
-        // View used for setting the path values in the UI
-        tempView = view;
-
+        view = inflater.inflate(R.layout.instrument_fragment, container, false);
 
         // Test button for instrumented apps counter
         /* LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
@@ -64,36 +62,47 @@ public class InstrumentFragment extends Fragment{
         Button nextActivity = (Button)view.findViewById(R.id.nextActivityButton);
         Button clearInputs = (Button)view.findViewById(R.id.clearButton);
 
+        /*
+        pickApplicationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFile();
+            }
+        });
+        */
+
         // Applied the listeners
         pickApplicationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromRequest = 1;
-                inputChooser(INPUT_APPLICATION);
+                Dialog d = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
+                    @Override
+                    public void onPackageSet(PackageGetter.Package selectedPackage) {
+                        Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
+                    }
+                });
+                d.show();
             }
         });
 
         pickSinksButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromRequest = 2;
-                inputChooser(INPUT_TXT);
+                getFile(PICK_SINKS_REQUEST);
             }
         });
 
         pickSourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromRequest = 3;
-                inputChooser(INPUT_TXT);
+                getFile(PICK_SOURCE_REQUEST);
             }
         });
 
         pickTaintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fromRequest = 4;
-                inputChooser(INPUT_TXT);
+                getFile(PICK_TAINT_REQUEST);
             }
         });
 
@@ -120,89 +129,44 @@ public class InstrumentFragment extends Fragment{
         return view;
     }
 
-    private void inputChooser(String fileType){
-        // ACTION_PICK might be a better choice instead of ACTION_GET_CONTENT when only browsing for
-        // files on the local system
-        Intent intent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
-        // fileType will either be .txt (text/plain) or .apk (application/vnd.android.package-archive)
-        intent.setType(fileType);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra("CONTENT_TYPE", fileType);
-
-        // Intent for Samsung file manager
-        Intent sIntent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
-        sIntent.putExtra("CONTENT_TYPE", fileType);
-        sIntent.addCategory(Intent.CATEGORY_DEFAULT);
-
-        // Intent chooseIntent;
-        Intent chooseIntent;
-        if (getActivity().getPackageManager().resolveActivity(sIntent, 0) != null){
-            // File manager for Samsung devices
-            chooseIntent = Intent.createChooser(sIntent, "Open file");
-            chooseIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {
-                    intent
-            });
-        } else {
-            chooseIntent = Intent.createChooser(intent, "Open file");
-        }
-
-        try {
-            // fromRequest is assigned 1-4 based on which button element was pressed and will match
-            // with the correct onActivityResult 'if requestCode == (1-4)' condition
-            startActivityForResult(chooseIntent, fromRequest);
-        } catch (android.content.ActivityNotFoundException ex){
-            Toast.makeText(getActivity().getApplicationContext(), R.string.activityNoFileManager, Toast.LENGTH_SHORT).show();
-        }
+    private void getFile(int fromRequest) {
+        Intent intent = new Intent(this.getActivity(), FileChooser.class);
+        intent.putExtra("extension", INPUT_TXT);
+        startActivityForResult(intent, fromRequest);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == PICK_APP_REQUEST){
-            if (data != null) {
-                String path = data.getDataString();
-                Log.d("", "Application request received" + path);
-                setApplicationPath(path);
-            }
-            super.onActivityResult(requestCode, resultCode, data);
-            Log.d(LOG, "Application request end");
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PICK_APPLICATION_REQUEST){
+            if (resultCode == getActivity().RESULT_OK){
+                setApplicationPath(data.getStringExtra("GetAbsolutePath"));
+            }
         } else if (requestCode == PICK_SINKS_REQUEST){
-            if (data != null) {
-                String path = data.getDataString();
-                //Uri file = data.getData();
-                Log.d(LOG, "Sinks request received " + path);
-                setSinksPath(path);
+            if (resultCode == getActivity().RESULT_OK){
+                setSinksPath(data.getStringExtra("GetAbsolutePath"));
             }
-            super.onActivityResult(requestCode,resultCode, data);
-            Log.d(LOG, "Sinks request end");
         } else if (requestCode == PICK_SOURCE_REQUEST){
-            if (data != null) {
-                String path = data.getDataString();
-                Log.d(LOG, "Source request received");
-                setSourcePath(path);
+            if (resultCode == getActivity().RESULT_OK){
+                setSourcePath(data.getStringExtra("GetAbsolutePath"));
             }
-            super.onActivityResult(requestCode, resultCode, data);
-            Log.d(LOG, "Source request end");
-        } else if (requestCode == PICK_TAINT_REQUEST) {
-            if (data != null){
-                String path = data.getDataString();
-                Log.d(LOG, "Taint request received");
-                setTaintPath(path);
+        } else if (requestCode == PICK_TAINT_REQUEST){
+            if (resultCode == getActivity().RESULT_OK){
+                setTaintPath(data.getStringExtra("GetAbsolutePath"));
             }
-            super.onActivityResult(requestCode, resultCode, data);
-            Log.d(LOG, "Taint request end");
         } else {
             Log.d(LOG, "No pick request received");
         }
-    }
 
+    }
 
     public String getApplicationPath() {
         return applicationPath;
     }
 
     public void setApplicationPath(String applicationPath) {
-        EditText appInputText = (EditText)tempView.findViewById(R.id.applicationInput);
+        EditText appInputText = (EditText)view.findViewById(R.id.applicationInput);
         appInputText.setText(String.valueOf(applicationPath));
         this.applicationPath = applicationPath;
     }
@@ -212,7 +176,7 @@ public class InstrumentFragment extends Fragment{
     }
 
     public void setSinksPath(String sinksPath) {
-        EditText sinksInputText = (EditText) tempView.findViewById(R.id.sinksInput);
+        EditText sinksInputText = (EditText) view.findViewById(R.id.sinksInput);
         sinksInputText.setText(String.valueOf(sinksPath));
         this.sinksPath = sinksPath;
     }
@@ -222,7 +186,7 @@ public class InstrumentFragment extends Fragment{
     }
 
     public void setSourcePath(String sourcePath) {
-        EditText sourceInputText = (EditText) tempView.findViewById(R.id.sourcesInput);
+        EditText sourceInputText = (EditText) view.findViewById(R.id.sourcesInput);
         sourceInputText.setText(String.valueOf(sourcePath));
         this.sourcePath = sourcePath;
     }
@@ -232,7 +196,7 @@ public class InstrumentFragment extends Fragment{
     }
 
     public void setTaintPath(String taintPath) {
-        EditText taintInputText = (EditText) tempView.findViewById(R.id.taintInput);
+        EditText taintInputText = (EditText) view.findViewById(R.id.taintInput);
         taintInputText.setText(String.valueOf(taintPath));
         this.taintPath = taintPath;
     }
