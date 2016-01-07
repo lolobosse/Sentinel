@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
 import de.tum.in.www22.enforcementlanguage.ConditionType;
+import de.tum.in.www22.enforcementlanguage.DuringType;
 import de.tum.in.www22.enforcementlanguage.Operators;
 import de.tum.in.www22.enforcementlanguage.PolicyType;
 
@@ -34,7 +35,8 @@ public class ConditionLayout extends LinearLayout {
 
     PolicyType p;
     PolicyChanger pc;
-
+    // Need to extract it from the method because the method is recursive
+    ArrayList<NamedMap> maps = new ArrayList<>();
 
     public ConditionLayout(Context context, PolicyType p, PolicyChanger pc) {
         super(context);
@@ -67,9 +69,6 @@ public class ConditionLayout extends LinearLayout {
             }
         }
     }
-
-    // Need to extract it from the method because the method is recursive
-    ArrayList<NamedMap> maps = new ArrayList<>();
 
     private ArrayList<NamedMap> defineCondition(Object o) {
         try {
@@ -131,33 +130,64 @@ public class ConditionLayout extends LinearLayout {
         return maps;
     }
 
-    private class PlusListener implements OnClickListener{
+    private void addALevelOfComplexity(Object parentOfTheNew, Object toBeAdded, Object childToBeMoved) throws InvocationTargetException, IllegalAccessException {
+        Operators parentOpe = (Operators) parentOfTheNew;
+        Log.d("ConditionLayout", "toBeAdded:" + toBeAdded);
+        Operators addedOpe = getOperatorObjectFromCondition(toBeAdded);
 
-        int layerIndex;
-        ConditionType ct;
+        // Not to get the #IllegalAccessException
+        parentOpe.clearOperatorsSelect();
+        addedOpe.clearOperatorsSelect();
 
-        PlusListener(int layer, ConditionType c){
-            layerIndex = layer;
-            ct = c;
-        }
 
-        @Override
-        public void onClick(View view) {
-            Object parentOfTheNew = getObjectAtThisLevel(layerIndex, ct.getConditionType());
-            Object childOfTheNew = getObjectAtThisLevel(layerIndex+1, ct.getConditionType());
-            try{
-                TypeChooser.createChooserDialog(getContext(), ct.getConditionType(), new OnTypeChosen() {
-                    @Override
-                    public void onTypeChosen(String name, Object type) {
-                        Log.d("PlusListener", name);
-                    }
-                }).show();
-            }catch (Exception e){
-                e.printStackTrace();
+        // We need to get the name of the class of the chosen one to be able to add it properly to the parent
+        Class addedClass = addedOpe.getClass();
+
+        // We need to get the name of the class of the child to be able to add it properly to the added one
+        Class childClass = childToBeMoved.getClass();
+
+        String addedClassName = findClassNameOf(addedClass);
+        String childClassName = findClassNameOf(childClass);
+
+        setToNode(addedOpe, childToBeMoved, childClassName);
+        setToNode(parentOpe, addedOpe, addedClassName);
+    }
+
+    private Operators getOperatorObjectFromCondition(Object o) throws InvocationTargetException, IllegalAccessException {
+        Class toAnalyse = o.getClass();
+        for (Method m : toAnalyse.getMethods()) {
+            if (m.getName().contains("setOperators")) {
+                Operators operators = new Operators();
+                m.invoke(o, operators);
+                Log.d("ConditionLayout", "o:" + ((DuringType) o).getOperators());
+                return operators;
             }
-            // TODO: Create a middle state of the type the dialog defined
-            // TODO: Create a dialog also with a regex and reflexion (on the #Operators class)
         }
+        return null;
+    }
+
+    /**
+     * Iterate in all the methods of the receiver object to find the setter corresponding to the classname
+     *
+     * @param tobeAddedTo
+     * @param toBeAdded
+     * @param classOfToBeAdded
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private void setToNode(Operators tobeAddedTo, Object toBeAdded, String classOfToBeAdded) throws IllegalAccessException, InvocationTargetException {
+        Class aClass = tobeAddedTo.getClass();
+        Method[] methods = aClass.getMethods();
+        String tets = classOfToBeAdded;
+        for (Method m : methods) {
+            if (m.getName().contains(classOfToBeAdded.replace("Type", "").replace("Operators", "")) && m.getName().contains("set")) {
+                m.invoke(tobeAddedTo, toBeAdded);
+            }
+        }
+    }
+
+    private String findClassNameOf(Class addedClass) {
+        return addedClass.getSimpleName();
     }
 
     private Object getObjectAtThisLevel(int level, Operators c){
@@ -196,22 +226,15 @@ public class ConditionLayout extends LinearLayout {
                             }
                         }
                     }
+                    return typeFromGet;
                 }
             }
         }
         return null;
     }
 
-    private class NamedMap extends HashMap<String, String>{
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        private String name;
+    private interface OnTypeChosen {
+        void onTypeChosen(String name, Object type);
     }
 
     private static class NamedType {
@@ -256,11 +279,11 @@ public class ConditionLayout extends LinearLayout {
         private static List<NamedType> getAllPossibleVariations(Operators o) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
             ArrayList<NamedType> toBeReturned = new ArrayList<>();
             Class oClass = o.getClass();
-            for (Method m : oClass.getMethods()){
-                if (m.getName().matches("get[\\D]+") && m.getReturnType().getSimpleName().matches("[\\D]+Type")){
+            for (Method m : oClass.getMethods()) {
+                if (m.getName().matches("get[\\D]+") && m.getReturnType().getSimpleName().matches("[\\D]+Type")) {
                     Pattern p = Pattern.compile("(class de.tum.in.www22.enforcementlanguage.)([\\D]+)Type");
                     Matcher matcher = p.matcher(m.getReturnType().toString());
-                    if (matcher.matches()){
+                    if (matcher.matches()) {
                         NamedType type = new NamedType();
                         type.setName(matcher.group(2));
                         Class toBeInstantied = Class.forName(m.getReturnType().getName());
@@ -274,8 +297,52 @@ public class ConditionLayout extends LinearLayout {
         }
     }
 
-    private interface OnTypeChosen{
-        void onTypeChosen(String name, Object type);
+    private class PlusListener implements OnClickListener {
+
+        int layerIndex;
+        ConditionType ct;
+
+        PlusListener(int layer, ConditionType c) {
+            layerIndex = layer;
+            ct = c;
+        }
+
+        @Override
+        public void onClick(View view) {
+            final Object parentOfTheNew = getObjectAtThisLevel(layerIndex, ct.getConditionType());
+            final Object childOfTheNew = getObjectAtThisLevel(layerIndex + 1, ct.getConditionType());
+            try {
+                TypeChooser.createChooserDialog(getContext(), ct.getConditionType(), new OnTypeChosen() {
+                    @Override
+                    public void onTypeChosen(String name, Object type) {
+                        Log.d("PlusListener", name);
+                        try {
+                            addALevelOfComplexity(parentOfTheNew, type, childOfTheNew);
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // TODO: Create a middle state of the type the dialog defined
+            // TODO: Create a dialog also with a regex and reflexion (on the #Operators class)
+        }
+    }
+
+    private class NamedMap extends HashMap<String, String> {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
 }
