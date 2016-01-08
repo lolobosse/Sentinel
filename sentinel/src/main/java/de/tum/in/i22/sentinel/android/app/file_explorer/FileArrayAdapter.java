@@ -1,7 +1,9 @@
 package de.tum.in.i22.sentinel.android.app.file_explorer;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +59,12 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
             String uri = "drawable/" + obj.getIcon();
 
             int imageResource = c.getResources().getIdentifier(uri, null, c.getPackageName());
-            Drawable image = c.getResources().getDrawable(imageResource, null);
+            Drawable image = null;
+            try {
+                image = c.getResources().getDrawable(imageResource, null);
+            } catch (Resources.NotFoundException e) {
+                Log.d("FileArrayAdapter", "No valid icon resource was found");
+            }
             icon.setImageDrawable(image);
 
             if (textName != null){

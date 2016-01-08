@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,6 +28,18 @@ public class StatusFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_fragment, container, false);
+
+        Switch pdpServiceSwitch = (Switch) view.findViewById(R.id.pdpSwitch);
+        pdpServiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    // pdpService on
+                } else {
+                    // pdpService off
+                }
+            }
+        });
 
         // Displays the amount of packages installed on the device
         TextView applicationCounter = (TextView) view.findViewById(R.id.statusLeftFrameNmr);

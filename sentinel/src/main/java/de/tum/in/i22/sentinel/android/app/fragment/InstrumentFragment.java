@@ -79,6 +79,7 @@ public class InstrumentFragment extends Fragment{
                     @Override
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
                         Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
+                        setApplicationPath(selectedPackage.getPath());
                     }
                 });
                 d.show();
