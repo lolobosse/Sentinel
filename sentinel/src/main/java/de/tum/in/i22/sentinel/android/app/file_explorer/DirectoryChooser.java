@@ -69,8 +69,8 @@ public class DirectoryChooser extends ListActivity {
         // Sort the list of folders
         Collections.sort(dirs);
 
-        // If working directory isn't in root, append an MenuObj for user to choose this directory
-        // and to be able to navigate to parent directory
+        // If working directory isn't in root, append a MenuObj for user to select this directory
+        // and another MenuObj to be able to navigate to parent directory
         if (!workingDir.getName().equalsIgnoreCase("sdcard")) {
             dirs.add(0, new MenuObj(setDirectory, "", "", workingDir.getParent(), "directory_pick"));
             dirs.add(1, new MenuObj("..", "Parent directory", "", workingDir.getParent(), "directory_up"));

@@ -2,6 +2,7 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
@@ -29,11 +31,33 @@ public class InstrumentFragment extends Fragment{
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
 
+    TextView taintInputText, sourceInputText, sinksInputText, appInputText;
+    Dialog d;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.instrument_fragment, container, false);
+
+        // Fins the textViews
+        appInputText = (EditText)view.findViewById(R.id.applicationInput);
+        sinksInputText = (EditText) view.findViewById(R.id.sinksInput);
+        sourceInputText = (EditText) view.findViewById(R.id.sourcesInput);
+        taintInputText= (EditText) view.findViewById(R.id.taintInput);
+
+        // Loads paths to chosen files from SharedPreferences
+        SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
+        String app = sp.getString("pathApp", null);
+        String sinks = sp.getString("pathSinks", null);
+        String sources = sp.getString("pathSources", null);
+        String taint = sp.getString("pathTaint", null);
+
+        // Displays them in the textViews
+        setApplicationPath(app);
+        setSinksPath(sinks);
+        setSourcePath(sources);
+        setTaintPath(taint);
 
         // Test button for instrumented apps counter
         /* LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
@@ -62,27 +86,20 @@ public class InstrumentFragment extends Fragment{
         Button nextActivity = (Button)view.findViewById(R.id.nextActivityButton);
         Button clearInputs = (Button)view.findViewById(R.id.clearButton);
 
-        /*
-        pickApplicationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFile();
-            }
-        });
-        */
 
         // Applied the listeners
         pickApplicationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog d = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
+                d = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
                     @Override
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
                         Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
                         setApplicationPath(selectedPackage.getPath());
+                        dismissDialog();
                     }
                 });
-                d.show();
+                showDialog();
             }
         });
 
@@ -120,14 +137,22 @@ public class InstrumentFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 // Clears all of the inputs
-                setApplicationPath("");
-                setSinksPath("");
-                setSourcePath("");
-                setTaintPath("");
+                setApplicationPath(null);
+                setSinksPath(null);
+                setSourcePath(null);
+                setTaintPath(null);
             }
         });
 
         return view;
+    }
+
+    private void dismissDialog() {
+        d.dismiss();
+    }
+
+    private void showDialog() {
+        d.show();
     }
 
     private void getFile(int fromRequest) {
@@ -162,44 +187,57 @@ public class InstrumentFragment extends Fragment{
 
     }
 
-    public String getApplicationPath() {
-        return applicationPath;
-    }
-
     public void setApplicationPath(String applicationPath) {
-        EditText appInputText = (EditText)view.findViewById(R.id.applicationInput);
-        appInputText.setText(String.valueOf(applicationPath));
+        if (applicationPath == null) {
+            appInputText.setText("");
+        } else {
+            appInputText.setText(String.valueOf(applicationPath));
+        }
         this.applicationPath = applicationPath;
     }
 
-    public String getSinksPath() {
-        return sinksPath;
-    }
-
     public void setSinksPath(String sinksPath) {
-        EditText sinksInputText = (EditText) view.findViewById(R.id.sinksInput);
-        sinksInputText.setText(String.valueOf(sinksPath));
+        if (sinksPath == null) {
+            sinksInputText.setText("");
+        } else {
+            sinksInputText.setText(String.valueOf(sinksPath));
+        }
         this.sinksPath = sinksPath;
     }
 
-    public String getSourcePath() {
-        return sourcePath;
-    }
-
     public void setSourcePath(String sourcePath) {
-        EditText sourceInputText = (EditText) view.findViewById(R.id.sourcesInput);
-        sourceInputText.setText(String.valueOf(sourcePath));
+        if (sourcePath == null) {
+            sourceInputText.setText("");
+        } else {
+            sourceInputText.setText(String.valueOf(sourcePath));
+        }
         this.sourcePath = sourcePath;
     }
 
-    public String getTaintPath() {
-        return taintPath;
+    public void setTaintPath(String taintPath) {
+        if (taintPath == null) {
+            taintInputText.setText("");
+        } else {
+            taintInputText.setText(String.valueOf(taintPath));
+        }
+        this.taintPath = taintPath;
     }
 
-    public void setTaintPath(String taintPath) {
-        EditText taintInputText = (EditText) view.findViewById(R.id.taintInput);
-        taintInputText.setText(String.valueOf(taintPath));
-        this.taintPath = taintPath;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        Log.d("InstrumentFragment", "Festryo");
+
+        String app = applicationPath, sinks = sinksPath, sources = sourcePath, taint = taintPath;
+
+        SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("pathApp", app);
+        editor.putString("pathSinks", sinks);
+        editor.putString("pathSources", sources);
+        editor.putString("pathTaint", taint);
+        editor.apply();
     }
 
 }
