@@ -23,7 +23,7 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class InstrumentFragment extends Fragment{
+public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered{
 
     public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
     private final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt";
@@ -98,7 +98,7 @@ public class InstrumentFragment extends Fragment{
                         setApplicationPath(selectedPackage.getPath());
                         dismissDialog();
                     }
-                });
+                }, InstrumentFragment.this);
                 showDialog();
             }
         });
@@ -155,8 +155,8 @@ public class InstrumentFragment extends Fragment{
         d.show();
     }
 
-    private void getFile(int fromRequest) {
-        Intent intent = new Intent(this.getActivity(), FileChooser.class);
+    public void getFile(int fromRequest) {
+        Intent intent = new Intent(getActivity(), FileChooser.class);
         intent.putExtra("extension", INPUT_TXT);
         startActivityForResult(intent, fromRequest);
     }
@@ -168,6 +168,7 @@ public class InstrumentFragment extends Fragment{
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
                 setApplicationPath(data.getStringExtra("GetAbsolutePath"));
+                dismissDialog();
             }
         } else if (requestCode == PICK_SINKS_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
@@ -240,4 +241,10 @@ public class InstrumentFragment extends Fragment{
         editor.apply();
     }
 
+    @Override
+    public void onClick() {
+        Intent intent = new Intent(getActivity(), FileChooser.class);
+        intent.putExtra("extension", ".apk");
+        startActivityForResult(intent, PICK_APPLICATION_REQUEST);
+    }
 }
