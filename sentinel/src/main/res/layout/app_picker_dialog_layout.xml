@@ -14,16 +14,19 @@
         android:layout_height="wrap_content"
         android:text="Pick"
         android:id="@+id/pickButton"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="12dp" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@id/pickButton"
         android:id="@+id/allAppList"/>
+
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progress"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:background="#bdbdbd" />
 </RelativeLayout>
