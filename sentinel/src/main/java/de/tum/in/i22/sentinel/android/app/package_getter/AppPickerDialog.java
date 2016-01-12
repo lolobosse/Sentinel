@@ -2,7 +2,6 @@ package de.tum.in.i22.sentinel.android.app.package_getter;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 
 /**
  * Created by laurentmeyer on 31/12/15.
@@ -75,7 +73,7 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         Thread t = new Thread(){
             @Override
             public void run() {
-                PackageGetter.getPackages(AppPickerDialog.this);
+                PackageGetter.getPackages(AppPickerDialog.this, getContext());
             }
         };
         t.start();
@@ -110,6 +108,13 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     }
 
 
+    public interface OnPackageChosen {
+        void onPackageSet(PackageGetter.Package selectedPackage);
+    }
+
+    public interface onFileChooseTriggered{
+        void onClick();
+    }
 
     private class AllApkAdapter extends BaseAdapter {
         @Override
@@ -143,14 +148,6 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
 
             return v;
         }
-    }
-
-    public interface OnPackageChosen{
-        void onPackageSet(PackageGetter.Package selectedPackage);
-    }
-
-    public interface onFileChooseTriggered{
-        void onClick();
     }
 
 }
