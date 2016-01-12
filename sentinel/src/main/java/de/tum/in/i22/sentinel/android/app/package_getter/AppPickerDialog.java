@@ -2,8 +2,10 @@ package de.tum.in.i22.sentinel.android.app.package_getter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 
 /**
  * Created by laurentmeyer on 31/12/15.
@@ -28,14 +31,19 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     TextView tv;
     Button b;
     ProgressBar pb;
+    FragmentActivity a;
+
 
     List<PackageGetter.Package> packages;
     AllApkAdapter adapter;
 
     OnPackageChosen callback;
+    onFileChooseTriggered startActivityCallback;
 
-    public AppPickerDialog(Context context, OnPackageChosen callback) {
+    public AppPickerDialog(Context context, OnPackageChosen callback, onFileChooseTriggered onClickListener) {
         super(context);
+        this.startActivityCallback = onClickListener;
+        this.a = (FragmentActivity) context;
         this.callback = callback;
         init();
     }
@@ -56,6 +64,7 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
             @Override
             public void onClick(View view) {
                 //Your code to pick here
+                startActivityCallback.onClick();
             }
         });
         b.setVisibility(View.INVISIBLE);
@@ -100,6 +109,8 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         });
     }
 
+
+
     private class AllApkAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -128,4 +139,9 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     public interface OnPackageChosen{
         void onPackageSet(PackageGetter.Package selectedPackage);
     }
+
+    public interface onFileChooseTriggered{
+        void onClick();
+    }
+
 }

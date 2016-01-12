@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,19 +13,30 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 
 /**
  * Created by laurentmeyer on 23/12/15.
  */
 public class SettingsFragment extends Fragment{
 
+    private final int FOLDER_REQUEST = 1;
+    private TextView saveToPath;
+    private Switch saveToSwitch, postInstallSwitch;
+
+    public static String savedAPKfolder;
+    public static boolean saveAPK = false, postInstallAPK;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
-        final TextView saveToPath = (TextView) view.findViewById(R.id.saveToPath);
-        final Switch saveToSwitch = (Switch) view.findViewById(R.id.saveToSwitch);
+        saveToSwitch = (Switch) view.findViewById(R.id.saveToSwitch);
+        postInstallSwitch = (Switch) view.findViewById(R.id.installSwitch);
+        saveToPath = (TextView) view.findViewById(R.id.saveToPath);
+
+
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -32,13 +44,49 @@ public class SettingsFragment extends Fragment{
                 int active = Color.parseColor("#202020");
                 int inactive = Color.parseColor("#c5c5c5");
                 if (isChecked){
+                    saveAPK = true;
                     saveToPath.setTextColor(active);
+                    saveToPath.setEnabled(true);
+                    
+                    saveToPath.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), DirectoryChooser.class);
+                            startActivityForResult(intent, FOLDER_REQUEST);
+                        }
+                    });
+                    
                 } else {
+                    saveAPK = false;
                     saveToPath.setTextColor(inactive);
+                    saveToPath.setEnabled(false);
+                }
+            }
+        });
+
+        postInstallSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    postInstallAPK = true;
+                } else {
+                    postInstallAPK = false;
                 }
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == FOLDER_REQUEST){
+            if (resultCode == getActivity().RESULT_OK){
+                savedAPKfolder = String.valueOf(data.getStringExtra("GetFolderPath"));
+                saveToPath.setText(savedAPKfolder);
+            }
+        }
+
     }
 }

@@ -43,7 +43,7 @@
                 android:layout_gravity="left|bottom"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="112dp"
-                android:clickable="false"
+                android:clickable="true"
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:scrollHorizontally="true"
