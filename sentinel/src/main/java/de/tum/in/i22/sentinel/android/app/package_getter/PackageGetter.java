@@ -179,7 +179,7 @@ public class PackageGetter {
         "package" is always there, then it's the path of the app to be, potentially, extracted.
         then comes the package name.
          */
-        return "(package:)([a-zA-Z/.\\-0-9]*)(=)([A-Za-z.]*)";
+        return "(package:)([a-zA-Z\\/.\\-0-9]*)(=)([A-Za-z\\.\\d\\_]*)";
     }
 
 
