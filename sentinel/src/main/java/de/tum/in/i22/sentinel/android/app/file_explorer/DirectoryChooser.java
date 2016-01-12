@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.file_explorer;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -82,7 +83,7 @@ public class DirectoryChooser extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
+        Log.d("DirectoryChooser", "position:" + position);
         MenuObj obj = adapter.getItem(position);
         if (obj.getIcon().equalsIgnoreCase("directory_icon") || obj.getIcon().equalsIgnoreCase("directory_up")){
             workingDir = new File(obj.getPath());

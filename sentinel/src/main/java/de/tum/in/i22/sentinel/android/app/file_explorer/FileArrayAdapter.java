@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.file_explorer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +33,6 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
         this.objects = objects;
     }
 
-    public MenuObj getObj(int i){
-        return objects.get(i);
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
@@ -61,7 +58,11 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
             int imageResource = c.getResources().getIdentifier(uri, null, c.getPackageName());
             Drawable image = null;
             try {
-                image = c.getResources().getDrawable(imageResource, null);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    image = c.getResources().getDrawable(imageResource, null);
+                } else {
+                    image = c.getResources().getDrawable(imageResource);
+                }
             } catch (Resources.NotFoundException e) {
                 Log.d("FileArrayAdapter", "No valid icon resource was found");
             }
