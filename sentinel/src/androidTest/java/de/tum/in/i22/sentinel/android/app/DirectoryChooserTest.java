@@ -8,7 +8,9 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +35,8 @@ public class DirectoryChooserTest {
     @Rule
     public ActivityTestRule<DirectoryChooser> mActivityRule = new ActivityTestRule<DirectoryChooser>(DirectoryChooser.class);
 
-    @Before
-    public void createFolder(){
+    @BeforeClass
+    public static void createFolder(){
         File f = new File("/sdcard/a");
         f.mkdirs();
     }
@@ -44,8 +46,8 @@ public class DirectoryChooserTest {
         onView(withText("a")).check(matches(isDisplayed()));
     }
 
-    @After
-    public void deleteFolder(){
+    @AfterClass
+    public static void deleteFolder(){
         File f = new File("/sdcard/a");
         f.delete();
     }
