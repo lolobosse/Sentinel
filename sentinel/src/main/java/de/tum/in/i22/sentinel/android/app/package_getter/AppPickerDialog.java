@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,7 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     onFileChooseTriggered startActivityCallback;
 
     public AppPickerDialog(Context context, OnPackageChosen callback, onFileChooseTriggered onClickListener) {
-        super(context);
+        super(context, R.style.CustomPontusStyle);
         this.startActivityCallback = onClickListener;
         this.callback = callback;
         init();
@@ -54,14 +53,13 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         lv = (ListView) v.findViewById(R.id.allAppList);
         tv = (TextView)v.findViewById(R.id.pickFromFile);
         b = (Button) v.findViewById(R.id.pickButton);
-        pb = (ProgressBar) v.findViewById(R.id.progress);
+        pb = (ProgressBar) v.findViewById(R.id.progressBar);
 
         adapter = new AllApkAdapter();
         lv.setAdapter(adapter);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Your code to pick here
                 startActivityCallback.onClick();
             }
         });
@@ -141,10 +139,9 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
             TextView rowItemPath = (TextView) v.findViewById(R.id.rowTextPath);
             ImageView rowItemIcon = (ImageView) v.findViewById(R.id.rowIcon);
 
-            // TODO: Limit to third party
-
-            rowItemTitle.setText(((PackageGetter.Package)getItem(i)).getPackageName());
+            rowItemTitle.setText(((PackageGetter.Package)getItem(i)).getName());
             rowItemPath.setText(((PackageGetter.Package)getItem(i)).getPath());
+            rowItemIcon.setImageDrawable(((PackageGetter.Package) getItem(i)).getPackagePicture());
 
             return v;
         }
