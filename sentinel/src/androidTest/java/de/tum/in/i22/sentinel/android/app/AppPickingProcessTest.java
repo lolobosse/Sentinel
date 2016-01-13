@@ -47,7 +47,7 @@ public class AppPickingProcessTest extends AndroidTestCase {
             public void onSuccess(List<PackageGetter.Package> packages) {
                 assertEquals("Number of packages is not consistent", numberOfPackages, packages.size());
             }
-        });
+        }, getContext());
 
     }
 }

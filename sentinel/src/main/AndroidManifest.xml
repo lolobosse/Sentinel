@@ -39,6 +39,15 @@
             </intent-filter>
         </activity>
 
+        <service android:name="de.tum.in.i22.uc.pdp.android.pdpService">
+            <intent-filter>
+                <action android:name="de.tum.in.i22.uc.pdp.android.pdpService"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="de.tum.in.i22.uc.pdp.android.setPolicy"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

@@ -15,7 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.AsyncHttpResponse;
+
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.backend.APKSender;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
@@ -96,6 +100,14 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
                         Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
                         setApplicationPath(selectedPackage.getPath());
+                        APKSender.getInstance().sendFiles(null, null, null, selectedPackage, new AsyncHttpClient.StringCallback() {
+
+
+                            @Override
+                            public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
+                                Log.d("LA BITE", "Completed");
+                            }
+                        });
                         dismissDialog();
                     }
                 }, InstrumentFragment.this);
