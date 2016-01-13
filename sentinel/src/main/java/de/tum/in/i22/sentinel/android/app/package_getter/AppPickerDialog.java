@@ -4,13 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,8 +30,6 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     TextView tv;
     Button b;
     ProgressBar pb;
-    FragmentActivity a;
-
 
     List<PackageGetter.Package> packages;
     AllApkAdapter adapter;
@@ -39,9 +38,8 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     onFileChooseTriggered startActivityCallback;
 
     public AppPickerDialog(Context context, OnPackageChosen callback, onFileChooseTriggered onClickListener) {
-        super(context);
+        super(context, R.style.CustomPontusStyle);
         this.startActivityCallback = onClickListener;
-        this.a = (FragmentActivity) context;
         this.callback = callback;
         init();
     }
@@ -49,19 +47,19 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     private void init(){
         packages = new ArrayList<>();
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View v = li.inflate(R.layout.app_picker_dialog_layout, null);
 
         lv = (ListView) v.findViewById(R.id.allAppList);
         tv = (TextView)v.findViewById(R.id.pickFromFile);
         b = (Button) v.findViewById(R.id.pickButton);
-        pb = (ProgressBar) v.findViewById(R.id.progress);
+        pb = (ProgressBar) v.findViewById(R.id.progressBar);
 
         adapter = new AllApkAdapter();
         lv.setAdapter(adapter);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Your code to pick here
                 startActivityCallback.onClick();
             }
         });
@@ -133,11 +131,19 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            // TODO: Limit to third party
-            TextView t = new TextView(getContext());
-            t.setText(getItem(i).toString());
-            return t;
+        public View getView(int i, View v, ViewGroup viewGroup) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inflater.inflate(R.layout.app_list_row, null);
+
+            TextView rowItemTitle = (TextView) v.findViewById(R.id.rowTextTitle);
+            TextView rowItemPath = (TextView) v.findViewById(R.id.rowTextPath);
+            ImageView rowItemIcon = (ImageView) v.findViewById(R.id.rowIcon);
+
+            rowItemTitle.setText(((PackageGetter.Package)getItem(i)).getName());
+            rowItemPath.setText(((PackageGetter.Package)getItem(i)).getPath());
+            rowItemIcon.setImageDrawable(((PackageGetter.Package) getItem(i)).getPackagePicture());
+
+            return v;
         }
     }
 

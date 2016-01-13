@@ -44,7 +44,7 @@ public class FileChooserTest {
     };
 
     @BeforeClass
-    public static void createFolder(){
+    public static void createFiles(){
         File f = new File("/sdcard/a");
         f.mkdirs();
         File fa = new File("/sdcard/a/ab.txt");
@@ -67,7 +67,7 @@ public class FileChooserTest {
     }
 
     @AfterClass
-    public static void deleteFolder(){
+    public static void deleteCreatedFiles(){
         File f = new File("/sdcard/a");
         File fa = new File("/sdcard/a/ab.txt");
         File fb = new File("/sdcard/a/abc.jpg");

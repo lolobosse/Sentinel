@@ -8,22 +8,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pick From File"
-        android:layout_alignBaseline="@+id/pickButton"/>
+        android:layout_alignBaseline="@+id/pickButton"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:textStyle="bold" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pick"
         android:id="@+id/pickButton"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="12dp" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@id/pickButton"
         android:id="@+id/allAppList"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_applist_top"
+        android:layout_below="@id/pickButton"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_applist_bottom"
+        android:layout_alignParentBottom="true"/>
+
     <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progress"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:indeterminateDrawable="@drawable/custom_progress_bar">
+    </ProgressBar>
+
 </RelativeLayout>

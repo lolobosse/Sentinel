@@ -25,5 +25,9 @@
         <item name="android:background">@drawable/primary_round</item>
     </style>
 
+    <style name="CustomPontusStyle" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:background">#eeeeee</item>
+    </style>
+
 
 </resources>

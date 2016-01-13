@@ -240,7 +240,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public void onDestroyView() {
         super.onDestroyView();
 
-        Log.d("InstrumentFragment", "Festryo");
+        Log.d("InstrumentFragment", "View Destroyed");
 
         String app = applicationPath, sinks = sinksPath, sources = sourcePath, taint = taintPath;
 
@@ -256,7 +256,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra("extension", ".apk");
+        intent.putExtra("extension", INPUT_APPLICATION);
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
     }
 }
