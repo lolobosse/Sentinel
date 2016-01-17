@@ -18,7 +18,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Summary text"
-        android:id="@+id/summary" />
+        android:id="@+id/summary"
+        android:textSize="16dip"
+        android:textIsSelectable="false" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

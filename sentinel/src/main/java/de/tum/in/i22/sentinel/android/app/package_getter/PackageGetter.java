@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class PackageGetter {
             String cLine;
             while ((cLine = bufferedReader.readLine()) != null) {
                 Package p = createPackageObjectFromString(cLine, c);
+                Log.d("PackageGetter", cLine);
                 if (p != null) {
                     packages.add(p);
                 }

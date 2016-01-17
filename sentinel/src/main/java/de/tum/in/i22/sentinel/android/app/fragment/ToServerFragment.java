@@ -4,6 +4,8 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +54,9 @@ public class ToServerFragment extends Fragment{
         View view = inflater.inflate(R.layout.to_server_fragment, container, false);
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
         // TODO: Write a text there with paths.
+        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Scources: </b>"
+                + sourceFile + "<br><b>Sinks: </b>" + sinkFile + "<br><b>Taint Wrapper: </b>" + taintFile);
+        summaryText.setText(displayText);
 
         Button b = (Button) view.findViewById(R.id.launchServer);
         b.setOnClickListener(new View.OnClickListener() {
