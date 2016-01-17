@@ -1,9 +1,9 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,8 +15,6 @@ import android.widget.TextView;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpResponse;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.R;
@@ -26,7 +24,7 @@ import de.tum.in.i22.sentinel.android.app.backend.APKSender;
  * Created by Moderbord on 2016-01-06.
  */
 
-public class ToServerFragment extends Fragment{
+public class ToServerFragment extends Fragment {
 
     TextView summary;
     File sourceFile, sinkFile, taintFile, apkFile;
@@ -35,14 +33,14 @@ public class ToServerFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        String apk          = args.getString(InstrumentFragment.APK);
-        String source       = args.getString(InstrumentFragment.SOURCES);
-        String sink         = args.getString(InstrumentFragment.SINKS);
+        String apk = args.getString(InstrumentFragment.APK);
+        String source = args.getString(InstrumentFragment.SOURCES);
+        String sink = args.getString(InstrumentFragment.SINKS);
         String taintWrapper = args.getString(InstrumentFragment.TAINT);
-        apkFile             = getFile(apk, InstrumentFragment.APK);
-        sourceFile          = getFile(source, InstrumentFragment.SOURCES);
-        sinkFile            = getFile(sink, InstrumentFragment.SINKS);
-        taintFile           = getFile(taintWrapper, InstrumentFragment.TAINT);
+        apkFile = getFile(apk, InstrumentFragment.APK);
+        sourceFile = getFile(source, InstrumentFragment.SOURCES);
+        sinkFile = getFile(sink, InstrumentFragment.SINKS);
+        taintFile = getFile(taintWrapper, InstrumentFragment.TAINT);
 
     }
 
@@ -61,7 +59,12 @@ public class ToServerFragment extends Fragment{
                 APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
-                        Log.d("ToServerFragment", "Success, bitch");
+                        if (e == null) {
+                            Log.d("ToServerFragment", "Success, bitch");
+                            Log.d("ToServerFragment", result);
+                        } else {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
             }
@@ -69,11 +72,10 @@ public class ToServerFragment extends Fragment{
         return view;
     }
 
-    private File getFile(String path, String key){
-        if (!TextUtils.isEmpty(path)){
+    private File getFile(String path, String key) {
+        if (!TextUtils.isEmpty(path)) {
             return new File(path);
-        }
-        else{
+        } else {
             String defaultFilePath = getActivity().getFilesDir() + "/" + key;
             return new File(defaultFilePath);
         }
