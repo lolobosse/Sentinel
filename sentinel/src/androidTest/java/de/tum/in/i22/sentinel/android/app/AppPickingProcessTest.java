@@ -20,7 +20,7 @@ public class AppPickingProcessTest extends AndroidTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        String command = "pm list packages -f -3";
+        String command = "pm list packages -f";
         Process process;
         try {
             process = Runtime.getRuntime().exec(command);
