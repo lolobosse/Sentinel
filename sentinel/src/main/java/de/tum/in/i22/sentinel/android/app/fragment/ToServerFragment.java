@@ -52,7 +52,7 @@ public class ToServerFragment extends Fragment {
         View view = inflater.inflate(R.layout.to_server_fragment, container, false);
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
         // TODO: Write a text there with paths.
-        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Scources: </b>"
+        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sources: </b>"
                 + sourceFile + "<br><b>Sinks: </b>" + sinkFile + "<br><b>Taint Wrapper: </b>" + taintFile);
         summaryText.setText(displayText);
 
