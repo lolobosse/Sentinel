@@ -55,8 +55,6 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         b = (Button) v.findViewById(R.id.pickButton);
         pb = (ProgressBar) v.findViewById(R.id.progressBar);
 
-        adapter = new AllApkAdapter();
-        lv.setAdapter(adapter);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,16 +86,19 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
             @Override
             public void run() {
                 AppPickerDialog.this.packages = packages;
+                adapter = new AllApkAdapter();
                 adapter.notifyDataSetChanged();
+                lv.setAdapter(adapter);
                 lv.setVisibility(View.VISIBLE);
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (callback != null){
-                            callback.onPackageSet(packages.get(i));
+                            callback.onPackageSet(packages.get(i % packages.size()));
                         }
                     }
                 });
+                lv.setSelectionFromTop(adapter.MIDDLE, 0);
                 tv.setVisibility(View.VISIBLE);
                 b.setVisibility(View.VISIBLE);
                 pb.setVisibility(View.GONE);
@@ -115,14 +116,22 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     }
 
     private class AllApkAdapter extends BaseAdapter {
+
+        public static final int HALF_MAX_VALUE = Integer.MAX_VALUE/2;
+        public final int MIDDLE;
+
+        private AllApkAdapter(){
+            MIDDLE = HALF_MAX_VALUE - HALF_MAX_VALUE % packages.size();
+        }
+
         @Override
         public int getCount() {
-            return packages.size();
+            return Integer.MAX_VALUE;
         }
 
         @Override
         public Object getItem(int i) {
-            return packages.get(i);
+            return packages.get(i % packages.size());
         }
 
         @Override
