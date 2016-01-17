@@ -74,13 +74,14 @@ public class APKSender {
      * @param callback
      */
     public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback) {
-        String serverAddress = "0.0.0.0";
+        String serverAddress = "192.168.0.111";
         AsyncHttpPost post = new AsyncHttpPost("http://" + serverAddress + ":8080/instrument");
         MultipartFormDataBody body = new MultipartFormDataBody();
-        body.addFilePart("Apk", apk);
-        body.addFilePart("Source", pathToSources);
-        body.addFilePart("Sinks",pathToSinks);
-        body.addFilePart("TaintWrapper", pathToTaintWrapper);
+        body.addFilePart("apkFile", apk);
+        body.addFilePart("sourceFile", pathToSources);
+        body.addFilePart("sinkFile",pathToSinks);
+        body.addFilePart("easyTaintWrapperSource", pathToTaintWrapper);
+        post.setBody(body);
         AsyncHttpClient.getDefaultInstance().executeString(post, callback);
     }
 }
