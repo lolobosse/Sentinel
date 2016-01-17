@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,12 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public String applicationPath, sinksPath, sourcePath, taintPath;
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
+
+    public static final String APK      = "apkPath";
+    public static final String SOURCES  = "sourcePath";
+    public static final String SINKS    = "sinkPath";
+    public static final String TAINT    = "taintPath";
+
 
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
     Dialog d;
@@ -140,7 +147,14 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             @Override
             public void onClick(View v) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.mainViewContainer, new ToServerFragment());
+                ToServerFragment toServerFragment = new ToServerFragment();
+                Bundle b = new Bundle();
+                b.putString(APK, applicationPath);
+                b.putString(SOURCES, sourcePath);
+                b.putString(SINKS, sinksPath);
+                b.putString(TAINT, taintPath);
+                toServerFragment.setArguments(b);
+                ft.replace(R.id.mainViewContainer, toServerFragment);
                 ft.commit();
             }
         });

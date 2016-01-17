@@ -15,6 +15,7 @@ import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Utils;
 
 
 public class MainActivity extends AppCompatActivity
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Utils.initDefaultFiles(this);
 
         initParser();
     }

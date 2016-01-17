@@ -62,4 +62,25 @@ public class APKSender {
         }
         return false;
     }
+
+    /**
+     * Method used currently
+     * TODO: Docu and refactor of the variable names
+     *
+     * @param pathToSources
+     * @param pathToSinks
+     * @param pathToTaintWrapper
+     * @param apk
+     * @param callback
+     */
+    public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback) {
+        String serverAddress = "0.0.0.0";
+        AsyncHttpPost post = new AsyncHttpPost("http://" + serverAddress + ":8080/instrument");
+        MultipartFormDataBody body = new MultipartFormDataBody();
+        body.addFilePart("Apk", apk);
+        body.addFilePart("Source", pathToSources);
+        body.addFilePart("Sinks",pathToSinks);
+        body.addFilePart("TaintWrapper", pathToTaintWrapper);
+        AsyncHttpClient.getDefaultInstance().executeString(post, callback);
+    }
 }
