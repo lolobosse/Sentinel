@@ -2,10 +2,12 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +22,9 @@ import com.koushikdutta.async.http.AsyncHttpResponse;
 import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKSender;
+import de.tum.in.i22.sentinel.android.app.package_getter.Hash;
 
 /**
  * Created by Moderbord on 2016-01-06.
@@ -30,6 +34,8 @@ public class ToServerFragment extends Fragment {
 
     TextView summary;
     File sourceFile, sinkFile, taintFile, apkFile;
+
+    String hash;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +62,9 @@ public class ToServerFragment extends Fragment {
                 + sourceFile + "<br><b>Sinks: </b>" + sinkFile + "<br><b>Taint Wrapper: </b>" + taintFile);
         summaryText.setText(displayText);
 
+        // TODO Refactor that
         Button b = (Button) view.findViewById(R.id.launchServer);
+        final Button getAPK = (Button) view.findViewById(R.id.getAPK);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,9 +75,39 @@ public class ToServerFragment extends Fragment {
                         if (e == null) {
                             Log.d("ToServerFragment", "Success, bitch");
                             Log.d("ToServerFragment", result);
+                            hash = Hash.createHashForFile(apkFile);
+                            Log.d("ToServerFragment", hash);
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getAPK.setVisibility(View.VISIBLE);
+                                }
+                            });
                         } else {
                             throw new RuntimeException(e);
                         }
+                    }
+                });
+            }
+        });
+        getAPK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                APKReceiver.getInstance().getFile(hash, new AsyncHttpClient.FileCallback() {
+                    @Override
+                    public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
+                        if (e != null) {
+                            Log.d("ToServerFragment", "LAAA BITE A DUDUUUULE");
+                        } else {
+                            Exception b = e;
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void onProgress(AsyncHttpResponse response, long downloaded, long total) {
+                        Log.d("ToServerFragment", "downloaded:" + downloaded);
+                        Log.d("ToServerFragment", "downloaded/total:" + (downloaded / total));
                     }
                 });
             }
