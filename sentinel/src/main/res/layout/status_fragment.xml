@@ -109,6 +109,12 @@
                     android:checked="false"
                     style="@style/Base.TextAppearance.AppCompat.Widget.Switch" />
             </FrameLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/deployPolicy"
+                android:text="Deploy Policy"
+                android:layout_margin="8dp"/>
         </LinearLayout>
 
     </RelativeLayout>

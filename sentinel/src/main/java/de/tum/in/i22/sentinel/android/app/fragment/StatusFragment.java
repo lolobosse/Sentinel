@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import java.io.FileReader;
 import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.uc.pdp.android.ServiceBoundListener;
 import de.tum.in.i22.uc.pdp.android.pdpService;
 
@@ -43,13 +46,25 @@ public class StatusFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_fragment, container, false);
 
-        Switch pdpServiceSwitch = (Switch) view.findViewById(R.id.pdpSwitch);
+        final Switch pdpServiceSwitch = (Switch) view.findViewById(R.id.pdpSwitch);
+        Button deployPolicy = (Button) view.findViewById(R.id.deployPolicy);
+        deployPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pdpServiceSwitch.setChecked(true);
+                Intent intent = new Intent(getActivity(), FileChooser.class);
+                intent.putExtra("extension", ".xml");
+                // TODO: Put that in a constant
+                startActivityForResult(intent, 0);
+            }
+        });
         pdpServiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     if (isChecked) {
                         // Activate the PDP
+                        // WARNING: This line won't work on 5.0 devices because Google enforces explicit intent!
                         Intent start = new Intent("de.tum.in.i22.uc.pdp.android.pdpService");
                         getActivity().startService(start);
                         if (!deployPolicyConnection.isBound()) {
@@ -117,6 +132,7 @@ public class StatusFragment extends Fragment{
     }
 
     private void deployPolicy(File pathToPolicy) {
+        // TODO Remove logs
         Log.d("LOLO IS TESTING", "deployPolicy method");
         try {
             // Read in the policy file
@@ -148,4 +164,12 @@ public class StatusFragment extends Fragment{
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 0){
+            // TODO Extract GetAbsolutPath to a constant
+            String pathToPolicy = data.getStringExtra("GetAbsolutePath");
+            deployPolicy(new File(pathToPolicy));
+        }
+    }
 }

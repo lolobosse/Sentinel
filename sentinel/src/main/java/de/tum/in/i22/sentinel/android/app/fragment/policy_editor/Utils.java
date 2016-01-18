@@ -1,6 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.fragment.policy_editor;
 
 import android.content.Context;
+import android.os.Environment;
 
 import org.jibx.runtime.BindingDirectory;
 import org.jibx.runtime.IBindingFactory;
@@ -37,22 +38,67 @@ public class Utils {
         return null;
     }
 
+    // TODO Refactor variable names
     public static void initDefaultFiles(Context context) {
         try {
             String[] names = {InstrumentFragment.SINKS, InstrumentFragment.SOURCES, InstrumentFragment.TAINT};
             int[] toLookFor = {R.raw.sinks, R.raw.sources, R.raw.taint};
             for (int i = 0; i < toLookFor.length; i++) {
                 int filePath = toLookFor[i];
-                InputStream in = context.getResources().openRawResource(filePath);
-                FileOutputStream out = new FileOutputStream(new File(context.getFilesDir(), names[i]));
-                byte[] buff = new byte[1024];
-                int read = 0;
-                while ((read = in.read(buff)) > 0) {
-                    out.write(buff, 0, read);
-                }
+                String filename = names[i];
+                writeToFile(filename, filePath, context, null);
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void writeToFile(String filename, int whichRes, Context c, String where){
+        try {
+            InputStream in = c.getResources().openRawResource(whichRes);
+            FileOutputStream out;
+            if (where == null){
+                out = new FileOutputStream(new File(c.getFilesDir(), filename));
+            }
+            else {
+                // TODO Change names, remove comments
+                // create a File object for the parent directory
+                File wallpaperDirectory = new File(where);
+                // have the object build the directory structure, if needed.
+                wallpaperDirectory.mkdirs();
+                // create a File object for the output file
+                File outputFile = new File(wallpaperDirectory, filename);
+                // now attach the OutputStream to the file object, instead of a String representation
+                out = new FileOutputStream(outputFile);
+            }
+            byte[] buff = new byte[1024];
+            int read = 0;
+            while ((read = in.read(buff)) > 0) {
+                out.write(buff, 0, read);
+            }
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * This method is only there to allow the user to use the policy which were available in the examples
+     * To do so, they moved to a visible folder of the device: the folder "SentinelPolicies"
+     * @param c
+     */
+    public static void passPoliciesFromRawToFile(Context c){
+        String where = Environment.getExternalStorageDirectory().getPath() + "/SentinelPolicies/";
+        writeToFile("Policy.xml", R.raw.policy, c, where);
+        writeToFile("Policy_App_SMS_1.xml", R.raw.policy_appsms1, c, where);
+        writeToFile("Policy_App_SMS_Duration_2.xml", R.raw.policy_appsms_duration2, c, where);
+        writeToFile("Policy_App_SMS_Duration_4.xml", R.raw.policy_appsms_duration4, c, where);
+        writeToFile("Policy_Draft.xml", R.raw.policy_draft, c, where);
+        writeToFile("Policy_DroidBench.xml", R.raw.policy_droidbench_androidspecific_directleak1, c, where);
+        writeToFile("Policy_No_Imei_to_12345.xml", R.raw.policy_no_imei_to_12345, c, where);
+        writeToFile("Policy_No_Location.xml", R.raw.policy_no_location, c, where);
+        writeToFile("Policy_Old.xml", R.raw.policy_old, c, where);
+
     }
 }

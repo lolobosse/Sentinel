@@ -184,6 +184,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public void getFile(int fromRequest) {
         Intent intent = new Intent(getActivity(), FileChooser.class);
         intent.putExtra("extension", INPUT_TXT);
+        // TODO Refactor fromRequest
         startActivityForResult(intent, fromRequest);
     }
 
