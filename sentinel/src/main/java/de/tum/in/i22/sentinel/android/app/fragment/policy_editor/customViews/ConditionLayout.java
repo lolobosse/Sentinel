@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,7 +23,9 @@ import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.interfaces.PolicyChanger;
 import de.tum.in.www22.enforcementlanguage.ConditionType;
 import de.tum.in.www22.enforcementlanguage.DuringType;
+import de.tum.in.www22.enforcementlanguage.EventMatchingOperatorType;
 import de.tum.in.www22.enforcementlanguage.Operators;
+import de.tum.in.www22.enforcementlanguage.ParamMatchType;
 import de.tum.in.www22.enforcementlanguage.PolicyType;
 
 /**
@@ -50,14 +50,12 @@ public class ConditionLayout extends LinearLayout {
         ConditionType condition = p.getChoices().get(0).getPreventiveMechanism().getCondition();
         Operators o = condition.getConditionType();
         defineCondition(o);
-        // Because of the recursion the element are not in order.
+        // Because of the recursion the element are in reverse order.
         Collections.reverse(maps);
         for(NamedMap m : maps){
             LinearLayout ll = (LinearLayout) inflate(getContext(), R.layout.condition_level_layout, null);
             TextView tv = (TextView) ll.findViewById(R.id.nameOfCondition);
             tv.setText(m.getName());
-            Button plus = (Button) ll.findViewById(R.id.addCondition);
-            plus.setOnClickListener(new PlusListener(maps.indexOf(m), condition));
             addView(ll);
             for (String key : m.keySet()) {
                 ViewGroup vg = (ViewGroup) inflate(this.getContext(), R.layout.key_value_layout_tv, null);
@@ -96,9 +94,9 @@ public class ConditionLayout extends LinearLayout {
                         if (nextLevel != null)
                             defineCondition(nextLevel);
                         // We reached the last layer so we can start to analyse the other getter and setter
+                        NamedMap map = new NamedMap();
                         String regexToExtractParamLabel = "(get)([\\D]+)";
                         Pattern p1 = Pattern.compile(regexToExtractParamLabel);
-                        NamedMap map = new NamedMap();
                         for (Method m2 : intermediateLevel.getMethods()) {
                             map.setName(type.replace("Operator", "").replace("Type", ""));
                             if (!m2.getName().matches(regexToExtractParamLabel)) continue;
@@ -118,10 +116,20 @@ public class ConditionLayout extends LinearLayout {
                             if (m2.getReturnType().equals(String.class)) {
                                 map.put(label, String.valueOf(m2.invoke(typeFromGet)));
                             }
+                            // For the event match
+                            if (m2.getReturnType().equals(List.class)){
+                                List e = (List) m2.invoke(typeFromGet);
+                                if (e instanceof ArrayList){
+                                    for (int i = 0; i < e.size(); i++){
+                                        if (e.get(i) instanceof ParamMatchType){
+                                            map.put(((ParamMatchType) e.get(i)).getName(), ((ParamMatchType) e.get(i)).getValue());
+                                        }
+                                    }
+                                }
+                            }
                         }
                         maps.add(map);
                     }
-                    Log.d("ConditionLayout", "typeFromGet:" + typeFromGet);
                 }
             }
         } catch (Exception e) {
@@ -130,28 +138,6 @@ public class ConditionLayout extends LinearLayout {
         return maps;
     }
 
-    private void addALevelOfComplexity(Object parentOfTheNew, Object toBeAdded, Object childToBeMoved) throws InvocationTargetException, IllegalAccessException {
-        Operators parentOpe = (Operators) parentOfTheNew;
-        Log.d("ConditionLayout", "toBeAdded:" + toBeAdded);
-        Operators addedOpe = getOperatorObjectFromCondition(toBeAdded);
-
-        // Not to get the #IllegalAccessException
-        parentOpe.clearOperatorsSelect();
-        addedOpe.clearOperatorsSelect();
-
-
-        // We need to get the name of the class of the chosen one to be able to add it properly to the parent
-        Class addedClass = addedOpe.getClass();
-
-        // We need to get the name of the class of the child to be able to add it properly to the added one
-        Class childClass = childToBeMoved.getClass();
-
-        String addedClassName = findClassNameOf(addedClass);
-        String childClassName = findClassNameOf(childClass);
-
-        setToNode(addedOpe, childToBeMoved, childClassName);
-        setToNode(parentOpe, addedOpe, addedClassName);
-    }
 
     private Operators getOperatorObjectFromCondition(Object o) throws InvocationTargetException, IllegalAccessException {
         Class toAnalyse = o.getClass();
@@ -164,30 +150,6 @@ public class ConditionLayout extends LinearLayout {
             }
         }
         return null;
-    }
-
-    /**
-     * Iterate in all the methods of the receiver object to find the setter corresponding to the classname
-     *
-     * @param tobeAddedTo
-     * @param toBeAdded
-     * @param classOfToBeAdded
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    private void setToNode(Operators tobeAddedTo, Object toBeAdded, String classOfToBeAdded) throws IllegalAccessException, InvocationTargetException {
-        Class aClass = tobeAddedTo.getClass();
-        Method[] methods = aClass.getMethods();
-        String tets = classOfToBeAdded;
-        for (Method m : methods) {
-            if (m.getName().contains(classOfToBeAdded.replace("Type", "").replace("Operators", "")) && m.getName().contains("set")) {
-                m.invoke(tobeAddedTo, toBeAdded);
-            }
-        }
-    }
-
-    private String findClassNameOf(Class addedClass) {
-        return addedClass.getSimpleName();
     }
 
     private Object getObjectAtThisLevel(int level, Operators c){
@@ -294,42 +256,6 @@ public class ConditionLayout extends LinearLayout {
                 }
             }
             return toBeReturned;
-        }
-    }
-
-    private class PlusListener implements OnClickListener {
-
-        int layerIndex;
-        ConditionType ct;
-
-        PlusListener(int layer, ConditionType c) {
-            layerIndex = layer;
-            ct = c;
-        }
-
-        @Override
-        public void onClick(View view) {
-            final Object parentOfTheNew = getObjectAtThisLevel(layerIndex, ct.getConditionType());
-            final Object childOfTheNew = getObjectAtThisLevel(layerIndex + 1, ct.getConditionType());
-            try {
-                TypeChooser.createChooserDialog(getContext(), ct.getConditionType(), new OnTypeChosen() {
-                    @Override
-                    public void onTypeChosen(String name, Object type) {
-                        Log.d("PlusListener", name);
-                        try {
-                            addALevelOfComplexity(parentOfTheNew, type, childOfTheNew);
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // TODO: Create a middle state of the type the dialog defined
-            // TODO: Create a dialog also with a regex and reflexion (on the #Operators class)
         }
     }
 

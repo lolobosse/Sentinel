@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Utils.initDefaultFiles(this);
+        Utils.passPoliciesFromRawToFile(this);
 
         initParser();
     }

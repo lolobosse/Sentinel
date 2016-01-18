@@ -15,12 +15,12 @@ import org.apache.commons.io.IOUtils;
  */
 public class Hash {
 
-    public static String createHashForPackage(PackageGetter.Package p){
+    public static String createHashForFile(File f){
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA-512");
-            String sha512Hash = Hex.encodeHex(messageDigest.digest(IOUtils.toByteArray(new FileInputStream(new File(p.getPath()))))).toString();
-            return sha512Hash;
+            char[] chars = Hex.encodeHex(messageDigest.digest(IOUtils.toByteArray(new FileInputStream(f))));
+            return String.valueOf(chars);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
