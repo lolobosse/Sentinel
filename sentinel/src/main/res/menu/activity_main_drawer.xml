@@ -22,6 +22,10 @@
             android:id="@+id/nav_playstore"
             android:icon="@drawable/ic_menu_share"
             android:title="PlayStore"/>
+        <item
+            android:id="@+id/nav_PostInstrument"
+            android:icon="@drawable/ic_menu_send"
+            android:title="PostInstrument"/>
     </group>
 
 </menu>

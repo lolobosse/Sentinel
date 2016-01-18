@@ -20,6 +20,9 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
  */
 public class SettingsFragment extends Fragment{
 
+    public static final String FOLDER_PATH = "GetFolderPath";
+    public static final String COLOR_DARK = "#202020";
+    public static final String COLOR_GREY = "#c5c5c5";
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
     private Switch saveToSwitch, postInstallSwitch;
@@ -41,8 +44,8 @@ public class SettingsFragment extends Fragment{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Changes the colour on the saveToFile textview for feedback to user
-                int active = Color.parseColor("#202020");
-                int inactive = Color.parseColor("#c5c5c5");
+                int active = Color.parseColor(COLOR_DARK);
+                int inactive = Color.parseColor(COLOR_GREY);
                 if (isChecked){
                     saveAPK = true;
                     saveToPath.setTextColor(active);
@@ -83,7 +86,7 @@ public class SettingsFragment extends Fragment{
 
         if (requestCode == FOLDER_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                savedAPKfolder = String.valueOf(data.getStringExtra("GetFolderPath"));
+                savedAPKfolder = String.valueOf(data.getStringExtra(FOLDER_PATH));
                 saveToPath.setText(savedAPKfolder);
             }
         }

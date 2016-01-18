@@ -30,11 +30,23 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
  */
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered{
 
-    public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
-    private final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt";
-    public String applicationPath, sinksPath, sourcePath, taintPath;
+    private final String LOG = "InstrumentFragment";
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
+
+    public static String applicationPath, sinksPath, sourcePath, taintPath;
+
+    public static final String INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
+    public static final String SENTINEL = "sentinel";
+    public static final String ABSOLUTE_PATH = "GetAbsolutePath";
+    public static final String EXTENSION = "extension";
+    public static final String INPUT_APPLICATION = ".apk";
+    public static final String INPUT_TXT = ".txt";
+
+    public static final String SP_PATH_APP = "pathApp";
+    public static final String SP_PATH_SINKS = "pathSinks";
+    public static final String SP_PATH_SOURCES = "pathSources";
+    public static final String SP_PATH_TAINT = "pathTaint";
 
     public static final String APK      = "apkPath";
     public static final String SOURCES  = "sourcePath";
@@ -59,10 +71,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         // Loads paths to chosen files from SharedPreferences
         SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-        String app = sp.getString("pathApp", null);
-        String sinks = sp.getString("pathSinks", null);
-        String sources = sp.getString("pathSources", null);
-        String taint = sp.getString("pathTaint", null);
+        String app = sp.getString(SP_PATH_APP, null);
+        String sinks = sp.getString(SP_PATH_SINKS, null);
+        String sources = sp.getString(SP_PATH_SOURCES, null);
+        String taint = sp.getString(SP_PATH_TAINT, null);
 
         // Displays them in the textViews
         setApplicationPath(app);
@@ -183,7 +195,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     public void getFile(int fromRequest) {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra("extension", INPUT_TXT);
+        intent.putExtra(EXTENSION, INPUT_TXT);
         // TODO Refactor fromRequest
         startActivityForResult(intent, fromRequest);
     }
@@ -194,20 +206,20 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setApplicationPath(data.getStringExtra("GetAbsolutePath"));
+                setApplicationPath(data.getStringExtra(ABSOLUTE_PATH));
                 dismissDialog();
             }
         } else if (requestCode == PICK_SINKS_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setSinksPath(data.getStringExtra("GetAbsolutePath"));
+                setSinksPath(data.getStringExtra(ABSOLUTE_PATH));
             }
         } else if (requestCode == PICK_SOURCE_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setSourcePath(data.getStringExtra("GetAbsolutePath"));
+                setSourcePath(data.getStringExtra(ABSOLUTE_PATH));
             }
         } else if (requestCode == PICK_TAINT_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setTaintPath(data.getStringExtra("GetAbsolutePath"));
+                setTaintPath(data.getStringExtra(ABSOLUTE_PATH));
             }
         } else {
             Log.d(LOG, "No pick request received");
@@ -261,17 +273,17 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("pathApp", app);
-        editor.putString("pathSinks", sinks);
-        editor.putString("pathSources", sources);
-        editor.putString("pathTaint", taint);
+        editor.putString(SP_PATH_APP, app);
+        editor.putString(SP_PATH_SINKS, sinks);
+        editor.putString(SP_PATH_SOURCES, sources);
+        editor.putString(SP_PATH_TAINT, taint);
         editor.apply();
     }
 
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra("extension", INPUT_APPLICATION);
+        intent.putExtra(EXTENSION, INPUT_APPLICATION);
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
     }
 }

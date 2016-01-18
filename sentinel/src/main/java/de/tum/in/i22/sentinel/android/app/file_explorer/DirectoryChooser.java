@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.file_explorer;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ import de.tum.in.i22.sentinel.android.app.R;
  */
 public class DirectoryChooser extends ListActivity {
 
+    public static final String FOLDER_PATH = "GetFolderPath";
     private File workingDir;
     private FileArrayAdapter adapter;
     private String setDirectory = "Choose this directory";
@@ -29,7 +31,7 @@ public class DirectoryChooser extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        workingDir = new File("/sdcard/");
+        workingDir = new File(Environment.getExternalStorageDirectory().getPath());
         fill(workingDir);
     }
 
@@ -95,7 +97,7 @@ public class DirectoryChooser extends ListActivity {
 
     private void onFileClick(MenuObj obj) {
         Intent intent = new Intent();
-        intent.putExtra("GetFolderPath", workingDir.toString());
+        intent.putExtra(FOLDER_PATH, workingDir.toString());
         setResult(RESULT_OK, intent);
         finish();
     }

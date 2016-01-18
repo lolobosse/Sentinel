@@ -32,7 +32,6 @@ import de.tum.in.i22.sentinel.android.app.package_getter.Hash;
 
 public class ToServerFragment extends Fragment {
 
-    TextView summary;
     File sourceFile, sinkFile, taintFile, apkFile;
 
     String hash;
@@ -45,6 +44,8 @@ public class ToServerFragment extends Fragment {
         String source = args.getString(InstrumentFragment.SOURCES);
         String sink = args.getString(InstrumentFragment.SINKS);
         String taintWrapper = args.getString(InstrumentFragment.TAINT);
+
+        // TODO Lolo if a sink/source/wrapper hasn't been specified in previous view, these keys return an "empty" string. Should they not return null instead?
         apkFile = getFile(apk, InstrumentFragment.APK);
         sourceFile = getFile(source, InstrumentFragment.SOURCES);
         sinkFile = getFile(sink, InstrumentFragment.SINKS);
@@ -57,9 +58,10 @@ public class ToServerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.to_server_fragment, container, false);
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
-        // TODO: Write a text there with paths.
-        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sources: </b>"
-                + sourceFile + "<br><b>Sinks: </b>" + sinkFile + "<br><b>Taint Wrapper: </b>" + taintFile);
+
+        // Displays a summary of previously selected files to the user
+        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sinks: </b>"
+                + sinkFile + "<br><b>Sources: </b>" + sourceFile + "<br><b>Taint Wrapper: </b>" + taintFile);
         summaryText.setText(displayText);
 
         // TODO Refactor that

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.PostInstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Utils;
@@ -88,9 +89,14 @@ public class MainActivity extends AppCompatActivity
             setTitle("Settings");
             ft.commit();
 
-        } else if (id == R.id.nav_playstore) { // PlayStore
+        } else if (id == R.id.nav_playstore) { // PlayStore fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PlaystoreFragment());
+            setTitle("PlayStore");
+            ft.commit();
+        } else if (id == R.id.nav_PostInstrument) { // PostInstrument fragment
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainViewContainer, new PostInstrumentFragment());
             setTitle("PlayStore");
             ft.commit();
         }
