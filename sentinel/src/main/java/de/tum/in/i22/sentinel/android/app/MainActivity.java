@@ -87,10 +87,10 @@ public class MainActivity extends AppCompatActivity
             setTitle("Settings");
             ft.commit();
 
-        } else if (id == R.id.nav_playstore) { // Playstore
+        } else if (id == R.id.nav_playstore) { // PlayStore
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PlaystoreFragment());
-            setTitle("Playstore");
+            setTitle("PlayStore");
             ft.commit();
         }
 
