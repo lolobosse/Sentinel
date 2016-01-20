@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,14 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
 
     GridView gridView;
     List<PackageGetter.Package> packages;
+    ImageAdapter adapter;
     OnPackageChosen callback;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.playstore_layout, container, false);
+        gridView = (GridView) view.findViewById(R.id.pictureGrid);
 
         packages = new ArrayList<>();
 
@@ -43,10 +46,8 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
                 PackageGetter.getPackages(PlaystoreFragment.this, getActivity());
             }
         };
-        t.start();
 
-        gridView = (GridView) view.findViewById(R.id.pictureGrid);
-        gridView.setAdapter(new ImageAdapter(getActivity()));
+        t.start();
 
         return view;
     }
@@ -62,14 +63,15 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
             @Override
             public void run() {
                 PlaystoreFragment.this.packages = packages;
-                /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                adapter = new ImageAdapter(getActivity());
+                adapter.notifyDataSetChanged();
+                gridView.setAdapter(adapter);
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        if (callback != null) {
-                            callback.onPackageSet(packages.get(i % packages.size()));
-                        }
+                        Toast.makeText(getActivity(), i, Toast.LENGTH_LONG).show();
                     }
-                });*/
+                });
             }
         });
     }

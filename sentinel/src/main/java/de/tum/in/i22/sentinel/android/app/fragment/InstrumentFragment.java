@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +54,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
 
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
-    Dialog d;
+    Dialog packageDialog;
 
 
     @Nullable
@@ -63,7 +62,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.instrument_fragment, container, false);
 
-        // Fins the textViews
+        // Finds the textViews
         appInputText = (EditText)view.findViewById(R.id.applicationInput);
         sinksInputText = (EditText) view.findViewById(R.id.sinksInput);
         sourceInputText = (EditText) view.findViewById(R.id.sourcesInput);
@@ -110,11 +109,12 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Button clearInputs = (Button)view.findViewById(R.id.clearButton);
 
 
-        // Applied the listeners
+        // Opens a dialog with installed packages the user can choose from, alternatively the user
+        // can pick one from the file system
         pickApplicationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                d = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
+                packageDialog = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
                     @Override
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
                         Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
@@ -155,6 +155,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             }
         });
 
+        // Creates a new fragment and delivers the path to selected files
         nextActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,16 +187,20 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     private void dismissDialog() {
-        d.dismiss();
+        packageDialog.dismiss();
     }
 
     private void showDialog() {
-        d.show();
+        packageDialog.show();
     }
 
+    /**
+     *
+     * @param fromRequest Is determined by which button was pressed in the fragment.
+     */
     public void getFile(int fromRequest) {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra(EXTENSION, INPUT_TXT);
+        intent.putExtra(EXTENSION, INPUT_TXT); // The putExtra is used in FileChooser to stop invalid file types from being selected
         // TODO Refactor fromRequest
         startActivityForResult(intent, fromRequest);
     }
@@ -204,6 +209,8 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        // Matches the request from which button was pressed, and updates the correct textView with
+        // the absolute path retrieved from the selected file
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
                 setApplicationPath(data.getStringExtra(ABSOLUTE_PATH));
@@ -227,6 +234,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     }
 
+    // Displays the selected file's absolute path to the user
     public void setApplicationPath(String applicationPath) {
         if (applicationPath == null) {
             appInputText.setText("");
@@ -263,6 +271,8 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         this.taintPath = taintPath;
     }
 
+    // If the view is destroyed it saves the paths to selected files in shared preferences in case
+    // the user navigates to different fragments and then wants to continue selecting files
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -280,6 +290,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         editor.apply();
     }
 
+    // Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
