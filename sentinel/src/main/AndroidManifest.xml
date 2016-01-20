@@ -25,6 +25,7 @@
 
         <activity android:name=".file_explorer.FileChooser"
                   android:label="Choose a file">
+            <!--TODO: Look the intent filter-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -38,6 +39,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity android:name="fr.xgouchet.xmleditor.AxelActivity"/>
 
         <service android:name="de.tum.in.i22.uc.pdp.android.pdpService">
             <intent-filter>

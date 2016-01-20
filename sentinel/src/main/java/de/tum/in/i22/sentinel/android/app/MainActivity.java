@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -12,10 +13,10 @@ import android.view.MenuItem;
 
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
-import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditorFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Utils;
+import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.policy_editor_enrico_way.PolicyEditor;
 
 
 public class MainActivity extends AppCompatActivity
@@ -66,15 +67,19 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_editor) { // Editor fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.mainViewContainer, new PolicyEditorFragment());
+            ft.replace(R.id.mainViewContainer, new PolicyEditor());
             setTitle("Editor");
             ft.commit();
+//            Intent i = new Intent(this, AxelActivity.class);
+//            startActivity(i);
 
         } else if (id == R.id.nav_status) { // Status fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new StatusFragment());
             setTitle("Status");
             ft.commit();
+
+
 
         } else if (id == R.id.nav_instrument) { // Instrument fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
