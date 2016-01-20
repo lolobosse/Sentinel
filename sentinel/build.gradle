@@ -42,7 +42,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.+'
     // App's dependencies, including test
     compile 'com.android.support:support-annotations:22.2.0'
-
     // Testing-only dependencies
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
