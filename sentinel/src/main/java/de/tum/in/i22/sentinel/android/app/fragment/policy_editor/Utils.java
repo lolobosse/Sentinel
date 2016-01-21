@@ -38,15 +38,14 @@ public class Utils {
         return null;
     }
 
-    // TODO Refactor variable names
     public static void initDefaultFiles(Context context) {
         try {
-            String[] names = {InstrumentFragment.SINKS, InstrumentFragment.SOURCES, InstrumentFragment.TAINT};
-            int[] toLookFor = {R.raw.sinks, R.raw.sources, R.raw.taint};
-            for (int i = 0; i < toLookFor.length; i++) {
-                int filePath = toLookFor[i];
-                String filename = names[i];
-                writeToFile(filename, filePath, context, null);
+            String[] definitionType = {InstrumentFragment.SINKS, InstrumentFragment.SOURCES, InstrumentFragment.TAINT};
+            int[] definitionFiles = {R.raw.sinks, R.raw.sources, R.raw.taint};
+            for (int i = 0; i < definitionFiles.length; i++) {
+                int definitionRes = definitionFiles[i];
+                String filename = definitionType[i];
+                writeToFile(filename, definitionRes, context, null);
 
             }
         } catch (Exception e) {
@@ -54,21 +53,20 @@ public class Utils {
         }
     }
 
-    private static void writeToFile(String filename, int whichRes, Context c, String where){
+    private static void writeToFile(String filename, int definitionRes, Context c, String filePath){
         try {
-            InputStream in = c.getResources().openRawResource(whichRes);
+            InputStream in = c.getResources().openRawResource(definitionRes);
             FileOutputStream out;
-            if (where == null){
+            if (filePath == null){
                 out = new FileOutputStream(new File(c.getFilesDir(), filename));
             }
             else {
-                // TODO Change names, remove comments
                 // create a File object for the parent directory
-                File wallpaperDirectory = new File(where);
+                File parentDirectory = new File(filePath);
                 // have the object build the directory structure, if needed.
-                wallpaperDirectory.mkdirs();
+                parentDirectory.mkdirs();
                 // create a File object for the output file
-                File outputFile = new File(wallpaperDirectory, filename);
+                File outputFile = new File(parentDirectory, filename);
                 // now attach the OutputStream to the file object, instead of a String representation
                 out = new FileOutputStream(outputFile);
             }

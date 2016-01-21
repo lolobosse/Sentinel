@@ -45,7 +45,6 @@ public class ToServerFragment extends Fragment {
         String sink = args.getString(InstrumentFragment.SINKS);
         String taintWrapper = args.getString(InstrumentFragment.TAINT);
 
-        // TODO Lolo if a sink/source/wrapper hasn't been specified in previous view, these keys return an "empty" string. Should they not return null instead?
         apkFile = getFile(apk, InstrumentFragment.APK);
         sourceFile = getFile(source, InstrumentFragment.SOURCES);
         sinkFile = getFile(sink, InstrumentFragment.SINKS);
@@ -64,13 +63,11 @@ public class ToServerFragment extends Fragment {
                 + sinkFile + "<br><b>Sources: </b>" + sourceFile + "<br><b>Taint Wrapper: </b>" + taintFile);
         summaryText.setText(displayText);
 
-        // TODO Refactor that
-        Button b = (Button) view.findViewById(R.id.launchServer);
+        Button toServerButton = (Button) view.findViewById(R.id.launchServer);
         final Button getAPK = (Button) view.findViewById(R.id.getAPK);
-        b.setOnClickListener(new View.OnClickListener() {
+        toServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback) {
                 APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
@@ -117,11 +114,12 @@ public class ToServerFragment extends Fragment {
         return view;
     }
 
+    // The "key" is supposedly not needed
     private File getFile(String path, String key) {
         if (!TextUtils.isEmpty(path)) {
             return new File(path);
         } else {
-            String defaultFilePath = getActivity().getFilesDir() + "/" + key;
+            String defaultFilePath = "Default";
             return new File(defaultFilePath);
         }
     }

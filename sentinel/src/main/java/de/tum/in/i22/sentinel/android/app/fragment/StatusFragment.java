@@ -135,8 +135,6 @@ public class StatusFragment extends Fragment{
     }
 
     private void deployPolicy(File pathToPolicy) {
-        // TODO Remove logs
-        Log.d("LOLO IS TESTING", "deployPolicy method");
         try {
             // Read in the policy file
             BufferedReader rdr = new BufferedReader(
@@ -146,7 +144,6 @@ public class StatusFragment extends Fragment{
             while ((line = rdr.readLine()) != null)
                 data += line + "\n";
             rdr.close();
-            Log.d("LOLO IS TESTING", "Policy file read.");
 
             // Deploy the policy
             Bundle event = new Bundle();
@@ -154,15 +151,11 @@ public class StatusFragment extends Fragment{
 
             Message m = Message.obtain();
             m.setData(event);
-            Log.d("LOLO IS TESTING", "sending deployment message");
             deployPolicyConnection.getMessenger().send(m);
-            Log.d("LOLO IS TESTING", "deployment message sent");
 
             Toast.makeText(getActivity(), "Policy deployed",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Log.e("LOLO IS TESTING", "Exception during deployment" + e);
-            Log.e("LOLO IS TESTING", e.getMessage());
             e.printStackTrace();
         }
     }

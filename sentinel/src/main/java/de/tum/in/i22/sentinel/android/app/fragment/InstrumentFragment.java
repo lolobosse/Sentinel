@@ -195,14 +195,16 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
-     *
-     * @param fromRequest Is determined by which button was pressed in the fragment.
+     * Opens up a file explorer via an intent and lets the user choose files from the local file system.
+     * Here the user is limited to .txt files as the source and sink definitions are contained
+     * within these type of files.
+     * @param requestCode Is determined by which button was pressed in the view fragment and will be
+     *                    sent and handled by the onActivityResult.
      */
-    public void getFile(int fromRequest) {
+    public void getFile(int requestCode) {
         Intent intent = new Intent(getActivity(), FileChooser.class);
         intent.putExtra(EXTENSION, INPUT_TXT); // The putExtra is used in FileChooser to stop invalid file types from being selected
-        // TODO Refactor fromRequest
-        startActivityForResult(intent, fromRequest);
+        startActivityForResult(intent, requestCode);
     }
 
 
@@ -290,7 +292,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         editor.apply();
     }
 
-    // Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed
+    // Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed to this fragment
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
