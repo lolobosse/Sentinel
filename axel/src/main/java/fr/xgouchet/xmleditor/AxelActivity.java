@@ -21,6 +21,7 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.KeyEvent;
@@ -610,7 +611,10 @@ public class AxelActivity extends Activity implements
 		} else if ((action.equals(Intent.ACTION_VIEW))
 				|| (action.equals(Intent.ACTION_EDIT))) {
 			try {
-				file = new File(new URI(intent.getData().toString()));
+				// Very interesting for our app
+				Log.d("AxelActivity", "Saucisse");
+				// SO: http://stackoverflow.com/a/8370299/2545832
+				file = new File(new URI(intent.getData().toString()).getPath());
 				mEditor.doOpenFile(file, false);
 			} catch (URISyntaxException e) {
 				Crouton.makeText(this, R.string.toast_intent_invalid_uri,

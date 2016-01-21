@@ -29,6 +29,9 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
  */
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered{
 
+
+    // TODO Make this Strings public in a particular static class called constants (and also the colors)
+    public static final String INPUT_XML = ".xml";
     private final String LOG = "InstrumentFragment";
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
