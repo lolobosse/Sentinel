@@ -13,10 +13,9 @@ import android.view.MenuItem;
 
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditor;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.Utils;
-import de.tum.in.i22.sentinel.android.app.fragment.policy_editor.policy_editor_enrico_way.PolicyEditor;
 
 
 public class MainActivity extends AppCompatActivity
@@ -43,9 +42,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Utils.initDefaultFiles(this);
-        Utils.passPoliciesFromRawToFile(this);
-
         initParser();
     }
 
@@ -70,8 +66,6 @@ public class MainActivity extends AppCompatActivity
             ft.replace(R.id.mainViewContainer, new PolicyEditor());
             setTitle("Editor");
             ft.commit();
-//            Intent i = new Intent(this, AxelActivity.class);
-//            startActivity(i);
 
         } else if (id == R.id.nav_status) { // Status fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

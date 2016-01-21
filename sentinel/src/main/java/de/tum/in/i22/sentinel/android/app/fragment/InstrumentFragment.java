@@ -30,8 +30,10 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
  */
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered{
 
+
+    // TODO Make this Strings public in a particular static class called constants (and also the colors)
     public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
-    private final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt";
+    public static final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt", INPUT_XML = ".xml";
     public String applicationPath, sinksPath, sourcePath, taintPath;
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
@@ -194,6 +196,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
+                // TODO: Extract the GetAbsolute Path
                 setApplicationPath(data.getStringExtra("GetAbsolutePath"));
                 dismissDialog();
             }
