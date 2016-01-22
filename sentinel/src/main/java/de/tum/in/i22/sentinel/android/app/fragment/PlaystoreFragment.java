@@ -1,6 +1,10 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,13 +17,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
+import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
 
 /**
  * Created by Moderbord on 2016-01-13.
@@ -27,19 +31,20 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 
 public class PlaystoreFragment extends Fragment implements PackageGetter.Callback {
 
+    public static final String PACKAGE_IMAGE_FOCUSED = "packageImage_focused";
+    public static final String PACKAGE_TEXT_FOCUSED = "packageText_focused";
     GridView gridView;
-    List<PackageGetter.Package> packages;
-    ImageAdapter adapter;
-    OnPackageChosen callback;
+    GridAdapter adapter;
+    LayoutInflater inflater;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.playstore_layout, container, false);
+        this.inflater = inflater;
         gridView = (GridView) view.findViewById(R.id.pictureGrid);
 
-        packages = new ArrayList<>();
-
+        // TODO Retrieve applications from server rather than packages from local device
         Thread t = new Thread(){
             @Override
             public void run() {
@@ -54,7 +59,7 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
 
     @Override
     public void onError(Exception e) {
-
+        throw new RuntimeException(e);
     }
 
     @Override
@@ -62,39 +67,46 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                PlaystoreFragment.this.packages = packages;
-                adapter = new ImageAdapter(getActivity());
-                adapter.notifyDataSetChanged();
+                adapter = new GridAdapter(getActivity(), packages);
                 gridView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(getActivity(), i, Toast.LENGTH_LONG).show();
+                        // Temp variables for testing
+                        PackageGetter.Package packageItem = (PackageGetter.Package) adapterView.getItemAtPosition(i);
+
+                        // Converts package drawable to bitmap
+                        Drawable drawable = packageItem.getPackagePicture();
+                        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+
+                        Intent intent = new Intent(getActivity(), PlayStoreFocusable.class);
+                        intent.putExtra(PACKAGE_TEXT_FOCUSED, packageItem.getName());
+                        intent.putExtra(PACKAGE_IMAGE_FOCUSED, bitmap);
+                        startActivity(intent);
                     }
                 });
             }
         });
     }
 
-    public interface OnPackageChosen {
-        void onPackageSet(PackageGetter.Package selectedPackage);
-    }
-
-    private class ImageAdapter extends BaseAdapter{
+    private class GridAdapter extends BaseAdapter{
         private Context context;
+        private List<PackageGetter.Package> data;
 
-        public ImageAdapter(Context c){
+        public GridAdapter(Context c, List<PackageGetter.Package> packages){
             context = c;
+            data = packages;
         }
 
         @Override
         public int getCount() {
-            return 0;
+            return data.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return packages.get(position % packages.size());
+            return data.get(position % data.size());
         }
 
         @Override
@@ -103,20 +115,21 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
-            if (convertView == null) {
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setPadding(8, 8, 8, 8);
-            } else {
-                imageView = (ImageView) convertView;
-            }
+        public View getView(int position, View v, ViewGroup parent) {
+            v = inflater.inflate(R.layout.playstore_gridview, null);
 
-            imageView.setImageDrawable(((PackageGetter.Package) getItem(position)).getPackagePicture());
-            return imageView;
+            ImageView packageView = (ImageView) v.findViewById(R.id.packageView);
+            TextView packageName = (TextView) v.findViewById(R.id.packageName);
+
+            packageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            packageView.setPadding(8, 8, 8, 8);
+            packageView.setImageDrawable(((PackageGetter.Package) getItem(position)).getPackagePicture());
+
+            packageName.setText(((PackageGetter.Package)getItem(position)).getName());
+
+            return v;
         }
     }
 
 }
+

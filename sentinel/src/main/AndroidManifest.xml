@@ -40,6 +40,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".playstore.PlayStoreFocusable"
+                  android:label="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name="fr.xgouchet.xmleditor.AxelActivity"/>
 
         <service android:name="de.tum.in.i22.uc.pdp.android.pdpService">
