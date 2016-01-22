@@ -3,11 +3,15 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.AsyncHttpResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.backend.APKSender;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
@@ -28,9 +32,12 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered{
+public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered {
 
 
+    public static final String PACKAGE_NAME = "pn";
+    public static final String LOGO = "logo";
+    public static final String APP_NAME = "appname";
     // TODO Make this Strings public in a particular static class called constants (and also the colors)
     public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
     public static final String LOG = "InstrumentFragment", INPUT_APPLICATION = ".apk", INPUT_TXT = ".txt", INPUT_XML = ".xml";
@@ -38,10 +45,12 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
 
-    public static final String APK      = "apkPath";
-    public static final String SOURCES  = "sourcePath";
-    public static final String SINKS    = "sinkPath";
-    public static final String TAINT    = "taintPath";
+    private PackageGetter.Package selectedPackage;
+
+    public static final String APK = "apkPath";
+    public static final String SOURCES = "sourcePath";
+    public static final String SINKS = "sinkPath";
+    public static final String TAINT = "taintPath";
 
 
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
@@ -54,10 +63,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         view = inflater.inflate(R.layout.instrument_fragment, container, false);
 
         // Fins the textViews
-        appInputText = (EditText)view.findViewById(R.id.applicationInput);
+        appInputText = (EditText) view.findViewById(R.id.applicationInput);
         sinksInputText = (EditText) view.findViewById(R.id.sinksInput);
         sourceInputText = (EditText) view.findViewById(R.id.sourcesInput);
-        taintInputText= (EditText) view.findViewById(R.id.taintInput);
+        taintInputText = (EditText) view.findViewById(R.id.taintInput);
 
         // Loads paths to chosen files from SharedPreferences
         SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
@@ -92,12 +101,12 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         // End test
 
         // Finds the buttons
-        Button pickApplicationButton = (Button)view.findViewById(R.id.applicationButton);
-        Button pickSinksButton = (Button)view.findViewById(R.id.sinksButton);
-        Button pickSourceButton = (Button)view.findViewById(R.id.sourcesButton);
-        Button pickTaintButton = (Button)view.findViewById(R.id.taintButton);
-        Button nextActivity = (Button)view.findViewById(R.id.nextActivityButton);
-        Button clearInputs = (Button)view.findViewById(R.id.clearButton);
+        Button pickApplicationButton = (Button) view.findViewById(R.id.applicationButton);
+        Button pickSinksButton = (Button) view.findViewById(R.id.sinksButton);
+        Button pickSourceButton = (Button) view.findViewById(R.id.sourcesButton);
+        Button pickTaintButton = (Button) view.findViewById(R.id.taintButton);
+        Button nextActivity = (Button) view.findViewById(R.id.nextActivityButton);
+        Button clearInputs = (Button) view.findViewById(R.id.clearButton);
 
 
         // Applied the listeners
@@ -109,14 +118,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
                         Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
                         setApplicationPath(selectedPackage.getPath());
-                        APKSender.getInstance().sendFiles(null, null, null, selectedPackage, new AsyncHttpClient.StringCallback() {
-
-
-                            @Override
-                            public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
-                                Log.d("LA BITE", "Completed");
-                            }
-                        });
+                        InstrumentFragment.this.selectedPackage = selectedPackage;
                         dismissDialog();
                     }
                 }, InstrumentFragment.this);
@@ -155,6 +157,12 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 b.putString(SOURCES, sourcePath);
                 b.putString(SINKS, sinksPath);
                 b.putString(TAINT, taintPath);
+                Log.d("InstrumentFragment", "onClick");
+                if (selectedPackage != null) {
+                    b.putString(LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
+                    b.putString(APP_NAME, selectedPackage.getName());
+                    b.putString(PACKAGE_NAME, selectedPackage.getPackageName());
+                }
                 toServerFragment.setArguments(b);
                 ft.replace(R.id.mainViewContainer, toServerFragment);
                 ft.commit();
@@ -194,22 +202,22 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == PICK_APPLICATION_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        if (requestCode == PICK_APPLICATION_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 // TODO: Extract the GetAbsolute Path
                 setApplicationPath(data.getStringExtra("GetAbsolutePath"));
                 dismissDialog();
             }
-        } else if (requestCode == PICK_SINKS_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_SINKS_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setSinksPath(data.getStringExtra("GetAbsolutePath"));
             }
-        } else if (requestCode == PICK_SOURCE_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_SOURCE_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setSourcePath(data.getStringExtra("GetAbsolutePath"));
             }
-        } else if (requestCode == PICK_TAINT_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_TAINT_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setTaintPath(data.getStringExtra("GetAbsolutePath"));
             }
         } else {
@@ -276,5 +284,50 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Intent intent = new Intent(getActivity(), FileChooser.class);
         intent.putExtra("extension", INPUT_APPLICATION);
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+
+    private File createFileFromDrawable(Drawable d) {
+        Bitmap b = drawableToBitmap(d);
+        FileOutputStream out = null;
+        try {
+            File bitmapFile = new File(getActivity().getFilesDir(), "bitmap");
+            out = new FileOutputStream(bitmapFile);
+            b.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            return bitmapFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

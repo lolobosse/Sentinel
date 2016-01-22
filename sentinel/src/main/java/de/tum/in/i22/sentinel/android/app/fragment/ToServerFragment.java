@@ -33,8 +33,8 @@ import de.tum.in.i22.sentinel.android.app.package_getter.Hash;
 public class ToServerFragment extends Fragment {
 
     TextView summary;
-    File sourceFile, sinkFile, taintFile, apkFile;
-
+    File sourceFile, sinkFile, taintFile, apkFile, logo;
+    String appName, packageName;
     String hash;
 
     @Override
@@ -45,10 +45,15 @@ public class ToServerFragment extends Fragment {
         String source = args.getString(InstrumentFragment.SOURCES);
         String sink = args.getString(InstrumentFragment.SINKS);
         String taintWrapper = args.getString(InstrumentFragment.TAINT);
+        String logoPath = args.getString(InstrumentFragment.LOGO);
+        packageName = args.getString(InstrumentFragment.PACKAGE_NAME);
+        appName = args.getString(InstrumentFragment.APP_NAME);
         apkFile = getFile(apk, InstrumentFragment.APK);
         sourceFile = getFile(source, InstrumentFragment.SOURCES);
         sinkFile = getFile(sink, InstrumentFragment.SINKS);
         taintFile = getFile(taintWrapper, InstrumentFragment.TAINT);
+        logo = logoPath == null ? null : new File(logoPath);
+
 
     }
 
@@ -69,7 +74,7 @@ public class ToServerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback) {
-                APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
+                APKSender.getInstance().sendFiles(getActivity(), sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
                         if (e == null) {
@@ -87,7 +92,7 @@ public class ToServerFragment extends Fragment {
                             throw new RuntimeException(e);
                         }
                     }
-                });
+                }, logo, appName, packageName);
             }
         });
         getAPK.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +102,7 @@ public class ToServerFragment extends Fragment {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
                         if (e != null) {
+                            // TODO: Install from server should work
                             Log.d("ToServerFragment", "LAAA BITE A DUDUUUULE");
                         } else {
                             Exception b = e;
@@ -116,6 +122,7 @@ public class ToServerFragment extends Fragment {
     }
 
     private File getFile(String path, String key) {
+        // TODO Comment and document that
         if (!TextUtils.isEmpty(path)) {
             return new File(path);
         } else {

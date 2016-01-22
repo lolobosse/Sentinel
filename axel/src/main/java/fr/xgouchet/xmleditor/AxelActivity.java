@@ -613,8 +613,11 @@ public class AxelActivity extends Activity implements
 			try {
 				// Very interesting for our app
 				Log.d("AxelActivity", "Saucisse");
+
 				// SO: http://stackoverflow.com/a/8370299/2545832
-				file = new File(new URI(intent.getData().toString()).getPath());
+				String spec = intent.getData().toString();
+				Log.d("AxelActivity", spec);
+				file = new File(new URI(spec).getPath());
 				mEditor.doOpenFile(file, false);
 			} catch (URISyntaxException e) {
 				Crouton.makeText(this, R.string.toast_intent_invalid_uri,
