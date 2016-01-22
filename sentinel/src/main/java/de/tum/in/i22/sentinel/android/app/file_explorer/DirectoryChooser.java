@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.file_explorer;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -22,14 +23,17 @@ import de.tum.in.i22.sentinel.android.app.R;
  */
 public class DirectoryChooser extends ListActivity {
 
+    public static final String FOLDER_PATH = "GetFolderPath";
     private File workingDir;
     private FileArrayAdapter adapter;
     private String setDirectory = "Choose this directory";
+    private String storageDirectoryPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        workingDir = new File("/sdcard/");
+        storageDirectoryPath = Environment.getExternalStorageDirectory().getPath();
+        workingDir = new File(storageDirectoryPath);
         fill(workingDir);
     }
 
@@ -72,7 +76,7 @@ public class DirectoryChooser extends ListActivity {
 
         // If working directory isn't in root, append a MenuObj for user to select this directory
         // and another MenuObj to be able to navigate to parent directory
-        if (!workingDir.getName().equalsIgnoreCase("sdcard")) {
+        if (!workingDir.getPath().equalsIgnoreCase(storageDirectoryPath)) {
             dirs.add(0, new MenuObj(setDirectory, "", "", workingDir.getParent(), "directory_pick"));
             dirs.add(1, new MenuObj("..", "Parent directory", "", workingDir.getParent(), "directory_up"));
         }
@@ -95,7 +99,7 @@ public class DirectoryChooser extends ListActivity {
 
     private void onFileClick(MenuObj obj) {
         Intent intent = new Intent();
-        intent.putExtra("GetFolderPath", workingDir.toString());
+        intent.putExtra(FOLDER_PATH, workingDir.toString());
         setResult(RESULT_OK, intent);
         finish();
     }

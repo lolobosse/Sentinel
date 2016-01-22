@@ -20,6 +20,9 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
  */
 public class SettingsFragment extends Fragment{
 
+    public static final String FOLDER_PATH = "GetFolderPath";
+    public static final String COLOR_DARK = "#202020";
+    public static final String COLOR_GREY = "#c5c5c5";
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
     private Switch saveToSwitch, postInstallSwitch;
@@ -36,18 +39,20 @@ public class SettingsFragment extends Fragment{
         postInstallSwitch = (Switch) view.findViewById(R.id.installSwitch);
         saveToPath = (TextView) view.findViewById(R.id.saveToPath);
 
-
+        // Toggles if the user automatically wants to save applications retrieved from the server
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Changes the colour on the saveToFile textview for feedback to user
-                int active = Color.parseColor("#202020");
-                int inactive = Color.parseColor("#c5c5c5");
+                int active = Color.parseColor(COLOR_DARK);
+                int inactive = Color.parseColor(COLOR_GREY);
                 if (isChecked){
                     saveAPK = true;
                     saveToPath.setTextColor(active);
                     saveToPath.setEnabled(true);
-                    
+
+                    // Opens a file explorer of which the user can choose directory to save downloaded
+                    // application files into
                     saveToPath.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -64,6 +69,7 @@ public class SettingsFragment extends Fragment{
             }
         });
 
+        // Toggles if the user wants to install given application retrieved from the server upon completion
         postInstallSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -78,12 +84,12 @@ public class SettingsFragment extends Fragment{
         return view;
     }
 
+    // If a directory is chosen it is displayed to the user here
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == FOLDER_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                savedAPKfolder = String.valueOf(data.getStringExtra("GetFolderPath"));
+                savedAPKfolder = String.valueOf(data.getStringExtra(FOLDER_PATH));
                 saveToPath.setText(savedAPKfolder);
             }
         }

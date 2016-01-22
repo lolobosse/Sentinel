@@ -1,6 +1,5 @@
 package de.tum.in.i22.sentinel.android.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +13,7 @@ import android.view.MenuItem;
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditor;
+import de.tum.in.i22.sentinel.android.app.fragment.PostInstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.StatusFragment;
 
@@ -87,10 +87,15 @@ public class MainActivity extends AppCompatActivity
             setTitle("Settings");
             ft.commit();
 
-        } else if (id == R.id.nav_playstore) { // Playstore
+        } else if (id == R.id.nav_playstore) { // PlayStore fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PlaystoreFragment());
-            setTitle("Playstore");
+            setTitle("PlayStore");
+            ft.commit();
+        } else if (id == R.id.nav_PostInstrument) { // PostInstrument fragment
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainViewContainer, new PostInstrumentFragment());
+            setTitle("Instrumented Applications");
             ft.commit();
         }
 

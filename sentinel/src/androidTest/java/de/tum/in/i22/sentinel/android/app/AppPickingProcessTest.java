@@ -28,6 +28,7 @@ public class AppPickingProcessTest extends AndroidTestCase {
                     new InputStreamReader(process.getInputStream()));
             String cLine;
             while ((cLine = bufferedReader.readLine()) != null) {
+                Log.d("AppPickingProcessTest", cLine);
                 if (cLine.contains("package"))
                     numberOfPackages++;
             }

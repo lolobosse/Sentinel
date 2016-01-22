@@ -53,8 +53,6 @@ public class ToServerFragment extends Fragment {
         sinkFile = getFile(sink, InstrumentFragment.SINKS);
         taintFile = getFile(taintWrapper, InstrumentFragment.TAINT);
         logo = logoPath == null ? null : new File(logoPath);
-
-
     }
 
     @Nullable
@@ -62,18 +60,17 @@ public class ToServerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.to_server_fragment, container, false);
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
-        // TODO: Write a text there with paths.
-        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sources: </b>"
-                + sourceFile + "<br><b>Sinks: </b>" + sinkFile + "<br><b>Taint Wrapper: </b>" + taintFile);
+
+        // Displays a summary of previously selected files to the user
+        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sinks: </b>"
+                + sinkFile + "<br><b>Sources: </b>" + sourceFile + "<br><b>Taint Wrapper: </b>" + taintFile);
         summaryText.setText(displayText);
 
-        // TODO Refactor that
-        Button b = (Button) view.findViewById(R.id.launchServer);
+        Button toServerButton = (Button) view.findViewById(R.id.launchServer);
         final Button getAPK = (Button) view.findViewById(R.id.getAPK);
-        b.setOnClickListener(new View.OnClickListener() {
+        toServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback) {
                 APKSender.getInstance().sendFiles(getActivity(), sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
@@ -121,12 +118,13 @@ public class ToServerFragment extends Fragment {
         return view;
     }
 
+    // The "key" is supposedly not needed
     private File getFile(String path, String key) {
         // TODO Comment and document that
         if (!TextUtils.isEmpty(path)) {
             return new File(path);
         } else {
-            String defaultFilePath = getActivity().getFilesDir() + "/" + key;
+            String defaultFilePath = "Default";
             return new File(defaultFilePath);
         }
     }

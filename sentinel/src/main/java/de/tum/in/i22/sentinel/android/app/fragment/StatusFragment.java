@@ -35,7 +35,11 @@ import de.tum.in.i22.uc.pdp.android.pdpService;
  */
 public class StatusFragment extends Fragment{
 
-    public final String SENTINEL = "sentinel", INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
+    public static final String SENTINEL = "sentinel";
+    public static final String XML = ".xml";
+    public static final String INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
+    public static final String EXTENSION = "extension";
+    public static final String ABSOLUTE_PATH = "GetAbsolutePath";
 
     private static de.tum.in.i22.uc.pdp.android.RemoteServiceConnection deployPolicyConnection = new de.tum.in.i22.uc.pdp.android.RemoteServiceConnection();
 
@@ -53,8 +57,7 @@ public class StatusFragment extends Fragment{
             public void onClick(View view) {
                 pdpServiceSwitch.setChecked(true);
                 Intent intent = new Intent(getActivity(), FileChooser.class);
-                intent.putExtra("extension", ".xml");
-                // TODO: Put that in a constant
+                intent.putExtra(EXTENSION, XML);
                 startActivityForResult(intent, 0);
             }
         });
@@ -132,8 +135,6 @@ public class StatusFragment extends Fragment{
     }
 
     private void deployPolicy(File pathToPolicy) {
-        // TODO Remove logs
-        Log.d("LOLO IS TESTING", "deployPolicy method");
         try {
             // Read in the policy file
             BufferedReader rdr = new BufferedReader(
@@ -143,7 +144,6 @@ public class StatusFragment extends Fragment{
             while ((line = rdr.readLine()) != null)
                 data += line + "\n";
             rdr.close();
-            Log.d("LOLO IS TESTING", "Policy file read.");
 
             // Deploy the policy
             Bundle event = new Bundle();
@@ -151,15 +151,11 @@ public class StatusFragment extends Fragment{
 
             Message m = Message.obtain();
             m.setData(event);
-            Log.d("LOLO IS TESTING", "sending deployment message");
             deployPolicyConnection.getMessenger().send(m);
-            Log.d("LOLO IS TESTING", "deployment message sent");
 
             Toast.makeText(getActivity(), "Policy deployed",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Log.e("LOLO IS TESTING", "Exception during deployment" + e);
-            Log.e("LOLO IS TESTING", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -167,8 +163,7 @@ public class StatusFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == 0){
-            // TODO Extract GetAbsolutPath to a constant
-            String pathToPolicy = data.getStringExtra("GetAbsolutePath");
+            String pathToPolicy = data.getStringExtra(ABSOLUTE_PATH);
             deployPolicy(new File(pathToPolicy));
         }
     }
