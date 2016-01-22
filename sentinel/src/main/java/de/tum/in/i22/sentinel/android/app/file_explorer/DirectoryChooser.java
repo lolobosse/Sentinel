@@ -26,9 +26,13 @@ public class DirectoryChooser extends ListActivity {
     public static final String FOLDER_PATH = "GetFolderPath";
     private File workingDir;
     private FileArrayAdapter adapter;
-    private String setDirectory = "Choose this directory";
+    private final String setDirectory = "Choose this directory";
     private String storageDirectoryPath;
 
+    /**
+     * Get the storage path to be displays and fire the view building method.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +41,23 @@ public class DirectoryChooser extends ListActivity {
         fill(workingDir);
     }
 
+    /**
+     * This methods fills the adapter with a human readable content representing the structure of
+     * the current directory
+     * @param workingDir:
+     */
     private void fill(File workingDir) {
-
         File[]folder = workingDir.listFiles();
         this.setTitle("Current directory: " + workingDir.getName());
         List<MenuObj>dirs = new ArrayList<MenuObj>();
 
         try {
             for (File f: folder){
-                // Sets the last modified date for each file and sub directory in current directory
-                String formatedDate = "";
+                // Sets the last modified date in the directory
+                String formattedDate = "";
 
-                // If there is a sub directory it displays number of containing files
+                // If there is a sub directory, it displays count of contained files
+                // Condition: it is a not hidden directory
                 if (f.isDirectory() && !f.isHidden()){
                     File[] subDir = f.listFiles();
                     int amount = 0;
@@ -56,6 +65,7 @@ public class DirectoryChooser extends ListActivity {
                         amount = subDir.length;
                     }
                     String numItem = String.valueOf(amount);
+                    // Singular/Plural
                     if (amount <= 1) {
                         numItem = numItem + " item";
                     } else {
@@ -63,12 +73,12 @@ public class DirectoryChooser extends ListActivity {
                     }
 
                     // Creates a directory MenuObj
-                    dirs.add(new MenuObj(f.getName(), numItem, formatedDate, f.getAbsolutePath(), "directory_icon"));
+                    dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), "directory_icon"));
 
                 }
             }
-        } catch (Exception e){
-
+        } catch (Exception e) {
+            Log.d("DirectoryChooser", "e:" + e);
         }
 
         // Sort the list of folders
@@ -77,6 +87,7 @@ public class DirectoryChooser extends ListActivity {
         // If working directory isn't in root, append a MenuObj for user to select this directory
         // and another MenuObj to be able to navigate to parent directory
         if (!workingDir.getPath().equalsIgnoreCase(storageDirectoryPath)) {
+            // 0 & 1 because we force these items to be at the top of the screen
             dirs.add(0, new MenuObj(setDirectory, "", "", workingDir.getParent(), "directory_pick"));
             dirs.add(1, new MenuObj("..", "Parent directory", "", workingDir.getParent(), "directory_up"));
         }
@@ -84,16 +95,25 @@ public class DirectoryChooser extends ListActivity {
         this.setListAdapter(adapter);
     }
 
+    /**
+     *
+     * @param l
+     * @param v
+     * @param position
+     * @param id
+     */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Log.d("DirectoryChooser", "position:" + position);
         MenuObj obj = adapter.getItem(position);
-        if (obj.getIcon().equalsIgnoreCase("directory_icon") || obj.getIcon().equalsIgnoreCase("directory_up")){
+        if (obj.getState() == MenuObj.STATE.FOLDER){
             workingDir = new File(obj.getPath());
             fill(workingDir);
-        } else if (obj.getName().equals(setDirectory)) {
-            onFileClick(obj);
+        } else {
+            boolean isChooseDirectoryButton = obj.getName().equals(setDirectory);
+            if (isChooseDirectoryButton) {
+                onFileClick(obj);
+            }
         }
     }
 

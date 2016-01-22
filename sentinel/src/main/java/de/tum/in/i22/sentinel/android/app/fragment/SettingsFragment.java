@@ -20,6 +20,7 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
  */
 public class SettingsFragment extends Fragment{
 
+
     public static final String FOLDER_PATH = "GetFolderPath";
     public static final String COLOR_DARK = "#202020";
     public static final String COLOR_GREY = "#c5c5c5";

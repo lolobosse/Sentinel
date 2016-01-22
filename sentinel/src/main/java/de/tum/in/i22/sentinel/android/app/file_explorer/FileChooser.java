@@ -18,6 +18,8 @@ import de.tum.in.i22.sentinel.android.app.R;
 
 /**
  * Created by Moderbord on 2016-01-06.
+ * Class responsible for displaying the directories AND the files and allows to pickup ONLY files.
+ * (Mandatory) Param to send in the {@see Intent}: "extension" : "the extension file you allow the user to pickup i.e. \".xml\""
  */
 public class FileChooser extends ListActivity {
 

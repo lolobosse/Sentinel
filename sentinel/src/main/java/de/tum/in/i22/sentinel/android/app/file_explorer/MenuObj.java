@@ -44,4 +44,17 @@ public class MenuObj implements Comparable<MenuObj> {
         }
     }
 
+    public STATE getState(){
+        if (this.getIcon().equalsIgnoreCase("directory_icon") || this.getIcon().equalsIgnoreCase("directory_up")){
+            return STATE.FOLDER;
+        }
+        else{
+            return STATE.FILE;
+        }
+    }
+
+    public enum STATE {FOLDER, FILE}
+
+
+
 }
