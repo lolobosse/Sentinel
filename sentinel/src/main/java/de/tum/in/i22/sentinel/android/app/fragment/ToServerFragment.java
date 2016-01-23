@@ -21,6 +21,7 @@ import com.koushikdutta.async.http.AsyncHttpResponse;
 
 import java.io.File;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKSender;
@@ -41,17 +42,17 @@ public class ToServerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        String apk = args.getString(InstrumentFragment.APK);
-        String source = args.getString(InstrumentFragment.SOURCES);
-        String sink = args.getString(InstrumentFragment.SINKS);
-        String taintWrapper = args.getString(InstrumentFragment.TAINT);
-        String logoPath = args.getString(InstrumentFragment.LOGO);
-        packageName = args.getString(InstrumentFragment.PACKAGE_NAME);
-        appName = args.getString(InstrumentFragment.APP_NAME);
-        apkFile = getFile(apk, InstrumentFragment.APK);
-        sourceFile = getFile(source, InstrumentFragment.SOURCES);
-        sinkFile = getFile(sink, InstrumentFragment.SINKS);
-        taintFile = getFile(taintWrapper, InstrumentFragment.TAINT);
+        String apk = args.getString(Constants.APK);
+        String source = args.getString(Constants.SOURCES);
+        String sink = args.getString(Constants.SINKS);
+        String taintWrapper = args.getString(Constants.TAINT);
+        String logoPath = args.getString(Constants.LOGO);
+        packageName = args.getString(Constants.PACKAGE_NAME);
+        appName = args.getString(Constants.APP_NAME);
+        apkFile = getFile(apk, Constants.APK);
+        sourceFile = getFile(source, Constants.SOURCES);
+        sinkFile = getFile(sink, Constants.SINKS);
+        taintFile = getFile(taintWrapper, Constants.TAINT);
         logo = logoPath == null ? null : new File(logoPath);
     }
 

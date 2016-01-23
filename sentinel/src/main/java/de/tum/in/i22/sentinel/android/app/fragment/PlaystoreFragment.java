@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
@@ -31,8 +32,6 @@ import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
 
 public class PlaystoreFragment extends Fragment implements PackageGetter.Callback {
 
-    public static final String PACKAGE_IMAGE_FOCUSED = "packageImage_focused";
-    public static final String PACKAGE_TEXT_FOCUSED = "packageText_focused";
     GridView gridView;
     GridAdapter adapter;
     LayoutInflater inflater;
@@ -81,8 +80,8 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
                         Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
 
                         Intent intent = new Intent(getActivity(), PlayStoreFocusable.class);
-                        intent.putExtra(PACKAGE_TEXT_FOCUSED, packageItem.getName());
-                        intent.putExtra(PACKAGE_IMAGE_FOCUSED, bitmap);
+                        intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.getName());
+                        intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, bitmap);
                         startActivity(intent);
                     }
                 });

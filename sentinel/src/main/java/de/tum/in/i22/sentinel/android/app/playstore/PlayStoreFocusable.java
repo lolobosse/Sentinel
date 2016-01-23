@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 
@@ -16,8 +17,8 @@ public class PlayStoreFocusable extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playstore_onclick);
 
-        String title = getIntent().getStringExtra(PlaystoreFragment.PACKAGE_TEXT_FOCUSED);
-        Bitmap bitmap = getIntent().getParcelableExtra(PlaystoreFragment.PACKAGE_IMAGE_FOCUSED);
+        String title = getIntent().getStringExtra(Constants.PACKAGE_TEXT_FOCUSED);
+        Bitmap bitmap = getIntent().getParcelableExtra(Constants.PACKAGE_IMAGE_FOCUSED);
 
         TextView titleTextView = (TextView) findViewById(R.id.packageName_focused);
         titleTextView.setText(title);

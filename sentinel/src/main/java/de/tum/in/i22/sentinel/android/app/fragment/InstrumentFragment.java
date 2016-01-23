@@ -7,12 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +20,8 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
@@ -34,37 +32,12 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
  */
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered {
 
-
-    public static final String PACKAGE_NAME = "pn";
-    public static final String LOGO = "logo";
-    public static final String APP_NAME = "appname";
-    // TODO Make this Strings public in a particular static class called constants (and also the colors)
-    public static final String INPUT_XML = ".xml";
-    private final String LOG = "InstrumentFragment";
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
     private View view;
 
     private PackageGetter.Package selectedPackage;
 
     public static String applicationPath, sinksPath, sourcePath, taintPath;
-
-    public static final String INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
-    public static final String SENTINEL = "sentinel";
-    public static final String ABSOLUTE_PATH = "GetAbsolutePath";
-    public static final String EXTENSION = "extension";
-    public static final String INPUT_APPLICATION = ".apk";
-    public static final String INPUT_TXT = ".txt";
-
-    public static final String SP_PATH_APP = "pathApp";
-    public static final String SP_PATH_SINKS = "pathSinks";
-    public static final String SP_PATH_SOURCES = "pathSources";
-    public static final String SP_PATH_TAINT = "pathTaint";
-
-    public static final String APK      = "apkPath";
-    public static final String SOURCES  = "sourcePath";
-    public static final String SINKS    = "sinkPath";
-    public static final String TAINT    = "taintPath";
-
 
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
     Dialog packageDialog;
@@ -82,11 +55,11 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         taintInputText = (EditText) view.findViewById(R.id.taintInput);
 
         // Loads paths to chosen files from SharedPreferences
-        SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-        String app = sp.getString(SP_PATH_APP, null);
-        String sinks = sp.getString(SP_PATH_SINKS, null);
-        String sources = sp.getString(SP_PATH_SOURCES, null);
-        String taint = sp.getString(SP_PATH_TAINT, null);
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
+        String app = sp.getString(Constants.SP_PATH_APP, null);
+        String sinks = sp.getString(Constants.SP_PATH_SINKS, null);
+        String sources = sp.getString(Constants.SP_PATH_SOURCES, null);
+        String taint = sp.getString(Constants.SP_PATH_TAINT, null);
 
         // Displays them in the textViews
         setApplicationPath(app);
@@ -130,7 +103,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 packageDialog = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
                     @Override
                     public void onPackageSet(PackageGetter.Package selectedPackage) {
-                        Log.d("InstrumentFragment", "selectedPackage:" + selectedPackage);
                         setApplicationPath(selectedPackage.getPath());
                         InstrumentFragment.this.selectedPackage = selectedPackage;
                         dismissDialog();
@@ -168,15 +140,14 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ToServerFragment toServerFragment = new ToServerFragment();
                 Bundle b = new Bundle();
-                b.putString(APK, applicationPath);
-                b.putString(SOURCES, sourcePath);
-                b.putString(SINKS, sinksPath);
-                b.putString(TAINT, taintPath);
-                Log.d("InstrumentFragment", "onClick");
+                b.putString(Constants.APK, applicationPath);
+                b.putString(Constants.SOURCES, sourcePath);
+                b.putString(Constants.SINKS, sinksPath);
+                b.putString(Constants.TAINT, taintPath);
                 if (selectedPackage != null) {
-                    b.putString(LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
-                    b.putString(APP_NAME, selectedPackage.getName());
-                    b.putString(PACKAGE_NAME, selectedPackage.getPackageName());
+                    b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
+                    b.putString(Constants.APP_NAME, selectedPackage.getName());
+                    b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
                 }
                 toServerFragment.setArguments(b);
                 ft.replace(R.id.mainViewContainer, toServerFragment);
@@ -215,7 +186,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      */
     public void getFile(int requestCode) {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra(EXTENSION, INPUT_TXT); // The putExtra is used in FileChooser to stop invalid file types from being selected
+        intent.putExtra(Constants.EXTENSION, Constants.INPUT_TXT); // The putExtra is used in FileChooser to stop invalid file types from being selected
         startActivityForResult(intent, requestCode);
     }
 
@@ -227,25 +198,22 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         // the absolute path retrieved from the selected file
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setApplicationPath(data.getStringExtra(ABSOLUTE_PATH));
+                setApplicationPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
                 dismissDialog();
             }
         } else if (requestCode == PICK_SINKS_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setSinksPath(data.getStringExtra(ABSOLUTE_PATH));
+                setSinksPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
         } else if (requestCode == PICK_SOURCE_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setSourcePath(data.getStringExtra(ABSOLUTE_PATH));
+                setSourcePath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
         } else if (requestCode == PICK_TAINT_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                setTaintPath(data.getStringExtra(ABSOLUTE_PATH));
+                setTaintPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
-        } else {
-            Log.d(LOG, "No pick request received");
         }
-
     }
 
     // Displays the selected file's absolute path to the user
@@ -291,16 +259,14 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public void onDestroyView() {
         super.onDestroyView();
 
-        Log.d("InstrumentFragment", "View Destroyed");
-
         String app = applicationPath, sinks = sinksPath, sources = sourcePath, taint = taintPath;
 
-        SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SP_PATH_APP, app);
-        editor.putString(SP_PATH_SINKS, sinks);
-        editor.putString(SP_PATH_SOURCES, sources);
-        editor.putString(SP_PATH_TAINT, taint);
+        editor.putString(Constants.SP_PATH_APP, app);
+        editor.putString(Constants.SP_PATH_SINKS, sinks);
+        editor.putString(Constants.SP_PATH_SOURCES, sources);
+        editor.putString(Constants.SP_PATH_TAINT, taint);
         editor.apply();
     }
 
@@ -308,7 +274,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
-        intent.putExtra(EXTENSION, INPUT_APPLICATION);
+        intent.putExtra(Constants.EXTENSION, Constants.INPUT_APK);
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
     }
 
@@ -339,7 +305,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Bitmap b = drawableToBitmap(d);
         FileOutputStream out = null;
         try {
-            File bitmapFile = new File(getActivity().getFilesDir(), "bitmap");
+            File bitmapFile = new File(getActivity().getFilesDir(), Constants.BITMAP);
             out = new FileOutputStream(bitmapFile);
             b.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             return bitmapFile;

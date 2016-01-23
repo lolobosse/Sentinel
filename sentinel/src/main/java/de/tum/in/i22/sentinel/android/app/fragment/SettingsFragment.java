@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 
@@ -20,16 +21,13 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
  */
 public class SettingsFragment extends Fragment{
 
-
-    public static final String FOLDER_PATH = "GetFolderPath";
-    public static final String COLOR_DARK = "#202020";
-    public static final String COLOR_GREY = "#c5c5c5";
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
     private Switch saveToSwitch, postInstallSwitch;
 
     public static String savedAPKfolder;
-    public static boolean saveAPK = false, postInstallAPK;
+    public static boolean saveAPK = false;
+    public static boolean  postInstallAPK = false;
 
     @Nullable
     @Override
@@ -45,8 +43,8 @@ public class SettingsFragment extends Fragment{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Changes the colour on the saveToFile textview for feedback to user
-                int active = Color.parseColor(COLOR_DARK);
-                int inactive = Color.parseColor(COLOR_GREY);
+                int active = Color.parseColor(Constants.COLOR_DARK);
+                int inactive = Color.parseColor(Constants.COLOR_GREY);
                 if (isChecked){
                     saveAPK = true;
                     saveToPath.setTextColor(active);
@@ -90,7 +88,7 @@ public class SettingsFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FOLDER_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
-                savedAPKfolder = String.valueOf(data.getStringExtra(FOLDER_PATH));
+                savedAPKfolder = String.valueOf(data.getStringExtra(Constants.DIRECTORY_PATH));
                 saveToPath.setText(savedAPKfolder);
             }
         }

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.List;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.uc.pdp.android.ServiceBoundListener;
@@ -34,12 +35,6 @@ import de.tum.in.i22.uc.pdp.android.pdpService;
  * Created by laurentmeyer on 23/12/15.
  */
 public class StatusFragment extends Fragment{
-
-    public static final String SENTINEL = "sentinel";
-    public static final String XML = ".xml";
-    public static final String INSTRUMENTED_APPLICATIONS = "instrumentedApplications";
-    public static final String EXTENSION = "extension";
-    public static final String ABSOLUTE_PATH = "GetAbsolutePath";
 
     private static de.tum.in.i22.uc.pdp.android.RemoteServiceConnection deployPolicyConnection = new de.tum.in.i22.uc.pdp.android.RemoteServiceConnection();
 
@@ -57,7 +52,7 @@ public class StatusFragment extends Fragment{
             public void onClick(View view) {
                 pdpServiceSwitch.setChecked(true);
                 Intent intent = new Intent(getActivity(), FileChooser.class);
-                intent.putExtra(EXTENSION, XML);
+                intent.putExtra(Constants.EXTENSION, Constants.INPUT_XML);
                 startActivityForResult(intent, 0);
             }
         });
@@ -129,8 +124,8 @@ public class StatusFragment extends Fragment{
      * Returns the amount of instrumented applications
      */
     public int instrumentedApplications(){
-        SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-        int retrievedAmount = sp.getInt(INSTRUMENTED_APPLICATIONS, 0);
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
+        int retrievedAmount = sp.getInt(Constants.INSTRUMENTED_APPLICATIONS, 0);
         return retrievedAmount;
     }
 
@@ -163,7 +158,7 @@ public class StatusFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == 0){
-            String pathToPolicy = data.getStringExtra(ABSOLUTE_PATH);
+            String pathToPolicy = data.getStringExtra(Constants.ABSOLUTE_PATH);
             deployPolicy(new File(pathToPolicy));
         }
     }

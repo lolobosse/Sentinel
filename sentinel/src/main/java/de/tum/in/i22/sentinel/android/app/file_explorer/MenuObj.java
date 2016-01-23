@@ -1,5 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.file_explorer;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
+
 /**
  * Created by Moderbord on 2016-01-06.
  */
@@ -45,7 +47,7 @@ public class MenuObj implements Comparable<MenuObj> {
     }
 
     public STATE getState(){
-        if (this.getIcon().equalsIgnoreCase("directory_icon") || this.getIcon().equalsIgnoreCase("directory_up")){
+        if (this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_ICON) || this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_UP)){
             return STATE.FOLDER;
         }
         else{

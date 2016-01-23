@@ -4,18 +4,15 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 
 /**
@@ -23,10 +20,9 @@ import de.tum.in.i22.sentinel.android.app.R;
  */
 public class DirectoryChooser extends ListActivity {
 
-    public static final String FOLDER_PATH = "GetFolderPath";
     private File workingDir;
     private FileArrayAdapter adapter;
-    private final String setDirectory = "Choose this directory";
+    private final String SET_DIRECTORY = "Choose this directory";
     private String storageDirectoryPath;
 
     /**
@@ -56,8 +52,8 @@ public class DirectoryChooser extends ListActivity {
                 // Sets the last modified date in the directory
                 String formattedDate = "";
 
-                // If there is a sub directory, it displays count of contained files
-                // Condition: it is a not hidden directory
+                // If there is a sub directory, it displays the count of contained files
+                // Condition: If it is not a hidden directory
                 if (f.isDirectory() && !f.isHidden()){
                     File[] subDir = f.listFiles();
                     int amount = 0;
@@ -73,12 +69,12 @@ public class DirectoryChooser extends ListActivity {
                     }
 
                     // Creates a directory MenuObj
-                    dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), "directory_icon"));
+                    dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), Constants.DIRECTORY_ICON));
 
                 }
             }
         } catch (Exception e) {
-            Log.d("DirectoryChooser", "e:" + e);
+            throw new RuntimeException(e);
         }
 
         // Sort the list of folders
@@ -88,8 +84,8 @@ public class DirectoryChooser extends ListActivity {
         // and another MenuObj to be able to navigate to parent directory
         if (!workingDir.getPath().equalsIgnoreCase(storageDirectoryPath)) {
             // 0 & 1 because we force these items to be at the top of the screen
-            dirs.add(0, new MenuObj(setDirectory, "", "", workingDir.getParent(), "directory_pick"));
-            dirs.add(1, new MenuObj("..", "Parent directory", "", workingDir.getParent(), "directory_up"));
+            dirs.add(0, new MenuObj(SET_DIRECTORY, "", "", workingDir.getParent(), Constants.DIRECTORY_PICK));
+            dirs.add(1, new MenuObj("..", Constants.PARENT_DIRECTORY, "", workingDir.getParent(), Constants.DIRECTORY_UP));
         }
         adapter = new FileArrayAdapter(DirectoryChooser.this, R.layout.instrument_fragment, R.layout.file_explorer, dirs);
         this.setListAdapter(adapter);
@@ -110,16 +106,16 @@ public class DirectoryChooser extends ListActivity {
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else {
-            boolean isChooseDirectoryButton = obj.getName().equals(setDirectory);
+            boolean isChooseDirectoryButton = obj.getName().equals(SET_DIRECTORY);
             if (isChooseDirectoryButton) {
-                onFileClick(obj);
+                directoryChosen();
             }
         }
     }
 
-    private void onFileClick(MenuObj obj) {
+    private void directoryChosen() {
         Intent intent = new Intent();
-        intent.putExtra(FOLDER_PATH, workingDir.toString());
+        intent.putExtra(Constants.DIRECTORY_PATH, workingDir.toString());
         setResult(RESULT_OK, intent);
         finish();
     }

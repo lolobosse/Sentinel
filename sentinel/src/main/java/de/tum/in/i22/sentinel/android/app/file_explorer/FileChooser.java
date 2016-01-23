@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.file_explorer;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 
 /**
@@ -26,12 +28,14 @@ public class FileChooser extends ListActivity {
     private File workingDir;
     private FileArrayAdapter adapter;
     private String fileExt;
+    private String storageDirectoryPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fileExt = getIntent().getStringExtra("extension");
-        workingDir = new File("/sdcard/");
+        fileExt = getIntent().getStringExtra(Constants.EXTENSION);
+        storageDirectoryPath = Environment.getExternalStorageDirectory().getPath();
+        workingDir = new File(storageDirectoryPath);
         fill(workingDir);
     }
 
@@ -44,12 +48,13 @@ public class FileChooser extends ListActivity {
 
         try {
             for (File f: folder){
-                // Sets the last modified date for each file and sub directory in current directory
+                // Sets the last modified date in the directory
                 Date modifiedDate = new Date(f.lastModified());
-                DateFormat formater = DateFormat.getDateTimeInstance();
-                String formatedDate = formater.format(modifiedDate);
+                DateFormat formatter = DateFormat.getDateTimeInstance();
+                String formattedDate = formatter.format(modifiedDate);
 
-                // If there is a sub directory it displays number of containing files
+                // If there is a sub directory, it displays the count of contained files
+                // Condition: If it is not a hidden directory
                 if (f.isDirectory() && !f.isHidden()){
                     File[] subDir = f.listFiles();
                     int amount = 0;
@@ -57,6 +62,7 @@ public class FileChooser extends ListActivity {
                         amount = subDir.length;
                     }
                     String numItem = String.valueOf(amount);
+                    // Singular/Plural
                     if (amount <= 1) {
                         numItem = numItem + " item";
                     } else {
@@ -64,25 +70,27 @@ public class FileChooser extends ListActivity {
                     }
 
                     // Creates a directory MenuObj
-                    dirs.add(new MenuObj(f.getName(), numItem, formatedDate, f.getAbsolutePath(), "directory_icon"));
+                    dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), Constants.DIRECTORY_ICON));
 
+                    // Condition: If it is not a hidden file
                 } else  if (!f.isHidden()){
                     // Creates a file MenuObj
-                    files.add(new MenuObj(f.getName(), f.length() / 1000 + " kB", formatedDate, f.getAbsolutePath(), "file_icon"));
+                    files.add(new MenuObj(f.getName(), f.length() / 1000 + " kB", formattedDate, f.getAbsolutePath(), Constants.FILE_ICON));
                 }
             }
         } catch (Exception e){
-
+            throw new RuntimeException(e);
         }
 
-        // Sort both lists and then appends all MenuObj's in 'files' to 'dirs' which should appears below directories
+        // Sort both lists in alphabetical order and then appends all MenuObj's in 'files' to 'dirs'
+        // This makes all files appear below folders
         Collections.sort(dirs);
         Collections.sort(files);
         dirs.addAll(files);
 
         // If working directory isn't in root, append an MenuObj for user to navigate to parent directory
-        if (!workingDir.getName().equalsIgnoreCase("sdcard")) {
-            dirs.add(0, new MenuObj("..", "Parent directory", "", workingDir.getParent(), "directory_up"));
+        if (!workingDir.getPath().equalsIgnoreCase(storageDirectoryPath)) {
+            dirs.add(0, new MenuObj("..", Constants.PARENT_DIRECTORY, "", workingDir.getParent(), Constants.DIRECTORY_UP));
         }
         adapter = new FileArrayAdapter(FileChooser.this, R.layout.instrument_fragment, R.layout.file_explorer, dirs);
         this.setListAdapter(adapter);
@@ -93,7 +101,7 @@ public class FileChooser extends ListActivity {
         super.onListItemClick(l, v, position, id);
 
         MenuObj obj = adapter.getItem(position);
-        if (obj.getIcon().equalsIgnoreCase("directory_icon") || obj.getIcon().equalsIgnoreCase("directory_up")){
+        if (obj.getState() == MenuObj.STATE.FOLDER){
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else if (!obj.getName().endsWith(fileExt)) {
@@ -106,9 +114,7 @@ public class FileChooser extends ListActivity {
 
     private void onFileClick(MenuObj obj) {
         Intent intent = new Intent();
-        intent.putExtra("GetAbsolutePath", obj.getPath());
-        intent.putExtra("GetPath", workingDir.toString());
-        intent.putExtra("GetFileName", obj.getName());
+        intent.putExtra(Constants.ABSOLUTE_PATH, obj.getPath());
         setResult(RESULT_OK, intent);
         finish();
     }

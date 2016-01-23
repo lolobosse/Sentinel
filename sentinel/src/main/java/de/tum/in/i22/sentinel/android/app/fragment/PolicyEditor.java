@@ -17,6 +17,8 @@ import android.widget.Button;
 
 import java.io.File;
 
+import ae.com.sun.xml.bind.v2.runtime.reflect.opt.Const;
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 
@@ -46,7 +48,7 @@ public class PolicyEditor extends Fragment{
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (i == 0){
                             Intent intent = new Intent(PolicyEditor.this.getActivity(), FileChooser.class);
-                            intent.putExtra("extension", InstrumentFragment.INPUT_XML);
+                            intent.putExtra(Constants.EXTENSION, Constants.INPUT_XML);
                             startActivityForResult(intent, filePickingRequest);
                         }
                         else{
@@ -86,7 +88,7 @@ public class PolicyEditor extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == filePickingRequest && resultCode == Activity.RESULT_OK){
-            String absolutePath = data.getStringExtra("GetAbsolutePath");
+            String absolutePath = data.getStringExtra(Constants.ABSOLUTE_PATH);
             Uri toSend = Uri.parse(new File(absolutePath).toString());
             startNewActivity(getActivity(), AXEL_PACKAGE_NAME, toSend);
         }
