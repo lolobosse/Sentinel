@@ -42,13 +42,14 @@ public class SettingsFragment extends Fragment{
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Changes the colour on the saveToFile textview for feedback to user
+                // Colour change for interactive feedback
                 int active = Color.parseColor(Constants.COLOR_DARK);
                 int inactive = Color.parseColor(Constants.COLOR_GREY);
                 if (isChecked){
+                    // Switch is active
                     saveAPK = true;
                     saveToPath.setTextColor(active);
-                    saveToPath.setEnabled(true);
+                    saveToPath.setEnabled(true); // Enables the component to be clickable
 
                     // Opens a file explorer of which the user can choose directory to save downloaded
                     // application files into
@@ -61,9 +62,10 @@ public class SettingsFragment extends Fragment{
                     });
                     
                 } else {
+                    // Switch is inactive
                     saveAPK = false;
                     saveToPath.setTextColor(inactive);
-                    saveToPath.setEnabled(false);
+                    saveToPath.setEnabled(false); // Disable the component, but remains visible
                 }
             }
         });
@@ -83,7 +85,13 @@ public class SettingsFragment extends Fragment{
         return view;
     }
 
-    // If a directory is chosen it is displayed to the user here
+    /**
+     * If an intent was sent to {@see de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser}
+     * the result is handled by this method.
+     * @param requestCode Determined by which activity that is trying to send data
+     * @param resultCode Integer value based on operation success, cancellation, or pre-defined activity results
+     * @param data The intent data that was returned from the launched activity
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FOLDER_REQUEST){

@@ -48,6 +48,11 @@ public class StatusFragment extends Fragment{
         final Switch pdpServiceSwitch = (Switch) view.findViewById(R.id.pdpSwitch);
         Button deployPolicy = (Button) view.findViewById(R.id.deployPolicy);
         deployPolicy.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Coming directly from PDP
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 pdpServiceSwitch.setChecked(true);
@@ -110,8 +115,8 @@ public class StatusFragment extends Fragment{
     }
 
     /**
-     *
      * Returns a list of all packages installed on the device
+     *
      */
     public List installedApplications(){
         PackageManager pm = getActivity().getPackageManager();
@@ -120,13 +125,14 @@ public class StatusFragment extends Fragment{
     }
 
     /**
+     * Returns the amount of instrumented applications from shared preferences
      *
-     * Returns the amount of instrumented applications
      */
     public int instrumentedApplications(){
-        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
-        int retrievedAmount = sp.getInt(Constants.INSTRUMENTED_APPLICATIONS, 0);
-        return retrievedAmount;
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+        final int defaultValue = 0;
+        int instrumentedApplications = sp.getInt(Constants.INSTRUMENTED_APPLICATIONS, defaultValue);
+        return instrumentedApplications;
     }
 
     private void deployPolicy(File pathToPolicy) {

@@ -1,6 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
@@ -42,7 +44,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
     Dialog packageDialog;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         taintInputText = (EditText) view.findViewById(R.id.taintInput);
 
         // Loads paths to chosen files from SharedPreferences
-        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
         String app = sp.getString(Constants.SP_PATH_APP, null);
         String sinks = sp.getString(Constants.SP_PATH_SINKS, null);
         String sources = sp.getString(Constants.SP_PATH_SOURCES, null);
@@ -112,7 +113,21 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             }
         });
 
+        appInputText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InstrumentFragment.this.onClick();
+            }
+        });
+
         pickSinksButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFile(PICK_SINKS_REQUEST);
+            }
+        });
+
+        sinksInputText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFile(PICK_SINKS_REQUEST);
@@ -121,12 +136,24 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         pickSourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                getFile(PICK_SOURCE_REQUEST);
+            public void onClick(View v) {getFile(PICK_SOURCE_REQUEST);
+            }
+        });
+
+        sourceInputText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {getFile(PICK_SOURCE_REQUEST);
             }
         });
 
         pickTaintButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFile(PICK_TAINT_REQUEST);
+            }
+        });
+
+        taintInputText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFile(PICK_TAINT_REQUEST);
@@ -169,17 +196,25 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         return view;
     }
 
+    /**
+     * Dismisses the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog} shown in this fragment
+     */
     private void dismissDialog() {
-        packageDialog.dismiss();
+        if (packageDialog != null) {
+            packageDialog.dismiss();
+        }
     }
 
+    /**
+     * Displays the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog} defined in this fragment
+     */
     private void showDialog() {
         packageDialog.show();
     }
 
     /**
      * Opens up a file explorer via an intent and lets the user choose files from the local file system.
-     * Here the user is limited to .txt files as the source and sink definitions are contained
+     * Here the user is limited to .txt files as the source, sinks, and taint wrapper definitions are contained
      * within these type of files.
      * @param requestCode Is determined by which button was pressed in the view fragment and will be
      *                    sent and handled by the onActivityResult.
@@ -190,12 +225,18 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         startActivityForResult(intent, requestCode);
     }
 
-
+    /**
+     * If an intent was sent to {@see de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser}
+     * the result is handled by this method. Also updates the interface to display the path of the
+     * File that is passed by the intent.
+     * @param requestCode Determined by which component in the View that is trying to send data
+     * @param resultCode Integer value based on operation success, cancellation, or pre-defined activity results
+     * @param data The intent data that was returned from the launched activity
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // Matches the request from which button was pressed, and updates the correct textView with
-        // the absolute path retrieved from the selected file
+        // Matches the requestCode from which button was pressed, and updates the correct textView with
+        // the absolute path retrieved from data
         if (requestCode == PICK_APPLICATION_REQUEST){
             if (resultCode == getActivity().RESULT_OK){
                 setApplicationPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
@@ -216,7 +257,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         }
     }
 
-    // Displays the selected file's absolute path to the user
+    /**
+     * Displays a given String in a TextView
+     * @param applicationPath The String value that is to be set. If null: ""
+     */
     public void setApplicationPath(String applicationPath) {
         if (applicationPath == null) {
             appInputText.setText("");
@@ -226,6 +270,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         this.applicationPath = applicationPath;
     }
 
+    /**
+     * Displays a given String in a TextView
+     * @param sinksPath The String value that is to be set. If null: ""
+     */
     public void setSinksPath(String sinksPath) {
         if (sinksPath == null) {
             sinksInputText.setText("");
@@ -235,6 +283,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         this.sinksPath = sinksPath;
     }
 
+    /**
+     * Displays a given String in a TextView
+     * @param sourcePath The String value that is to be set. If null: ""
+     */
     public void setSourcePath(String sourcePath) {
         if (sourcePath == null) {
             sourceInputText.setText("");
@@ -244,6 +296,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         this.sourcePath = sourcePath;
     }
 
+    /**
+     * Displays a given String in a TextView
+     * @param taintPath The String value that is to be set. If null: ""
+     */
     public void setTaintPath(String taintPath) {
         if (taintPath == null) {
             taintInputText.setText("");
@@ -253,15 +309,16 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         this.taintPath = taintPath;
     }
 
-    // If the view is destroyed it saves the paths to selected files in shared preferences in case
-    // the user navigates to different fragments and then wants to continue selecting files
+    /**
+     * If the view is destroyed it saves paths of selected files in shared preferences
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
         String app = applicationPath, sinks = sinksPath, sources = sourcePath, taint = taintPath;
 
-        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, 0);
+        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(Constants.SP_PATH_APP, app);
         editor.putString(Constants.SP_PATH_SINKS, sinks);
@@ -270,7 +327,9 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         editor.apply();
     }
 
-    // Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed to this fragment
+    /**
+     * Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed to this fragment
+     */
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
@@ -278,6 +337,11 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
     }
 
+    /**
+     * Creates a Bitmap object from a Drawable object
+     * @param drawable The drawable resource that is to be converted
+     * @return
+     */
     public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = null;
 
@@ -300,7 +364,11 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         return bitmap;
     }
 
-
+    /**
+     * Creates a File object from a Drawable object
+     * @param d The drawable resource that is to be converted
+     * @return
+     */
     private File createFileFromDrawable(Drawable d) {
         Bitmap b = drawableToBitmap(d);
         FileOutputStream out = null;

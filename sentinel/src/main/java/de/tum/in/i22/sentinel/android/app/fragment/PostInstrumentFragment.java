@@ -1,10 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,17 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
-import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
 
 /**
  * Created by Moderbord on 2016-01-18.
@@ -33,7 +30,7 @@ import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
 public class PostInstrumentFragment extends Fragment implements PackageGetter.Callback {
 
     ListView listView;
-    HughAdapter adapter;
+    RowPackageAdapter adapter;
     LayoutInflater inflater;
 
     @Nullable
@@ -64,7 +61,7 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                adapter = new HughAdapter(getActivity(), packages);
+                adapter = new RowPackageAdapter(getActivity(), packages);
                 adapter.notifyDataSetChanged();
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,12 +77,12 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
 
     }
 
-    private class HughAdapter extends BaseAdapter{
+    private class RowPackageAdapter extends BaseAdapter{
 
         private Context context;
         private List<PackageGetter.Package> data;
 
-        public HughAdapter(Context c, List<PackageGetter.Package> packages){
+        public RowPackageAdapter(Context c, List<PackageGetter.Package> packages){
             context = c;
             data = packages;
         }
@@ -108,21 +105,28 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
         @Override
         public View getView(int position, View v, ViewGroup parent) {
             v = inflater.inflate(R.layout.app_list_row, null);
-
-            PackageGetter.Package packageItem = (PackageGetter.Package)getItem(position);
-
-            if (packageItem.isInstrumented()){
-                // TODO Put code here to only display instrumented applications in the listView
-            }
-
             TextView rowItemTitle = (TextView) v.findViewById(R.id.rowTextTitle);
             TextView rowItemPath = (TextView) v.findViewById(R.id.rowTextPath);
             ImageView rowItemIcon = (ImageView) v.findViewById(R.id.rowIcon);
+            CheckBox rowCheckBox = (CheckBox) v.findViewById(R.id.rowInstrumentedBox);
 
+            PackageGetter.Package packageItem = (PackageGetter.Package)getItem(position);
+
+            // Retrieves the sharedPreferences of "sentinel" and gets the boolean value stored in
+            // packageName from the above packageItem
+            SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+            boolean isInstrumented = sp.getBoolean(packageItem.getPackageName(), false);
+
+            // Condition: If the package is instrumented the checkbox is checked
+            if (isInstrumented){
+                rowCheckBox.setChecked(true);
+            }
+            // Sets name, path, and icon
             rowItemTitle.setText(((PackageGetter.Package)getItem(position)).getName());
             rowItemPath.setText(((PackageGetter.Package)getItem(position)).getPath());
             rowItemIcon.setImageDrawable(((PackageGetter.Package) getItem(position)).getPackagePicture());
 
+            // Returns the row
             return v;
         }
     }

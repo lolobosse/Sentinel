@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_PostInstrument) { // PostInstrument fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PostInstrumentFragment());
-            setTitle("Instrumented Applications");
+            setTitle("Applications");
             ft.commit();
         }
 

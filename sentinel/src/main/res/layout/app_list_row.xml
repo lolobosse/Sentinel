@@ -18,6 +18,7 @@
         android:singleLine="true"
         android:textStyle="bold"
         android:layout_marginLeft="6dp"
+        android:layout_marginEnd="45dp"
         android:textColor="#212121"
         android:textSize="16dip" />
 
@@ -35,5 +36,14 @@
         android:textSize="8dp"
         android:textStyle="italic"
         android:layout_marginLeft="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rowInstrumentedBox"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:clickable="false"
+        android:checked="false" />
 
 </RelativeLayout>

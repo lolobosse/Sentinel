@@ -34,6 +34,8 @@
                 android:paddingLeft="12dp"
                 android:textColor="#000"
                 android:textSize="16dp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:paddingTop="20dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
@@ -45,11 +47,12 @@
                 android:layout_gravity="left|bottom"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="112dp"
-                android:clickable="true"
                 android:cursorVisible="false"
+                android:clickable="true"
                 android:focusable="false"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
+                android:ellipsize="end"
                 android:textSize="14sp"
                 android:textColor="#c5c5c5"
                 android:text="..//"
@@ -80,6 +83,8 @@
                 android:layout_gravity="left|center_vertical"
                 android:paddingLeft="12dp"
                 android:textColor="#000"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </FrameLayout>
