@@ -84,7 +84,7 @@ public class ToServerFragment extends Fragment {
         toServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                APKSender.getInstance().sendFiles(getActivity(), sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
+                APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
                         if (e == null) {

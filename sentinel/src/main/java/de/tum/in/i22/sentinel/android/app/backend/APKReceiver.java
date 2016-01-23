@@ -15,11 +15,17 @@ import de.tum.in.i22.sentinel.android.app.Constants;
 
 /**
  * Created by laurentmeyer on 18/01/16.
+ * Class which handles the post-instrumentation process
  */
 public class APKReceiver {
 
     private static APKReceiver instance = null;
 
+
+    /**
+     * Returns an instance of the APKReceiver, it is a singleton
+     * @return Instance of the APKReceiver
+     */
     public static APKReceiver getInstance() {
         if (instance == null) {
             instance = new APKReceiver();
@@ -30,7 +36,7 @@ public class APKReceiver {
     /**
      * Very simple method to retrieve the apk from the server, sending the wished hash
      * @param hash: the hash of the wished APK, you can just hash your APK file with {@see de.tum.in.i22.sentinel.android.app.package_getter.Hash#createHashForFile(java.io.File)}
-     * @param callback
+     * @param callback: the callback fot the network call, it should use the {@see de.tum.in.i22.sentinel.android.app.backend.APKReceiver#installApk(android.content.Context, java.lang.String)}
      */
 
     public void getFile(String hash, AsyncHttpClient.FileCallback callback){
