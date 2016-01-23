@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app;
 /**
  * Created by Moderbord on 2016-01-22.
  */
+
 public class Constants {
 
     // Used by InstrumentFragment, ToServerFragment, StatusFragment
@@ -51,4 +52,10 @@ public class Constants {
     // Used by APKReceiver
     public static final String APK_TYPE         = "application/vnd.android.package-archive";
 
+    // Used by APKSender,
+    public static final String SERVER_ADDRESS = "192.168.0.111:8080";
+    public static final String SERVER_APK_FILE = "apkFile";
+    public static final String SERVER_SOURCE_FILE = "sourceFile";
+    public static final String SERVER_SINK_FILE = "sinkFile";
+    public static final String SERVER_TAINT_WRAPPER = "easyTaintWrapperSource";
 }
