@@ -1,4 +1,4 @@
-include ':sentinel', ':XSDParser', ':Jibx', ':pList', ':androidLib', ':aXML', ':dragsortlistview', ':axel'
+include ':sentinel', ':pList', ':androidLib', ':aXML', ':dragsortlistview', ':axel'
 include ':uclib4Android'
 include ':cm4Android'
 include ':appPDPj-lib'

@@ -49,7 +49,5 @@ dependencies {
     compile 'com.koushikdutta.async:androidasync:2.+'
     compile 'commons-codec:commons-codec:1.5'
     compile 'commons-io:commons-io:2.4'
-    compile project(':XSDParser')
-    compile project(':Jibx')
     compile project(':appPDPj-lib')
 }
