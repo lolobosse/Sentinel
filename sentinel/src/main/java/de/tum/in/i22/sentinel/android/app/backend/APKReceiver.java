@@ -9,6 +9,8 @@ import com.koushikdutta.async.http.AsyncHttpResponse;
 
 import java.io.File;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
+
 /**
  * Created by laurentmeyer on 18/01/16.
  */
@@ -24,7 +26,7 @@ public class APKReceiver {
     }
 
     public void getFile(String hash, AsyncHttpClient.FileCallback callback){
-        String serverAddress = "192.168.0.111:8080";
+        String serverAddress = Constants.SERVER_ADDRESS;
         File repo = new File(Environment.getExternalStorageDirectory()+"/instrumentedApk/");
         repo.mkdirs();
         File output = new File(repo, hash+".apk");

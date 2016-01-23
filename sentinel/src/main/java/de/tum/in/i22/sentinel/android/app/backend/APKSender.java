@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 
 public class APKSender {
@@ -43,13 +44,13 @@ public class APKSender {
      */
     public void sendFiles(Context c, File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback, File logo, String appName, String packageName) {
         // logo, appName, packageName
-        String serverAddress = "192.168.0.111";
-        AsyncHttpPost post = new AsyncHttpPost("http://" + serverAddress + ":8080/instrument");
+        String serverAddress = Constants.SERVER_ADDRESS;
+        AsyncHttpPost post = new AsyncHttpPost("http://" + serverAddress + "/instrument");
         MultipartFormDataBody body = new MultipartFormDataBody();
-        body.addFilePart("apkFile", apk);
-        body.addFilePart("sourceFile", pathToSources);
-        body.addFilePart("sinkFile",pathToSinks);
-        body.addFilePart("easyTaintWrapperSource", pathToTaintWrapper);
+        body.addFilePart(Constants.SERVER_APK_FILE, apk);
+        body.addFilePart(Constants.SERVER_SOURCE_FILE, pathToSources);
+        body.addFilePart(Constants.SERVER_SINK_FILE, pathToSinks);
+        body.addFilePart(Constants.SERVER_TAINT_WRAPPER, pathToTaintWrapper);
         if (logo != null){
             body.addFilePart("logo",logo);
         }
