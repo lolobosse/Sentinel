@@ -48,4 +48,7 @@ public class Constants {
     public static final String DIRECTORY_UP     = "directory_up";
     public static final String FILE_ICON        = "file_icon";
 
+    // Used by APKReceiver
+    public static final String APK_TYPE         = "application/vnd.android.package-archive";
+
 }
