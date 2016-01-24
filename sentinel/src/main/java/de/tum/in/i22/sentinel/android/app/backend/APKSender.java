@@ -51,8 +51,7 @@ public class APKSender {
      * @param packageName           : the package name of the app to instrument and also OPTIONAL
      */
     public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback, File logo, String appName, String packageName) {
-        String serverAddress = Constants.SERVER_ADDRESS;
-        AsyncHttpPost post = new AsyncHttpPost("http://" + serverAddress + Constants.SERVER_INSTRUMENTATION_ENDPOINT);
+        AsyncHttpPost post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT);
         MultipartFormDataBody body = new MultipartFormDataBody();
         body.addFilePart(Constants.SERVER_APK_FILE, apk);
         body.addFilePart(Constants.SERVER_SOURCE_FILE, pathToSources);

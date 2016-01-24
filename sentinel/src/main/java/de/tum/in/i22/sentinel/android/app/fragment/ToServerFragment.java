@@ -38,6 +38,8 @@ public class ToServerFragment extends Fragment {
     String appName, packageName;
     String hash;
 
+    TextView notReady;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class ToServerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.to_server_fragment, container, false);
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
+        notReady = (TextView) view.findViewById(R.id.notReady);
 
         // Displays a summary of previously selected files to the user
         StringBuilder sb = new StringBuilder();
@@ -111,10 +114,25 @@ public class ToServerFragment extends Fragment {
                 APKReceiver.getInstance().getFile(hash, new AsyncHttpClient.FileCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
-                        if (e == null) {
+                        // If the server returns a 200 status => the app has been successfully
+                        // instrumented and is successfully returned
+                        if (e == null && source.code() == 200) {
+                            AsyncHttpResponse s = source;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    notReady.setText("Your app is downloading, wait a moment please :)");
+                                    notReady.setVisibility(View.VISIBLE);
+                                }
+                            });
                             APKReceiver.getInstance().installApk(ToServerFragment.this.getActivity(), result.getAbsolutePath());
                         } else {
-                            // Exception son of a bitch
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    notReady.setVisibility(View.VISIBLE);
+                                }
+                            });
                         }
                     }
 

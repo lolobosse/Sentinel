@@ -53,7 +53,7 @@ public class Constants {
     public static final String APK_TYPE         = "application/vnd.android.package-archive";
 
     // Every key for the server (multipart and so on)
-    public static final String SERVER_ADDRESS                   = "192.168.0.111:8080";
+    public static final String SERVER_ADDRESS                   = "http://lapbroyg58.informatik.tu-muenchen.de:443";
     public static final String SERVER_APK_FILE                  = "apkFile";
     public static final String SERVER_SOURCE_FILE               = "sourceFile";
     public static final String SERVER_SINK_FILE                 = "sinkFile";

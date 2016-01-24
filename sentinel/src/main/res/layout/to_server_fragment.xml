@@ -32,4 +32,10 @@
         android:text="Get!"
         android:id="@+id/getAPK"
         android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your app is not ready yet, please try again later"
+        android:id="@+id/notReady"
+        android:visibility="gone"/>
 </LinearLayout>

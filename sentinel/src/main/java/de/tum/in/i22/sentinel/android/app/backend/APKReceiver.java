@@ -40,12 +40,11 @@ public class APKReceiver {
      */
 
     public void getFile(String hash, AsyncHttpClient.FileCallback callback){
-        String serverAddress = Constants.SERVER_ADDRESS;
         File repo = new File(Environment.getExternalStorageDirectory()+"/instrumentedApk/");
         repo.mkdirs();
         File output = new File(repo, hash+".apk");
         String filename = output.getAbsolutePath();
-        AsyncHttpClient.getDefaultInstance().executeFile(new AsyncHttpGet("http://"+serverAddress+"/instrument/"+ hash), filename, callback);
+        AsyncHttpClient.getDefaultInstance().executeFile(new AsyncHttpGet(Constants.SERVER_ADDRESS+Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash), filename, callback);
     }
 
 
