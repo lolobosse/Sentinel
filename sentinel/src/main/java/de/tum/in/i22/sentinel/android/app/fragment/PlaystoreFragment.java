@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,20 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.backend.VolleyClient;
 import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
 
@@ -30,7 +41,7 @@ import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
  * Created by Moderbord on 2016-01-13.
  */
 
-public class PlaystoreFragment extends Fragment implements PackageGetter.Callback {
+public class PlaystoreFragment extends Fragment{
 
     GridView gridView;
     GridAdapter adapter;
@@ -42,58 +53,62 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
         View view = inflater.inflate(R.layout.playstore_layout, container, false);
         this.inflater = inflater;
         gridView = (GridView) view.findViewById(R.id.pictureGrid);
-
-        // TODO Retrieve applications from server rather than packages from local device
-        Thread t = new Thread(){
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void run() {
-                PackageGetter.getPackages(PlaystoreFragment.this, getActivity());
-            }
-        };
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Temp variables for testing
+                PackageGetter.Package packageItem = (PackageGetter.Package) adapterView.getItemAtPosition(i);
 
-        t.start();
+                // Converts package drawable to bitmap
+                Drawable drawable = packageItem.getPackagePicture();
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+
+                Intent intent = new Intent(getActivity(), PlayStoreFocusable.class);
+                intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.getName());
+                intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, bitmap);
+                startActivity(intent);
+            }
+        });
+
+        VolleyClient.getInstance(getActivity()).requestAllMetaData(new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                List<ServerPackageInformation> serverList = new ArrayList<>();
+                try {
+                    JSONArray metadata = response.getJSONArray("metadata");
+                    for (int i = 0; i < metadata.length(); i++) {
+                        JSONObject jo = metadata.getJSONObject(i);
+                        String hash = jo.getString("hash");
+                        String logo = jo.getString("logoUrl");
+                        logo = logo.replace("http://lapbroyg58.informatik.tu-muenchen.de:8080", "http://lapbroyg58.informatik.tu-muenchen.de:443");
+                        Log.d("PlaystoreFragment", logo);
+                        String appName = jo.getString("appName");
+                        String packageName = jo.getString("packageName");
+                        double size = jo.getDouble("sizeInBytes");
+                        ServerPackageInformation newPackage = new ServerPackageInformation(hash, logo, appName, packageName, size);
+                        serverList.add(newPackage);
+                    }
+                    adapter = new GridAdapter(getActivity(), serverList);
+                    gridView.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("PlaystoreFragment", "error:" + error);
+            }
+        });
 
         return view;
     }
 
-    @Override
-    public void onError(Exception e) {
-        throw new RuntimeException(e);
-    }
-
-    @Override
-    public void onSuccess(final List<PackageGetter.Package> packages) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                adapter = new GridAdapter(getActivity(), packages);
-                gridView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        // Temp variables for testing
-                        PackageGetter.Package packageItem = (PackageGetter.Package) adapterView.getItemAtPosition(i);
-
-                        // Converts package drawable to bitmap
-                        Drawable drawable = packageItem.getPackagePicture();
-                        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-
-                        Intent intent = new Intent(getActivity(), PlayStoreFocusable.class);
-                        intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.getName());
-                        intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, bitmap);
-                        startActivity(intent);
-                    }
-                });
-            }
-        });
-    }
-
     private class GridAdapter extends BaseAdapter{
         private Context context;
-        private List<PackageGetter.Package> data;
+        private List<ServerPackageInformation> data;
 
-        public GridAdapter(Context c, List<PackageGetter.Package> packages){
+        public GridAdapter(Context c, List<ServerPackageInformation> packages){
             context = c;
             data = packages;
         }
@@ -105,7 +120,7 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
 
         @Override
         public Object getItem(int position) {
-            return data.get(position % data.size());
+            return data.get(position);
         }
 
         @Override
@@ -122,11 +137,24 @@ public class PlaystoreFragment extends Fragment implements PackageGetter.Callbac
 
             packageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             packageView.setPadding(8, 8, 8, 8);
-            packageView.setImageDrawable(((PackageGetter.Package) getItem(position)).getPackagePicture());
+            Picasso.with(getActivity()).load(((ServerPackageInformation) getItem(position)).logoUrl);
 
-            packageName.setText(((PackageGetter.Package)getItem(position)).getName());
+            packageName.setText(((ServerPackageInformation) getItem(position)).appName);
 
             return v;
+        }
+    }
+
+    private class ServerPackageInformation{
+        String hash, logoUrl, appName, packageName;
+        double size;
+
+        public ServerPackageInformation(String hash, String logoUrl, String appName, String packageName, double size) {
+            this.hash = hash;
+            this.logoUrl = logoUrl;
+            this.appName = appName;
+            this.packageName = packageName;
+            this.size = size;
         }
     }
 
