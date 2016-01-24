@@ -104,7 +104,7 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
 
         @Override
         public View getView(int position, View v, ViewGroup parent) {
-            v = inflater.inflate(R.layout.app_list_row, null);
+            v = inflater.inflate(R.layout.post_app_list_row, null);
             TextView rowItemTitle = (TextView) v.findViewById(R.id.rowTextTitle);
             TextView rowItemPath = (TextView) v.findViewById(R.id.rowTextPath);
             ImageView rowItemIcon = (ImageView) v.findViewById(R.id.rowIcon);

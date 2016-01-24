@@ -98,27 +98,9 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         // Opens a dialog with installed packages the user can choose from, alternatively the user
         // can pick one from the file system
-        pickApplicationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                packageDialog = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
-                    @Override
-                    public void onPackageSet(PackageGetter.Package selectedPackage) {
-                        setApplicationPath(selectedPackage.getPath());
-                        InstrumentFragment.this.selectedPackage = selectedPackage;
-                        dismissDialog();
-                    }
-                }, InstrumentFragment.this);
-                showDialog();
-            }
-        });
+        pickApplicationButton.setOnClickListener(new PickApplicationListener());
 
-        appInputText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InstrumentFragment.this.onClick();
-            }
-        });
+        appInputText.setOnClickListener(new PickApplicationListener());
 
         pickSinksButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -390,4 +372,21 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             }
         }
     }
+
+    private class PickApplicationListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            packageDialog = new AppPickerDialog(getActivity(), new AppPickerDialog.OnPackageChosen() {
+                @Override
+                public void onPackageSet(PackageGetter.Package selectedPackage) {
+                    setApplicationPath(selectedPackage.getPath());
+                    InstrumentFragment.this.selectedPackage = selectedPackage;
+                    dismissDialog();
+                }
+            }, InstrumentFragment.this);
+            showDialog();
+        }
+    }
+
 }
