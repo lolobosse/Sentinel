@@ -49,11 +49,19 @@ public class Constants {
     public static final String DIRECTORY_UP     = "directory_up";
     public static final String FILE_ICON        = "file_icon";
 
-    // Used by APKSender,
-    public static final String SERVER_ADDRESS = "192.168.0.111:8080";
-    public static final String SERVER_APK_FILE = "apkFile";
-    public static final String SERVER_SOURCE_FILE = "sourceFile";
-    public static final String SERVER_SINK_FILE = "sinkFile";
-    public static final String SERVER_TAINT_WRAPPER = "easyTaintWrapperSource";
+    // Used by APKReceiver
+    public static final String APK_TYPE         = "application/vnd.android.package-archive";
+
+    // Every key for the server (multipart and so on)
+    public static final String SERVER_ADDRESS                   = "192.168.0.111:8080";
+    public static final String SERVER_APK_FILE                  = "apkFile";
+    public static final String SERVER_SOURCE_FILE               = "sourceFile";
+    public static final String SERVER_SINK_FILE                 = "sinkFile";
+    public static final String SERVER_TAINT_WRAPPER             = "easyTaintWrapperSource";
+    public static final String SERVER_LOGO_FILE                 = "logo";
+    public static final String SERVER_APP_NAME                  = "apkName";
+    public static final String SERVER_PACKAGE_NAME              = "packageName";
+    public static final String SERVER_PUBLIC_FLAG               = "makeAppPublic";
+    public static final String SERVER_INSTRUMENTATION_ENDPOINT  = "/instrument";
 
 }

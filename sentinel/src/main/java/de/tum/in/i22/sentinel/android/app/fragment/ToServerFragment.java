@@ -63,8 +63,20 @@ public class ToServerFragment extends Fragment {
         TextView summaryText = (TextView) view.findViewById(R.id.summary);
 
         // Displays a summary of previously selected files to the user
-        Spanned displayText = Html.fromHtml("<b>APK: </b>" + apkFile + "<br><b>Sinks: </b>"
-                + sinkFile + "<br><b>Sources: </b>" + sourceFile + "<br><b>Taint Wrapper: </b>" + taintFile);
+        StringBuilder sb = new StringBuilder();
+        String sinkPath = getActivity().getFilesDir() + File.separator + Constants.SINKS;
+        String sourcePath = getActivity().getFilesDir() + File.separator + Constants.SOURCES;
+        String taintPath = getActivity().getFilesDir() + File.separator + Constants.TAINT;
+        sb.append("<b>APK: </b>")
+                .append(apkFile)
+                .append("<br><b>Sinks: </b>")
+                .append(sinkFile.getAbsolutePath().equals(sinkPath) ? "Default" : sinkFile.getAbsolutePath())
+                .append("<br><b>Sources: </b>")
+                .append(sourceFile.getAbsolutePath().equals(sourcePath) ? "Default" : sourceFile.getAbsolutePath())
+                .append("<br><b>Taint Wrapper: </b>")
+                .append(taintFile.getAbsolutePath().equals(taintPath) ? "Default" : taintFile.getAbsolutePath());
+        Spanned displayText = Html.fromHtml(sb.toString());
+
         summaryText.setText(displayText);
 
         Button toServerButton = (Button) view.findViewById(R.id.launchServer);
@@ -72,7 +84,7 @@ public class ToServerFragment extends Fragment {
         toServerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                APKSender.getInstance().sendFiles(getActivity(), sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
+                APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
                         if (e == null) {
@@ -99,12 +111,10 @@ public class ToServerFragment extends Fragment {
                 APKReceiver.getInstance().getFile(hash, new AsyncHttpClient.FileCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
-                        if (e != null) {
-                            // TODO: Install from server should work
-                            Log.d("ToServerFragment", "LAAA BITE A DUDUUUULE");
+                        if (e == null) {
+                            APKReceiver.getInstance().installApk(ToServerFragment.this.getActivity(), result.getAbsolutePath());
                         } else {
-                            Exception b = e;
-                            throw new RuntimeException(e);
+                            // Exception son of a bitch
                         }
                     }
 
@@ -119,13 +129,12 @@ public class ToServerFragment extends Fragment {
         return view;
     }
 
-    // The "key" is supposedly not needed
     private File getFile(String path, String key) {
         // TODO Comment and document that
         if (!TextUtils.isEmpty(path)) {
             return new File(path);
         } else {
-            String defaultFilePath = "Default";
+            String defaultFilePath = getActivity().getFilesDir() + "/" + key;
             return new File(defaultFilePath);
         }
     }
