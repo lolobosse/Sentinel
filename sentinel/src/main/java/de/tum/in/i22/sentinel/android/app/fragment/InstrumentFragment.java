@@ -179,7 +179,8 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
-     * Dismisses the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog} shown in this fragment
+     * Dismisses the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
+     * shown in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
      */
     private void dismissDialog() {
         if (packageDialog != null) {
@@ -188,7 +189,8 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
-     * Displays the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog} defined in this fragment
+     * Displays the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
+     * defined in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
      */
     private void showDialog() {
         packageDialog.show();
@@ -373,6 +375,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         }
     }
 
+    /**
+     * Private OnClickListener class that opens a {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
+     * that allows the user to pick from installed package.
+     */
     private class PickApplicationListener implements View.OnClickListener{
 
         @Override
