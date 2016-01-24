@@ -7,7 +7,6 @@ import android.os.Environment;
 
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpGet;
-import com.koushikdutta.async.http.AsyncHttpResponse;
 
 import java.io.File;
 
@@ -58,6 +57,18 @@ public class APKReceiver {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), Constants.APK_TYPE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+        c.startActivity(intent);
+    }
+
+    /**
+     * This methods uninstall an APK by prompting the user a dialog to confirm
+     * @see <a href="http://stackoverflow.com/a/21854473/2545832">This thread</a>
+     * @param c: {@see android.content.Context} needed to start an Activity
+     * @param packageName: The package to be removed
+     */
+    public void uninstallApk(Context c, String packageName) {
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        intent.setData(Uri.parse(packageName));
         c.startActivity(intent);
     }
 }

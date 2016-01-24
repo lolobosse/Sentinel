@@ -64,4 +64,7 @@ public class Constants {
     public static final String SERVER_PUBLIC_FLAG               = "makeAppPublic";
     public static final String SERVER_INSTRUMENTATION_ENDPOINT  = "/instrument";
 
+
+    // HashCode of server signature
+    public static final int SERVER_SIGNATURE_HASH_CODE = -1288784872;
 }

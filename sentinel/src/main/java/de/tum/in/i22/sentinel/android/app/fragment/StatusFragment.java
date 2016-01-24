@@ -27,6 +27,7 @@ import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.uc.pdp.android.ServiceBoundListener;
 import de.tum.in.i22.uc.pdp.android.pdpService;
@@ -103,36 +104,15 @@ public class StatusFragment extends Fragment{
 
         // Displays the amount of packages installed on the device
         TextView applicationCounter = (TextView) view.findViewById(R.id.statusLeftFrameNmr);
-        int numberOfApps = installedApplications().size();
+        int numberOfApps = APKUtils.installedApplications(getActivity()).size();
         applicationCounter.setText(String.valueOf(numberOfApps));
 
         // Displays the amount of instrumented applications on the device
         TextView instrumentedCounter = (TextView) view.findViewById(R.id.statusRightFrameNmr);
-        int numberOfInstrumentedApps = instrumentedApplications();
+        int numberOfInstrumentedApps = APKUtils.getNumberOfInstrumentedApp(getActivity());
         instrumentedCounter.setText(String.valueOf(numberOfInstrumentedApps));
 
         return view;
-    }
-
-    /**
-     * Returns a list of all packages installed on the device
-     *
-     */
-    public List installedApplications(){
-        PackageManager pm = getActivity().getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-        return packages;
-    }
-
-    /**
-     * Returns the amount of instrumented applications from shared preferences
-     *
-     */
-    public int instrumentedApplications(){
-        SharedPreferences sp = getActivity().getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
-        final int defaultValue = 0;
-        int instrumentedApplications = sp.getInt(Constants.INSTRUMENTED_APPLICATIONS, defaultValue);
-        return instrumentedApplications;
     }
 
     private void deployPolicy(File pathToPolicy) {
