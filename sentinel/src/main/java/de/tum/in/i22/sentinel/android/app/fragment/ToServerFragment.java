@@ -64,9 +64,9 @@ public class ToServerFragment extends Fragment {
 
         // Displays a summary of previously selected files to the user
         StringBuilder sb = new StringBuilder();
-        String sinkPath     = getActivity().getFilesDir() + File.separator + Constants.SINKS;
-        String sourcePath   = getActivity().getFilesDir() + File.separator + Constants.SOURCES;
-        String taintPath    = getActivity().getFilesDir() + File.separator + Constants.TAINT;
+        String sinkPath = getActivity().getFilesDir() + File.separator + Constants.SINKS;
+        String sourcePath = getActivity().getFilesDir() + File.separator + Constants.SOURCES;
+        String taintPath = getActivity().getFilesDir() + File.separator + Constants.TAINT;
         sb.append("<b>APK: </b>")
                 .append(apkFile)
                 .append("<br><b>Sinks: </b>")
@@ -111,12 +111,10 @@ public class ToServerFragment extends Fragment {
                 APKReceiver.getInstance().getFile(hash, new AsyncHttpClient.FileCallback() {
                     @Override
                     public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
-                        if (e != null) {
-                            // TODO: Install from server should work
-                            Log.d("ToServerFragment", "LAAA BITE A DUDUUUULE");
+                        if (e == null) {
+                            APKReceiver.getInstance().installApk(ToServerFragment.this.getActivity(), result.getAbsolutePath());
                         } else {
-                            Exception b = e;
-                            throw new RuntimeException(e);
+                            // Exception son of a bitch
                         }
                     }
 
