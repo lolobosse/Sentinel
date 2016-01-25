@@ -5,6 +5,7 @@ package de.tum.in.i22.sentinel.android.app.backend;
  */
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -27,14 +28,20 @@ public class APKUtils {
      */
     public static boolean isInstrumented(String packageName, Context c) {
         Signature[] sigs;
+        SharedPreferences p = c.getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+        SharedPreferences.Editor e = p.edit();
         try {
             sigs = c.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures;
+            boolean isInstrumented = false;
             for (Signature sig : sigs) {
                 if (sig.hashCode() == Constants.SERVER_SIGNATURE_HASH_CODE)
-                    return true;
+                    isInstrumented = true;
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            e.putBoolean(packageName, isInstrumented);
+            e.apply();
+            return isInstrumented;
+        } catch (PackageManager.NameNotFoundException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
