@@ -73,7 +73,6 @@ public class PlaystoreFragment extends Fragment{
                         String hash = jo.getString("hash");
                         String logo = jo.getString("logoUrl");
                         logo = logo.replace("http://lapbroyg58.informatik.tu-muenchen.de:80/", "http://lapbroyg58.informatik.tu-muenchen.de:443/");
-                        logo = logo.concat(".png");
                         Log.d("PlaystoreFragment", logo);
                         String appName = jo.getString("appName");
                         String packageName = jo.getString("packageName");
@@ -130,7 +129,7 @@ public class PlaystoreFragment extends Fragment{
 
             packageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             packageView.setPadding(8, 8, 8, 8);
-            Picasso.with(getActivity()).load(((ServerPackageInformation) getItem(position)).logoUrl);
+            Picasso.with(getActivity()).load(((ServerPackageInformation) getItem(position)).logoUrl).into(packageView);
 
             packageName.setText(((ServerPackageInformation) getItem(position)).appName);
 
