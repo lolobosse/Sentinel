@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".playstore.PlayStoreFocusable"
+        <activity android:name=".playstore.PlayStoreDetail"
                   android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

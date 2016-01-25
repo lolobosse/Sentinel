@@ -1,16 +1,16 @@
 package de.tum.in.i22.sentinel.android.app.playstore;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
-import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 
-public class PlayStoreFocusable extends AppCompatActivity {
+public class PlayStoreDetail extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +18,12 @@ public class PlayStoreFocusable extends AppCompatActivity {
         setContentView(R.layout.playstore_onclick);
 
         String title = getIntent().getStringExtra(Constants.PACKAGE_TEXT_FOCUSED);
-        Bitmap bitmap = getIntent().getParcelableExtra(Constants.PACKAGE_IMAGE_FOCUSED);
+        String logoUrl = getIntent().getParcelableExtra(Constants.PACKAGE_IMAGE_FOCUSED);
 
         TextView titleTextView = (TextView) findViewById(R.id.packageName_focused);
         titleTextView.setText(title);
 
         ImageView imageView = (ImageView) findViewById(R.id.packageView_focused);
-        imageView.setImageBitmap(bitmap);
+        Picasso.with(this).load(logoUrl).into(imageView);
     }
 }

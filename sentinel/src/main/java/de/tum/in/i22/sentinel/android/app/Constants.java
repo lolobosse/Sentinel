@@ -37,7 +37,7 @@ public class Constants {
     public static final String COLOR_DARK = "#202020";
     public static final String COLOR_GREY = "#c5c5c5";
 
-    // Used by PlaystoreFragment, PlayStoreFocusable
+    // Used by PlaystoreFragment, PlayStoreDetail
     public static final String PACKAGE_IMAGE_FOCUSED  = "packageImage_focused";
     public static final String PACKAGE_TEXT_FOCUSED   = "packageText_focused";
 

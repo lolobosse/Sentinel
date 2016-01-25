@@ -2,12 +2,7 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,8 +29,7 @@ import java.util.List;
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.backend.VolleyClient;
-import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
-import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreFocusable;
+import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreDetail;
 
 /**
  * Created by Moderbord on 2016-01-13.
@@ -57,15 +51,13 @@ public class PlaystoreFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 // Temp variables for testing
-                PackageGetter.Package packageItem = (PackageGetter.Package) adapterView.getItemAtPosition(i);
+                ServerPackageInformation packageItem = (ServerPackageInformation) adapterView.getItemAtPosition(i);
 
-                // Converts package drawable to bitmap
-                Drawable drawable = packageItem.getPackagePicture();
-                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                String logo = packageItem.logoUrl;
 
-                Intent intent = new Intent(getActivity(), PlayStoreFocusable.class);
-                intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.getName());
-                intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, bitmap);
+                Intent intent = new Intent(getActivity(), PlayStoreDetail.class);
+                intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.appName);
+                intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, logo);
                 startActivity(intent);
             }
         });
