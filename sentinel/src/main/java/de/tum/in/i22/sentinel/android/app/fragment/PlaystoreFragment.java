@@ -56,8 +56,8 @@ public class PlaystoreFragment extends Fragment{
                 String logo = packageItem.logoUrl;
 
                 Intent intent = new Intent(getActivity(), PlayStoreDetail.class);
-                intent.putExtra(Constants.PACKAGE_TEXT_FOCUSED, packageItem.appName);
-                intent.putExtra(Constants.PACKAGE_IMAGE_FOCUSED, logo);
+                intent.putExtra(Constants.PACKAGE_TEXT_PLAY_STORE_DETAIL, packageItem.appName);
+                intent.putExtra(Constants.PACKAGE_IMAGE_PLAY_STORE_DETAIL, logo);
                 startActivity(intent);
             }
         });
@@ -72,7 +72,8 @@ public class PlaystoreFragment extends Fragment{
                         JSONObject jo = metadata.getJSONObject(i);
                         String hash = jo.getString("hash");
                         String logo = jo.getString("logoUrl");
-                        logo = logo.replace("http://lapbroyg58.informatik.tu-muenchen.de:8080", "http://lapbroyg58.informatik.tu-muenchen.de:443");
+                        logo = logo.replace("http://lapbroyg58.informatik.tu-muenchen.de:80/", "http://lapbroyg58.informatik.tu-muenchen.de:443/");
+                        logo = logo.concat(".png");
                         Log.d("PlaystoreFragment", logo);
                         String appName = jo.getString("appName");
                         String packageName = jo.getString("packageName");

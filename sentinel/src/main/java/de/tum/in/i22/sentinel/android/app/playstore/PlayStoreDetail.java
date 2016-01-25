@@ -17,8 +17,8 @@ public class PlayStoreDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playstore_onclick);
 
-        String title = getIntent().getStringExtra(Constants.PACKAGE_TEXT_FOCUSED);
-        String logoUrl = getIntent().getParcelableExtra(Constants.PACKAGE_IMAGE_FOCUSED);
+        String title = getIntent().getStringExtra(Constants.PACKAGE_TEXT_PLAY_STORE_DETAIL);
+        String logoUrl = getIntent().getStringExtra(Constants.PACKAGE_IMAGE_PLAY_STORE_DETAIL);
 
         TextView titleTextView = (TextView) findViewById(R.id.packageName_focused);
         titleTextView.setText(title);
