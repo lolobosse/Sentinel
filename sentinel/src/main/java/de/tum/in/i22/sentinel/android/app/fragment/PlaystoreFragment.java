@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -50,14 +51,11 @@ public class PlaystoreFragment extends Fragment{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // Temp variables for testing
+
+                // We pass the whole package to the detail activity and we serialize via Gson
                 ServerPackageInformation packageItem = (ServerPackageInformation) adapterView.getItemAtPosition(i);
-
-                String logo = packageItem.logoUrl;
-
                 Intent intent = new Intent(getActivity(), PlayStoreDetail.class);
-                intent.putExtra(Constants.PACKAGE_TEXT_PLAY_STORE_DETAIL, packageItem.appName);
-                intent.putExtra(Constants.PACKAGE_IMAGE_PLAY_STORE_DETAIL, logo);
+                intent.putExtra(Constants.DETAILS_TO_DISPLAY_KEY, new Gson().toJson(packageItem, ServerPackageInformation.class));
                 startActivity(intent);
             }
         });
@@ -68,17 +66,11 @@ public class PlaystoreFragment extends Fragment{
                 List<ServerPackageInformation> serverList = new ArrayList<>();
                 try {
                     JSONArray metadata = response.getJSONArray("metadata");
+                    Gson g = new Gson();
                     for (int i = 0; i < metadata.length(); i++) {
-                        JSONObject jo = metadata.getJSONObject(i);
-                        String hash = jo.getString("hash");
-                        String logo = jo.getString("logoUrl");
-                        logo = logo.replace("http://lapbroyg58.informatik.tu-muenchen.de:80/", "http://lapbroyg58.informatik.tu-muenchen.de:443/");
-                        Log.d("PlaystoreFragment", logo);
-                        String appName = jo.getString("appName");
-                        String packageName = jo.getString("packageName");
-                        double size = jo.getDouble("sizeInBytes");
-                        ServerPackageInformation newPackage = new ServerPackageInformation(hash, logo, appName, packageName, size);
-                        serverList.add(newPackage);
+                        String jo = metadata.getJSONObject(i).toString();
+                        ServerPackageInformation spi = g.fromJson(jo, ServerPackageInformation.class);
+                        serverList.add(spi);
                     }
                     adapter = new GridAdapter(getActivity(), serverList);
                     gridView.setAdapter(adapter);
@@ -137,17 +129,12 @@ public class PlaystoreFragment extends Fragment{
         }
     }
 
-    private class ServerPackageInformation{
-        String hash, logoUrl, appName, packageName;
-        double size;
-
-        public ServerPackageInformation(String hash, String logoUrl, String appName, String packageName, double size) {
-            this.hash = hash;
-            this.logoUrl = logoUrl;
-            this.appName = appName;
-            this.packageName = packageName;
-            this.size = size;
-        }
+    /**
+     * We basically find that getter and setter boring and we do Python style!
+     */
+    public static class ServerPackageInformation{
+        public String hash, logoUrl, appName, packageName, summary, description, license, appCategory, webLink, sourceCodeLink, marketVersion, sha256hash, sdkVersion, permissions, features;
+        public int size;
     }
 
 }

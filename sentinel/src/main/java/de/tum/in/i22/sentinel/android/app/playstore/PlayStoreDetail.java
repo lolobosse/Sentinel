@@ -1,29 +1,121 @@
 package de.tum.in.i22.sentinel.android.app.playstore;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 
-public class PlayStoreDetail extends AppCompatActivity {
+public class PlayStoreDetail extends Activity implements View.OnClickListener {
+
+    private ImageView packageView;
+    private TextView packageName;
+    private TextView description;
+    private TextView license;
+    private TextView category;
+    private TextView web;
+    private TextView source;
+    private TextView size;
+    private TextView permissions;
+    private TextView features;
+    private TextView permissionsLabel;
+    private TextView featuresLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.playstore_onclick);
+        setContentView(R.layout.playstore_detail_layout);
 
-        String title = getIntent().getStringExtra(Constants.PACKAGE_TEXT_PLAY_STORE_DETAIL);
-        String logoUrl = getIntent().getStringExtra(Constants.PACKAGE_IMAGE_PLAY_STORE_DETAIL);
+        packageView = (ImageView) findViewById(R.id.packageView);
+        packageName = (TextView) findViewById(R.id.packageName);
+        description = (TextView) findViewById(R.id.description);
+        license = (TextView) findViewById(R.id.license);
+        category = (TextView) findViewById(R.id.category);
+        web = (TextView) findViewById(R.id.web);
+        source = (TextView) findViewById(R.id.source);
+        size = (TextView) findViewById(R.id.size);
+        permissions = (TextView) findViewById(R.id.permissions);
+        permissionsLabel = (TextView) findViewById(R.id.permissionsLabel);
+        features = (TextView) findViewById(R.id.features);
+        featuresLabel = (TextView) findViewById(R.id.featuresLabel);
 
-        TextView titleTextView = (TextView) findViewById(R.id.packageName_focused);
-        titleTextView.setText(title);
+        findViewById(R.id.install).setOnClickListener(this);
 
-        ImageView imageView = (ImageView) findViewById(R.id.packageView_focused);
-        Picasso.with(this).load(logoUrl).into(imageView);
+        // Implementation
+        Gson g = new Gson();
+        PlaystoreFragment.ServerPackageInformation spi = g.fromJson(getIntent().getStringExtra(Constants.DETAILS_TO_DISPLAY_KEY), PlaystoreFragment.ServerPackageInformation.class);
+        Picasso.with(this).load(spi.logoUrl).into(packageView);
+        packageName.setText(spi.appName);
+        if (!TextUtils.isEmpty(spi.description)) {
+            description.setText(Html.fromHtml(spi.description));
+        } else {
+            description.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.license)) {
+            license.setText(license.getText().toString().replace("@!", spi.license));
+        } else {
+            license.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.appCategory)) {
+            category.setText(category.getText().toString().replace("@!", spi.appCategory));
+        } else {
+            category.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.webLink)) {
+            web.setText(web.getText().toString().replace("@!", spi.webLink));
+        } else {
+            web.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.sourceCodeLink)) {
+            source.setText(license.getText().toString().replace("@!", spi.sourceCodeLink));
+        } else {
+            source.setVisibility(View.GONE);
+        }
+        if (spi.size != 0) {
+            size.setText(size.getText().toString().replace("@!", String.valueOf(spi.size)));
+        } else {
+            size.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.permissions)) {
+            permissions.setText(toList(spi.permissions));
+        } else {
+            permissions.setVisibility(View.GONE);
+            permissionsLabel.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(spi.features)) {
+            features.setText(toList(spi.features));
+        } else {
+            features.setVisibility(View.GONE);
+            featuresLabel.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.install:
+                //TODO implement
+                break;
+        }
+    }
+
+    /**
+     * Takes a csv String and returns the same but with line breaks.
+     *
+     * @param s: the list to be splitted
+     * @return Line Break list
+     */
+    private String toList(String s) {
+        return s.replaceAll(",", "\n");
     }
 }
+
