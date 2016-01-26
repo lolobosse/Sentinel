@@ -38,8 +38,8 @@ public class Constants {
     public static final String COLOR_GREY = "#c5c5c5";
 
     // Used by PlaystoreFragment, PlayStoreDetail
-    public static final String PACKAGE_IMAGE_PLAY_STORE_DETAIL = "packageImage_focused";
-    public static final String PACKAGE_TEXT_PLAY_STORE_DETAIL = "packageText_focused";
+    public static final String DETAILS_TO_DISPLAY_KEY = "DetailsOf";
+
 
     // Used by FileChooser, DirectoryChooser, MenuObj, SettingsFragment,
     public static final String PARENT_DIRECTORY = "Parent directory";

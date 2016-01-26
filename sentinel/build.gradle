@@ -51,5 +51,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.code.gson:gson:1.7.2'
     compile project(':appPDPj-lib')
 }

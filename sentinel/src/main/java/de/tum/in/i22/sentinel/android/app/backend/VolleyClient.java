@@ -32,7 +32,7 @@ public class VolleyClient {
     }
 
     public void requestAllMetaData(Response.Listener listener, Response.ErrorListener errorListener){
-        JsonObjectRequest request = new JsonObjectRequest("http://lapbroyg58.informatik.tu-muenchen.de:443/metadata/all", listener, errorListener);
+        JsonObjectRequest request = new JsonObjectRequest("http://lapbroyg58.informatik.tu-muenchen.de:443/metadata/instrumented", listener, errorListener);
         mRequestQueue.add(request);
     }
 }
