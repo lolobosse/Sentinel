@@ -2,6 +2,7 @@ package de.tum.in.i22.sentinel.android.app;
 
 import android.content.Context;
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +55,10 @@ public class Utils {
         catch(Exception e){
             throw new RuntimeException(e);
         }
+    }
+
+    public static void toastMaker(Context c, String toastText){
+        Toast.makeText(c, toastText, Toast.LENGTH_SHORT).show();
     }
 
     /**

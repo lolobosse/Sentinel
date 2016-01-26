@@ -23,6 +23,7 @@ import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKSender;
 import de.tum.in.i22.sentinel.android.app.package_getter.Hash;
@@ -102,7 +103,12 @@ public class ToServerFragment extends Fragment {
                                 }
                             });
                         } else {
-                            throw new RuntimeException(e);
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.toastMaker(getActivity(), "No server connection");
+                                }
+                            });
                         }
                     }
                 }, logo, appName, packageName);
