@@ -51,22 +51,21 @@ public class APKSender {
      * @param packageName           : the package name of the app to instrument and also OPTIONAL
      */
     public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback, File logo, String appName, String packageName) {
-        AsyncHttpPost post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT);
+        AsyncHttpPost post;
         MultipartFormDataBody body = new MultipartFormDataBody();
+        if (appName != null && logo != null && packageName != null){
+            post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT_META);
+            body.addFilePart(Constants.SERVER_LOGO_FILE, logo);
+            body.addStringPart(Constants.SERVER_APP_NAME, appName);
+            body.addStringPart(Constants.SERVER_PACKAGE_NAME, packageName);
+        }
+        else {
+            post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT_NO_META);
+        }
         body.addFilePart(Constants.SERVER_APK_FILE, apk);
         body.addFilePart(Constants.SERVER_SOURCE_FILE, pathToSources);
         body.addFilePart(Constants.SERVER_SINK_FILE, pathToSinks);
         body.addFilePart(Constants.SERVER_TAINT_WRAPPER, pathToTaintWrapper);
-        if (logo != null){
-            body.addFilePart(Constants.SERVER_LOGO_FILE, logo);
-        }
-        if (appName != null){
-            body.addStringPart(Constants.SERVER_APP_NAME, appName);
-        }
-        if (packageName != null){
-            body.addStringPart(Constants.SERVER_PACKAGE_NAME, packageName);
-        }
-        // TODO Have a UI and a parameter for that
         body.addStringPart(Constants.SERVER_PUBLIC_FLAG, "true");
         post.setBody(body);
         AsyncHttpClient.getDefaultInstance().executeString(post, callback);

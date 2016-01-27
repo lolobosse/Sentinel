@@ -72,5 +72,21 @@ public class APKUtils {
         return packages;
     }
 
+    /**
+     * Method to see if we need to uninstall an app before installing another instrumented one
+     * @param c: Context
+     * @param packageName: Name of the package we'd like to implement
+     * @return if the package is already on the device
+     */
+    public static boolean isInstalled (Context c, String packageName){
+        List<ApplicationInfo> infos = installedApplications(c);
+        for (ApplicationInfo i : infos){
+            if (i.packageName.equals(packageName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

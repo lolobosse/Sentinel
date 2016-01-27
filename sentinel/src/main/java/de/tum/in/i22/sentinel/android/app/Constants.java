@@ -53,16 +53,18 @@ public class Constants {
     public static final String APK_TYPE         = "application/vnd.android.package-archive";
 
     // Every key for the server (multipart and so on)
-    public static final String SERVER_ADDRESS                   = "http://lapbroyg58.informatik.tu-muenchen.de:443";
-    public static final String SERVER_APK_FILE                  = "apkFile";
-    public static final String SERVER_SOURCE_FILE               = "sourceFile";
-    public static final String SERVER_SINK_FILE                 = "sinkFile";
-    public static final String SERVER_TAINT_WRAPPER             = "easyTaintWrapperSource";
-    public static final String SERVER_LOGO_FILE                 = "logo";
-    public static final String SERVER_APP_NAME                  = "apkName";
-    public static final String SERVER_PACKAGE_NAME              = "packageName";
-    public static final String SERVER_PUBLIC_FLAG               = "makeAppPublic";
-    public static final String SERVER_INSTRUMENTATION_ENDPOINT  = "/instrument";
+    public static final String SERVER_ADDRESS                           = "http://lapbroyg58.informatik.tu-muenchen.de:443";
+    public static final String SERVER_APK_FILE                          = "apkFile";
+    public static final String SERVER_SOURCE_FILE                       = "sourceFile";
+    public static final String SERVER_SINK_FILE                         = "sinkFile";
+    public static final String SERVER_TAINT_WRAPPER                     = "easyTaintWrapperSource";
+    public static final String SERVER_LOGO_FILE                         = "logo";
+    public static final String SERVER_APP_NAME                          = "apkName";
+    public static final String SERVER_PACKAGE_NAME                      = "packageName";
+    public static final String SERVER_PUBLIC_FLAG                       = "makeAppPublic";
+    public static final String SERVER_INSTRUMENTATION_ENDPOINT          = "/instrument";
+    public static final String SERVER_INSTRUMENTATION_ENDPOINT_META     = "/instrument/withmetadata";
+    public static final String SERVER_INSTRUMENTATION_ENDPOINT_NO_META  = "/instrument/withoutmetadata";
 
 
     // HashCode of server signature
