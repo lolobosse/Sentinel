@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.util.Log;
 
 import java.util.List;
 
@@ -78,10 +79,11 @@ public class APKUtils {
      * @param packageName: Name of the package we'd like to implement
      * @return if the package is already on the device
      */
-    public static boolean isInstalled (Context c, String packageName){
+    public static boolean isInstalled (Context c, String packageName) {
+        Log.d("APKUtils", packageName);
         List<ApplicationInfo> infos = installedApplications(c);
-        for (ApplicationInfo i : infos){
-            if (i.packageName.equals(packageName)){
+        for (ApplicationInfo i : infos) {
+            if (i.packageName.equals(packageName)) {
                 return true;
             }
         }
