@@ -7,12 +7,19 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.AsyncHttpResponse;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
+import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
 import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
 
 public class PlayStoreDetail extends Activity implements View.OnClickListener {
@@ -29,6 +36,8 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
     private TextView features;
     private TextView permissionsLabel;
     private TextView featuresLabel;
+
+    private PlaystoreFragment.ServerPackageInformation spi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +61,7 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
 
         // Implementation
         Gson g = new Gson();
-        PlaystoreFragment.ServerPackageInformation spi = g.fromJson(getIntent().getStringExtra(Constants.DETAILS_TO_DISPLAY_KEY), PlaystoreFragment.ServerPackageInformation.class);
+        spi = g.fromJson(getIntent().getStringExtra(Constants.DETAILS_TO_DISPLAY_KEY), PlaystoreFragment.ServerPackageInformation.class);
         Picasso.with(this).load(spi.logoUrl).into(packageView);
         packageName.setText(spi.appName);
         if (!TextUtils.isEmpty(spi.description)) {
@@ -103,7 +112,22 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.install:
-                //TODO implement
+                APKReceiver.getInstance().getFileFromDownloadUrl(spi.downloadUrl, new AsyncHttpClient.FileCallback() {
+                    @Override
+                    public void onCompleted(Exception e, AsyncHttpResponse source, File result) {
+                        // If the server returns a 200 status => the app has been successfully
+                        // instrumented and is successfully returned
+                        if (e == null && source.code() == 200) {
+                            if (APKUtils.isInstalled(PlayStoreDetail.this, spi.packageName)) {
+                                APKReceiver.getInstance().uninstallApk(PlayStoreDetail.this, spi.packageName);
+                            } else {
+                                APKReceiver.getInstance().installApk(PlayStoreDetail.this, result.getAbsolutePath());
+                            }
+                        } else {
+                            Toast.makeText(PlayStoreDetail.this, "Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 break;
         }
     }

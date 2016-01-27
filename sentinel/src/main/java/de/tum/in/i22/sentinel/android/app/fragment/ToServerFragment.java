@@ -1,6 +1,8 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpResponse;
@@ -26,6 +29,7 @@ import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKSender;
+import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
 import de.tum.in.i22.sentinel.android.app.package_getter.Hash;
 
 /**
@@ -40,6 +44,8 @@ public class ToServerFragment extends Fragment {
     String hash;
 
     TextView notReady;
+
+    String resultPath;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,7 +129,6 @@ public class ToServerFragment extends Fragment {
                         // If the server returns a 200 status => the app has been successfully
                         // instrumented and is successfully returned
                         if (e == null && source.code() == 200) {
-                            AsyncHttpResponse s = source;
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -131,7 +136,13 @@ public class ToServerFragment extends Fragment {
                                     notReady.setVisibility(View.VISIBLE);
                                 }
                             });
-                            APKReceiver.getInstance().installApk(ToServerFragment.this.getActivity(), result.getAbsolutePath());
+                            if (APKUtils.isInstalled(getActivity(), packageName)){
+                                resultPath = result.getAbsolutePath();
+                                APKReceiver.getInstance().uninstallApk(ToServerFragment.this, packageName);
+                            }
+                            else {
+                                APKReceiver.getInstance().installApk(ToServerFragment.this, result.getAbsolutePath());
+                            }
                         } else {
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
@@ -141,20 +152,33 @@ public class ToServerFragment extends Fragment {
                             });
                         }
                     }
-
-                    @Override
-                    public void onProgress(AsyncHttpResponse response, long downloaded, long total) {
-                        Log.d("ToServerFragment", "downloaded:" + downloaded);
-                        Log.d("ToServerFragment", "downloaded/total:" + (downloaded / total));
-                    }
                 });
             }
         });
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == APKReceiver.REQUEST_UNINSTALLATION){
+            if (resultCode == Activity.RESULT_OK){
+                APKReceiver.getInstance().installApk(this, resultPath);
+            }
+            else{
+                Toast.makeText(getActivity(),"Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == APKReceiver.REQUEST_INSTALLATION){
+            if (resultCode == Activity.RESULT_OK){
+                Toast.makeText(getActivity(),"Yepee, app installed", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getActivity(),"Something went wrong during the installation", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private File getFile(String path, String key) {
-        // TODO Comment and document that
         if (!TextUtils.isEmpty(path)) {
             return new File(path);
         } else {

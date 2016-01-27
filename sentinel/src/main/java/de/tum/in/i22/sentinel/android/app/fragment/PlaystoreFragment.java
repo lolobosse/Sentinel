@@ -133,7 +133,7 @@ public class PlaystoreFragment extends Fragment{
      * We basically find that getter and setter boring and we do Python style!
      */
     public static class ServerPackageInformation{
-        public String hash, logoUrl, appName, packageName, summary, description, license, appCategory, webLink, sourceCodeLink, marketVersion, sha256hash, sdkVersion, permissions, features;
+        public String downloadUrl, logoUrl, appName, packageName, summary, description, license, appCategory, webLink, sourceCodeLink, marketVersion, sha256hash, sdkVersion, permissions, features;
         public int size;
     }
 
