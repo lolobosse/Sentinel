@@ -2,5 +2,3 @@ include ':sentinel', ':pList', ':androidLib', ':aXML', ':dragsortlistview', ':ax
 include ':uclib4Android'
 include ':cm4Android'
 include ':appPDPj-lib'
-include ':appPDPj'
-include ':Instrumentation-PEP'

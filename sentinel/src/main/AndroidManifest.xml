@@ -48,8 +48,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="fr.xgouchet.xmleditor.AxelActivity"/>
-
         <service android:name="de.tum.in.i22.uc.pdp.android.pdpService">
             <intent-filter>
                 <action android:name="de.tum.in.i22.uc.pdp.android.pdpService"/>

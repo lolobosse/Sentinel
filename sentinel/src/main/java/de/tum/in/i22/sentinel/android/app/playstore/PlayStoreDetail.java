@@ -2,8 +2,11 @@ package de.tum.in.i22.sentinel.android.app.playstore;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -124,7 +127,13 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
                                 APKReceiver.getInstance().installApk(PlayStoreDetail.this, result.getAbsolutePath());
                             }
                         } else {
-                            Toast.makeText(PlayStoreDetail.this, "Failed", Toast.LENGTH_SHORT).show();
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(PlayStoreDetail.this, "Failed", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            Log.d("PlayStoreDetail", "e:" + e);
                         }
                     }
                 });

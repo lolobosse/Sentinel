@@ -3,9 +3,6 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -23,7 +20,6 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
@@ -73,7 +69,7 @@ public class StatusFragment extends Fragment{
                         getActivity().startService(start);
                         if (!deployPolicyConnection.isBound()) {
                             Intent intent = new Intent();
-                            intent.setClassName("de.tum.in.i22.uc.pdp.android",
+                            intent.setClassName("de.tum.in.i22.sentinel.android.app",
                                     "de.tum.in.i22.uc.pdp.android.pdpService");
                             intent.setAction(pdpService.ACTION_PDP_SETPOLICY);
                             getActivity().bindService(intent, deployPolicyConnection,
@@ -86,7 +82,6 @@ public class StatusFragment extends Fragment{
                                                 de.tum.in.i22.uc.pdp.android.RemoteServiceConnection connection) {
                                             Log.i("LOLO IS TESTING", "serviceBound");
                                             deployPolicy(currentPolicyFile);
-
                                         }
                                     });
                         }
