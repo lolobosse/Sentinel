@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
@@ -35,6 +36,7 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered {
 
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
+    public boolean emptyAPK;
     private View view;
 
     private PackageGetter.Package selectedPackage;
@@ -68,25 +70,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         setSourcePath(sources);
         setTaintPath(taint);
 
-        // Test button for instrumented apps counter
-        /* LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
-        Button button = new Button(getActivity());
-        linearLayout.addView(button);
-        button.setText("Counter++");
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-                SharedPreferences.Editor editor = sp.edit();
-                int retrievedAmount = sp.getInt(INSTRUMENTED_APPLICATIONS, 0);
-                int newAmount = retrievedAmount + 1;
-                editor.putInt(INSTRUMENTED_APPLICATIONS, newAmount);
-                editor.commit();
-            }
-        }); */
-        // End test
-
         // Finds the buttons
         Button pickApplicationButton = (Button) view.findViewById(R.id.applicationButton);
         Button pickSinksButton = (Button) view.findViewById(R.id.sinksButton);
@@ -94,7 +77,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Button pickTaintButton = (Button) view.findViewById(R.id.taintButton);
         Button nextActivity = (Button) view.findViewById(R.id.nextActivityButton);
         Button clearInputs = (Button) view.findViewById(R.id.clearButton);
-
 
         // Opens a dialog with installed packages the user can choose from, alternatively the user
         // can pick one from the file system
@@ -146,21 +128,25 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         nextActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ToServerFragment toServerFragment = new ToServerFragment();
-                Bundle b = new Bundle();
-                b.putString(Constants.APK, applicationPath);
-                b.putString(Constants.SOURCES, sourcePath);
-                b.putString(Constants.SINKS, sinksPath);
-                b.putString(Constants.TAINT, taintPath);
-                if (selectedPackage != null) {
-                    b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
-                    b.putString(Constants.APP_NAME, selectedPackage.getName());
-                    b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
+                if (emptyAPK) {
+                    Utils.toastMaker(getActivity(), "No APK selected");
+                } else {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ToServerFragment toServerFragment = new ToServerFragment();
+                    Bundle b = new Bundle();
+                    b.putString(Constants.APK, applicationPath);
+                    b.putString(Constants.SOURCES, sourcePath);
+                    b.putString(Constants.SINKS, sinksPath);
+                    b.putString(Constants.TAINT, taintPath);
+                    if (selectedPackage != null) {
+                        b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
+                        b.putString(Constants.APP_NAME, selectedPackage.getName());
+                        b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
+                    }
+                    toServerFragment.setArguments(b);
+                    ft.replace(R.id.mainViewContainer, toServerFragment);
+                    ft.commit();
                 }
-                toServerFragment.setArguments(b);
-                ft.replace(R.id.mainViewContainer, toServerFragment);
-                ft.commit();
             }
         });
 
@@ -248,8 +234,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public void setApplicationPath(String applicationPath) {
         if (applicationPath == null) {
             appInputText.setText("");
+            emptyAPK = true;
         } else {
             appInputText.setText(String.valueOf(applicationPath));
+            emptyAPK = false;
         }
         this.applicationPath = applicationPath;
     }
