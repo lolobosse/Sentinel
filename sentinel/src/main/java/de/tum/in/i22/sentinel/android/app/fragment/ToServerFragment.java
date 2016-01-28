@@ -136,11 +136,10 @@ public class ToServerFragment extends Fragment {
                                     notReady.setVisibility(View.VISIBLE);
                                 }
                             });
-                            if (APKUtils.isInstalled(getActivity(), packageName)){
+                            if (APKUtils.isInstalled(getActivity(), packageName)) {
                                 resultPath = result.getAbsolutePath();
                                 APKReceiver.getInstance().uninstallApk(ToServerFragment.this, packageName);
-                            }
-                            else {
+                            } else {
                                 APKReceiver.getInstance().installApk(ToServerFragment.this, result.getAbsolutePath());
                             }
                         } else {
@@ -160,20 +159,17 @@ public class ToServerFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == APKReceiver.REQUEST_UNINSTALLATION){
-            if (resultCode == Activity.RESULT_OK){
+        if (requestCode == APKReceiver.REQUEST_UNINSTALLATION) {
+            if (resultCode == Activity.RESULT_OK) {
                 APKReceiver.getInstance().installApk(this, resultPath);
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
             }
-            else{
-                Toast.makeText(getActivity(),"Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == APKReceiver.REQUEST_INSTALLATION){
-            if (resultCode == Activity.RESULT_OK){
-                Toast.makeText(getActivity(),"Yepee, app installed", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(getActivity(),"Something went wrong during the installation", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == APKReceiver.REQUEST_INSTALLATION) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(getActivity(), "Yepee, app installed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong during the installation", Toast.LENGTH_SHORT).show();
             }
         }
     }

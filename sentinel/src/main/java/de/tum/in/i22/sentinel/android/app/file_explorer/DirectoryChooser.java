@@ -27,6 +27,7 @@ public class DirectoryChooser extends ListActivity {
 
     /**
      * Get the storage path to be displays and fire the view building method.
+     *
      * @param savedInstanceState
      */
     @Override
@@ -40,24 +41,25 @@ public class DirectoryChooser extends ListActivity {
     /**
      * This methods fills the adapter with a human readable content representing the structure of
      * the current directory
+     *
      * @param workingDir:
      */
     private void fill(File workingDir) {
-        File[]folder = workingDir.listFiles();
+        File[] folder = workingDir.listFiles();
         this.setTitle("Current directory: " + workingDir.getName());
-        List<MenuObj>dirs = new ArrayList<MenuObj>();
+        List<MenuObj> dirs = new ArrayList<MenuObj>();
 
         try {
-            for (File f: folder){
+            for (File f : folder) {
                 // Sets the last modified date in the directory
                 String formattedDate = "";
 
                 // If there is a sub directory, it displays the count of contained files
                 // Condition: If it is not a hidden directory
-                if (f.isDirectory() && !f.isHidden()){
+                if (f.isDirectory() && !f.isHidden()) {
                     File[] subDir = f.listFiles();
                     int amount = 0;
-                    if (subDir != null){
+                    if (subDir != null) {
                         amount = subDir.length;
                     }
                     String numItem = String.valueOf(amount);
@@ -92,7 +94,6 @@ public class DirectoryChooser extends ListActivity {
     }
 
     /**
-     *
      * @param l
      * @param v
      * @param position
@@ -102,7 +103,7 @@ public class DirectoryChooser extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         MenuObj obj = adapter.getItem(position);
-        if (obj.getState() == MenuObj.STATE.FOLDER){
+        if (obj.getState() == MenuObj.STATE.FOLDER) {
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else {

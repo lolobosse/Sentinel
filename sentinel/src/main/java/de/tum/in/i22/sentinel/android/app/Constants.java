@@ -66,7 +66,9 @@ public class Constants {
     public static final String SERVER_INSTRUMENTATION_ENDPOINT_META     = "/instrument/withmetadata";
     public static final String SERVER_INSTRUMENTATION_ENDPOINT_NO_META  = "/instrument/withoutmetadata";
 
-
     // HashCode of server signature
     public static final int SERVER_SIGNATURE_HASH_CODE = -1288784872;
+
+    // Used by PolicyEditor
+    public static final String AXEL_PACKAGE_NAME = "fr.xgouchet.xmleditor";
 }

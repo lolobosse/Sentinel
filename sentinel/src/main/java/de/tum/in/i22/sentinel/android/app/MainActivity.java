@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -65,38 +66,41 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_editor) { // Editor fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PolicyEditor());
-            setTitle("Editor");
+            clearFragmentStack();
+            ft.addToBackStack(null);
             ft.commit();
 
         } else if (id == R.id.nav_status) { // Status fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new StatusFragment());
-            setTitle("Status");
+            clearFragmentStack();
             ft.commit();
-
-
 
         } else if (id == R.id.nav_instrument) { // Instrument fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new InstrumentFragment());
-            setTitle("Instrument");
+            clearFragmentStack();
+            ft.addToBackStack(null);
             ft.commit();
 
         } else if (id == R.id.nav_settings) { // Settings fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new SettingsFragment());
-            setTitle("Settings");
+            clearFragmentStack();
+            ft.addToBackStack(null);
             ft.commit();
 
         } else if (id == R.id.nav_playstore) { // PlayStore fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PlaystoreFragment());
-            setTitle("PlayStore");
+            clearFragmentStack();
+            ft.addToBackStack(null);
             ft.commit();
         } else if (id == R.id.nav_PostInstrument) { // PostInstrument fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.mainViewContainer, new PostInstrumentFragment());
-            setTitle("Applications");
+            clearFragmentStack();
+            ft.addToBackStack(null);
             ft.commit();
         }
 
@@ -104,4 +108,12 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void clearFragmentStack(){
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+    }
+
 }

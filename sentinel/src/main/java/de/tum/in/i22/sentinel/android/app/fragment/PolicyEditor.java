@@ -25,17 +25,15 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 /**
  * Created by laurentmeyer on 21/01/16.
  */
-public class PolicyEditor extends Fragment{
+public class PolicyEditor extends Fragment {
 
     private int filePickingRequest = 0;
-
-    //TODO Extract that in the constants
-    String AXEL_PACKAGE_NAME = "fr.xgouchet.xmleditor";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflated = inflater.inflate(R.layout.policy_editor_to_axel, container, false);
+        getActivity().setTitle("Policy Editor");
         final Button startDialog = (Button) inflated.findViewById(R.id.whichPolicy);
         startDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,13 +44,12 @@ public class PolicyEditor extends Fragment{
                 builder.setItems(choices, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i == 0){
+                        if (i == 0) {
                             Intent intent = new Intent(PolicyEditor.this.getActivity(), FileChooser.class);
                             intent.putExtra(Constants.EXTENSION, Constants.INPUT_XML);
                             startActivityForResult(intent, filePickingRequest);
-                        }
-                        else{
-                            startNewActivity(PolicyEditor.this.getActivity(), AXEL_PACKAGE_NAME);
+                        } else {
+                            startNewActivity(PolicyEditor.this.getActivity(), Constants.AXEL_PACKAGE_NAME);
                         }
                     }
                 }).show();
@@ -87,10 +84,10 @@ public class PolicyEditor extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == filePickingRequest && resultCode == Activity.RESULT_OK){
+        if (requestCode == filePickingRequest && resultCode == Activity.RESULT_OK) {
             String absolutePath = data.getStringExtra(Constants.ABSOLUTE_PATH);
             Uri toSend = Uri.parse(new File(absolutePath).toString());
-            startNewActivity(getActivity(), AXEL_PACKAGE_NAME, toSend);
+            startNewActivity(getActivity(), Constants.AXEL_PACKAGE_NAME, toSend);
         }
     }
 }

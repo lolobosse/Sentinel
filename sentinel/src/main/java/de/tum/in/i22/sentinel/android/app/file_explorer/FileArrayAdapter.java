@@ -23,7 +23,7 @@ import de.tum.in.i22.sentinel.android.app.R;
  */
 public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
 
-    private final  String DRAWABLE_IDENTIFIER = "drawable/";
+    private final String DRAWABLE_IDENTIFIER = "drawable/";
 
 
     private Context c;
@@ -55,7 +55,7 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
             TextView textDate = (TextView) v.findViewById(R.id.TextViewDate);
 
             ImageView icon = (ImageView) v.findViewById(R.id.Icon);
-            String uri =  DRAWABLE_IDENTIFIER + obj.getIcon();
+            String uri = DRAWABLE_IDENTIFIER + obj.getIcon();
 
             int imageResource = c.getResources().getIdentifier(uri, null, c.getPackageName());
             Drawable image = null;

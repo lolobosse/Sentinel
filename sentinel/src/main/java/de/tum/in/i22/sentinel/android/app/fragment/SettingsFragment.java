@@ -19,7 +19,7 @@ import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class SettingsFragment extends Fragment{
+public class SettingsFragment extends Fragment {
 
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
@@ -27,12 +27,13 @@ public class SettingsFragment extends Fragment{
 
     public static String savedAPKfolder;
     public static boolean saveAPK = false;
-    public static boolean  postInstallAPK = false;
+    public static boolean postInstallAPK = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
+        getActivity().setTitle("Settings");
 
         saveToSwitch = (Switch) view.findViewById(R.id.saveToSwitch);
         postInstallSwitch = (Switch) view.findViewById(R.id.installSwitch);
@@ -45,7 +46,7 @@ public class SettingsFragment extends Fragment{
                 // Colour change for interactive feedback
                 int active = Color.parseColor(Constants.COLOR_DARK);
                 int inactive = Color.parseColor(Constants.COLOR_GREY);
-                if (isChecked){
+                if (isChecked) {
                     // Switch is active
                     saveAPK = true;
                     saveToPath.setTextColor(active);
@@ -60,7 +61,7 @@ public class SettingsFragment extends Fragment{
                             startActivityForResult(intent, FOLDER_REQUEST);
                         }
                     });
-                    
+
                 } else {
                     // Switch is inactive
                     saveAPK = false;
@@ -74,7 +75,7 @@ public class SettingsFragment extends Fragment{
         postInstallSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     postInstallAPK = true;
                 } else {
                     postInstallAPK = false;
@@ -88,14 +89,15 @@ public class SettingsFragment extends Fragment{
     /**
      * If an intent was sent to {@see de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser}
      * the result is handled by this method.
+     *
      * @param requestCode Determined by which activity that is trying to send data
-     * @param resultCode Integer value based on operation success, cancellation, or pre-defined activity results
-     * @param data The intent data that was returned from the launched activity
+     * @param resultCode  Integer value based on operation success, cancellation, or pre-defined activity results
+     * @param data        The intent data that was returned from the launched activity
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FOLDER_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        if (requestCode == FOLDER_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 savedAPKfolder = String.valueOf(data.getStringExtra(Constants.DIRECTORY_PATH));
                 saveToPath.setText(savedAPKfolder);
             }

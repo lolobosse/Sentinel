@@ -29,13 +29,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class DirectoryChooserTest {
 
     @Rule
-    public ActivityTestRule<DirectoryChooser> mFC = new ActivityTestRule<DirectoryChooser>(DirectoryChooser.class){
+    public ActivityTestRule<DirectoryChooser> mFC = new ActivityTestRule<DirectoryChooser>(DirectoryChooser.class) {
     };
 
     @BeforeClass
-    public static void createFolder(){
+    public static void createFolder() {
         File f = new File("/sdcard/Downloads/a");
-        File fb= new File("/sdcard/Downloads/ab");
+        File fb = new File("/sdcard/Downloads/ab");
         f.mkdirs();
         fb.mkdirs();
     }
@@ -53,9 +53,9 @@ public class DirectoryChooserTest {
     }
 
     @AfterClass
-    public static void deleteFolder(){
+    public static void deleteFolder() {
         File f = new File("/sdcard/Downloads/a");
-        File fb= new File("/sdcard/Downloads/ab");
+        File fb = new File("/sdcard/Downloads/ab");
         f.delete();
         fb.delete();
     }
