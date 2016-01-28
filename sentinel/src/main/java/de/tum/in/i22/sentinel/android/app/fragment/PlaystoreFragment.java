@@ -36,7 +36,7 @@ import de.tum.in.i22.sentinel.android.app.playstore.PlayStoreDetail;
  * Created by Moderbord on 2016-01-13.
  */
 
-public class PlaystoreFragment extends Fragment{
+public class PlaystoreFragment extends Fragment {
 
     GridView gridView;
     GridAdapter adapter;
@@ -46,6 +46,7 @@ public class PlaystoreFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.playstore_layout, container, false);
+        getActivity().setTitle("PlayStore");
         this.inflater = inflater;
         gridView = (GridView) view.findViewById(R.id.pictureGrid);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,11 +89,11 @@ public class PlaystoreFragment extends Fragment{
         return view;
     }
 
-    private class GridAdapter extends BaseAdapter{
+    private class GridAdapter extends BaseAdapter {
         private Context context;
         private List<ServerPackageInformation> data;
 
-        public GridAdapter(Context c, List<ServerPackageInformation> packages){
+        public GridAdapter(Context c, List<ServerPackageInformation> packages) {
             context = c;
             data = packages;
         }
@@ -132,7 +133,7 @@ public class PlaystoreFragment extends Fragment{
     /**
      * We basically find that getter and setter boring and we do Python style!
      */
-    public static class ServerPackageInformation{
+    public static class ServerPackageInformation {
         public String downloadUrl, logoUrl, appName, packageName, summary, description, license, appCategory, webLink, sourceCodeLink, marketVersion, sha256hash, sdkVersion, permissions, features;
         public int size;
     }

@@ -39,24 +39,22 @@ public class MenuObj implements Comparable<MenuObj> {
 
     @Override
     public int compareTo(MenuObj obj) {
-        if (this.name != null){
+        if (this.name != null) {
             return this.name.toLowerCase().compareTo(obj.getName().toLowerCase());
         } else {
             throw new IllegalArgumentException();
         }
     }
 
-    public STATE getState(){
-        if (this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_ICON) || this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_UP)){
+    public STATE getState() {
+        if (this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_ICON) || this.getIcon().equalsIgnoreCase(Constants.DIRECTORY_UP)) {
             return STATE.FOLDER;
-        }
-        else{
+        } else {
             return STATE.FILE;
         }
     }
 
     public enum STATE {FOLDER, FILE}
-
 
 
 }

@@ -41,13 +41,13 @@ public class FileChooser extends ListActivity {
 
     private void fill(File workingDir) {
 
-        File[]folder = workingDir.listFiles();
+        File[] folder = workingDir.listFiles();
         this.setTitle("Current directory: " + workingDir.getName());
-        List<MenuObj>dirs = new ArrayList<MenuObj>();
-        List<MenuObj>files = new ArrayList<MenuObj>();
+        List<MenuObj> dirs = new ArrayList<MenuObj>();
+        List<MenuObj> files = new ArrayList<MenuObj>();
 
         try {
-            for (File f: folder){
+            for (File f : folder) {
                 // Sets the last modified date in the directory
                 Date modifiedDate = new Date(f.lastModified());
                 DateFormat formatter = DateFormat.getDateTimeInstance();
@@ -55,10 +55,10 @@ public class FileChooser extends ListActivity {
 
                 // If there is a sub directory, it displays the count of contained files
                 // Condition: If it is not a hidden directory
-                if (f.isDirectory() && !f.isHidden()){
+                if (f.isDirectory() && !f.isHidden()) {
                     File[] subDir = f.listFiles();
                     int amount = 0;
-                    if (subDir != null){
+                    if (subDir != null) {
                         amount = subDir.length;
                     }
                     String numItem = String.valueOf(amount);
@@ -73,12 +73,12 @@ public class FileChooser extends ListActivity {
                     dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), Constants.DIRECTORY_ICON));
 
                     // Condition: If it is not a hidden file
-                } else  if (!f.isHidden()){
+                } else if (!f.isHidden()) {
                     // Creates a file MenuObj
                     files.add(new MenuObj(f.getName(), f.length() / 1000 + " kB", formattedDate, f.getAbsolutePath(), Constants.FILE_ICON));
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -101,7 +101,7 @@ public class FileChooser extends ListActivity {
         super.onListItemClick(l, v, position, id);
 
         MenuObj obj = adapter.getItem(position);
-        if (obj.getState() == MenuObj.STATE.FOLDER){
+        if (obj.getState() == MenuObj.STATE.FOLDER) {
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else if (!obj.getName().endsWith(fileExt)) {

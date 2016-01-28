@@ -37,10 +37,11 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_instrument_fragment, container, false);
+        getActivity().setTitle("Applications");
         this.inflater = inflater;
         listView = (ListView) view.findViewById(R.id.post_instrument_listView);
 
-        Thread t = new Thread(){
+        Thread t = new Thread() {
             @Override
             public void run() {
                 PackageGetter.getPackages(PostInstrumentFragment.this, getActivity());
@@ -77,12 +78,12 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
 
     }
 
-    private class RowPackageAdapter extends BaseAdapter{
+    private class RowPackageAdapter extends BaseAdapter {
 
         private Context context;
         private List<PackageGetter.Package> data;
 
-        public RowPackageAdapter(Context c, List<PackageGetter.Package> packages){
+        public RowPackageAdapter(Context c, List<PackageGetter.Package> packages) {
             context = c;
             data = packages;
         }
@@ -110,7 +111,7 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
             ImageView rowItemIcon = (ImageView) v.findViewById(R.id.rowIcon);
             CheckBox rowCheckBox = (CheckBox) v.findViewById(R.id.rowInstrumentedBox);
 
-            PackageGetter.Package packageItem = (PackageGetter.Package)getItem(position);
+            PackageGetter.Package packageItem = (PackageGetter.Package) getItem(position);
 
             // Retrieves the sharedPreferences of "sentinel" and gets the boolean value stored in
             // packageName from the above packageItem
@@ -118,12 +119,12 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
             boolean isInstrumented = sp.getBoolean(packageItem.getPackageName(), false);
 
             // Condition: If the package is instrumented the checkbox is checked
-            if (isInstrumented){
+            if (isInstrumented) {
                 rowCheckBox.setChecked(true);
             }
             // Sets name, path, and icon
-            rowItemTitle.setText(((PackageGetter.Package)getItem(position)).getName());
-            rowItemPath.setText(((PackageGetter.Package)getItem(position)).getPath());
+            rowItemTitle.setText(((PackageGetter.Package) getItem(position)).getName());
+            rowItemPath.setText(((PackageGetter.Package) getItem(position)).getPath());
             rowItemIcon.setImageDrawable(((PackageGetter.Package) getItem(position)).getPackagePicture());
 
             // Returns the row

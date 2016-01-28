@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
 import de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog;
@@ -35,6 +36,7 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered {
 
     static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
+    public boolean emptyAPK;
     private View view;
 
     private PackageGetter.Package selectedPackage;
@@ -48,6 +50,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.instrument_fragment, container, false);
+        getActivity().setTitle("Instrument");
 
         // Finds the textViews
         appInputText = (EditText) view.findViewById(R.id.applicationInput);
@@ -68,25 +71,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         setSourcePath(sources);
         setTaintPath(taint);
 
-        // Test button for instrumented apps counter
-        /* LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.instrumentationLinearLayout);
-        Button button = new Button(getActivity());
-        linearLayout.addView(button);
-        button.setText("Counter++");
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sp = getActivity().getSharedPreferences(SENTINEL, 0);
-                SharedPreferences.Editor editor = sp.edit();
-                int retrievedAmount = sp.getInt(INSTRUMENTED_APPLICATIONS, 0);
-                int newAmount = retrievedAmount + 1;
-                editor.putInt(INSTRUMENTED_APPLICATIONS, newAmount);
-                editor.commit();
-            }
-        }); */
-        // End test
-
         // Finds the buttons
         Button pickApplicationButton = (Button) view.findViewById(R.id.applicationButton);
         Button pickSinksButton = (Button) view.findViewById(R.id.sinksButton);
@@ -94,7 +78,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Button pickTaintButton = (Button) view.findViewById(R.id.taintButton);
         Button nextActivity = (Button) view.findViewById(R.id.nextActivityButton);
         Button clearInputs = (Button) view.findViewById(R.id.clearButton);
-
 
         // Opens a dialog with installed packages the user can choose from, alternatively the user
         // can pick one from the file system
@@ -118,13 +101,15 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         pickSourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {getFile(PICK_SOURCE_REQUEST);
+            public void onClick(View v) {
+                getFile(PICK_SOURCE_REQUEST);
             }
         });
 
         sourceInputText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {getFile(PICK_SOURCE_REQUEST);
+            public void onClick(View v) {
+                getFile(PICK_SOURCE_REQUEST);
             }
         });
 
@@ -146,21 +131,26 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         nextActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ToServerFragment toServerFragment = new ToServerFragment();
-                Bundle b = new Bundle();
-                b.putString(Constants.APK, applicationPath);
-                b.putString(Constants.SOURCES, sourcePath);
-                b.putString(Constants.SINKS, sinksPath);
-                b.putString(Constants.TAINT, taintPath);
-                if (selectedPackage != null) {
-                    b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
-                    b.putString(Constants.APP_NAME, selectedPackage.getName());
-                    b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
+                if (emptyAPK) {
+                    Utils.toastMaker(getActivity(), "No APK selected");
+                } else {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ToServerFragment toServerFragment = new ToServerFragment();
+                    Bundle b = new Bundle();
+                    b.putString(Constants.APK, applicationPath);
+                    b.putString(Constants.SOURCES, sourcePath);
+                    b.putString(Constants.SINKS, sinksPath);
+                    b.putString(Constants.TAINT, taintPath);
+                    if (selectedPackage != null) {
+                        b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
+                        b.putString(Constants.APP_NAME, selectedPackage.getName());
+                        b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
+                    }
+                    toServerFragment.setArguments(b);
+                    ft.replace(R.id.mainViewContainer, toServerFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
                 }
-                toServerFragment.setArguments(b);
-                ft.replace(R.id.mainViewContainer, toServerFragment);
-                ft.commit();
             }
         });
 
@@ -200,6 +190,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      * Opens up a file explorer via an intent and lets the user choose files from the local file system.
      * Here the user is limited to .txt files as the source, sinks, and taint wrapper definitions are contained
      * within these type of files.
+     *
      * @param requestCode Is determined by which button was pressed in the view fragment and will be
      *                    sent and handled by the onActivityResult.
      */
@@ -213,29 +204,30 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      * If an intent was sent to {@see de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser}
      * the result is handled by this method. Also updates the interface to display the path of the
      * File that is passed by the intent.
+     *
      * @param requestCode Determined by which component in the View that is trying to send data
-     * @param resultCode Integer value based on operation success, cancellation, or pre-defined activity results
-     * @param data The intent data that was returned from the launched activity
+     * @param resultCode  Integer value based on operation success, cancellation, or pre-defined activity results
+     * @param data        The intent data that was returned from the launched activity
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Matches the requestCode from which button was pressed, and updates the correct textView with
         // the absolute path retrieved from data
-        if (requestCode == PICK_APPLICATION_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        if (requestCode == PICK_APPLICATION_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setApplicationPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
                 dismissDialog();
             }
-        } else if (requestCode == PICK_SINKS_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_SINKS_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setSinksPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
-        } else if (requestCode == PICK_SOURCE_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_SOURCE_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setSourcePath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
-        } else if (requestCode == PICK_TAINT_REQUEST){
-            if (resultCode == getActivity().RESULT_OK){
+        } else if (requestCode == PICK_TAINT_REQUEST) {
+            if (resultCode == getActivity().RESULT_OK) {
                 setTaintPath(data.getStringExtra(Constants.ABSOLUTE_PATH));
             }
         }
@@ -243,19 +235,23 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     /**
      * Displays a given String in a TextView
+     *
      * @param applicationPath The String value that is to be set. If null: ""
      */
     public void setApplicationPath(String applicationPath) {
         if (applicationPath == null) {
             appInputText.setText("");
+            emptyAPK = true;
         } else {
             appInputText.setText(String.valueOf(applicationPath));
+            emptyAPK = false;
         }
         this.applicationPath = applicationPath;
     }
 
     /**
      * Displays a given String in a TextView
+     *
      * @param sinksPath The String value that is to be set. If null: ""
      */
     public void setSinksPath(String sinksPath) {
@@ -269,6 +265,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     /**
      * Displays a given String in a TextView
+     *
      * @param sourcePath The String value that is to be set. If null: ""
      */
     public void setSourcePath(String sourcePath) {
@@ -282,6 +279,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     /**
      * Displays a given String in a TextView
+     *
      * @param taintPath The String value that is to be set. If null: ""
      */
     public void setTaintPath(String taintPath) {
@@ -323,6 +321,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     /**
      * Creates a Bitmap object from a Drawable object
+     *
      * @param drawable The drawable resource that is to be converted
      * @return
      */
@@ -350,6 +349,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
     /**
      * Creates a File object from a Drawable object
+     *
      * @param d The drawable resource that is to be converted
      * @return
      */
@@ -379,7 +379,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      * Private OnClickListener class that opens a {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
      * that allows the user to pick from installed package.
      */
-    private class PickApplicationListener implements View.OnClickListener{
+    private class PickApplicationListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {

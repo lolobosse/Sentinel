@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.test_resources;
 /**
  * Created by Moderbord on 2016-01-12.
  */
+
 import android.support.test.espresso.IdlingResource;
 
 public class ElapsedTimeIdlingResource implements IdlingResource {

@@ -2,6 +2,7 @@ package de.tum.in.i22.sentinel.android.app;
 
 import android.content.Context;
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,14 +29,13 @@ public class Utils {
         }
     }
 
-    private static void writeToFile(String filename, int definitionRes, Context c, String filePath){
+    private static void writeToFile(String filename, int definitionRes, Context c, String filePath) {
         try {
             InputStream in = c.getResources().openRawResource(definitionRes);
             FileOutputStream out;
-            if (filePath == null){
+            if (filePath == null) {
                 out = new FileOutputStream(new File(c.getFilesDir(), filename));
-            }
-            else {
+            } else {
                 // create a File object for the parent directory
                 File parentDirectory = new File(filePath);
                 // have the object build the directory structure, if needed.
@@ -50,18 +50,22 @@ public class Utils {
             while ((read = in.read(buff)) > 0) {
                 out.write(buff, 0, read);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void toastMaker(Context c, String toastText) {
+        Toast.makeText(c, toastText, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * This method is only there to allow the user to use the policy which were available in the examples
      * To do so, they moved to a visible folder of the device: the folder "SentinelPolicies"
+     *
      * @param c
      */
-    public static void passPoliciesFromRawToFile(Context c){
+    public static void passPoliciesFromRawToFile(Context c) {
         String where = Environment.getExternalStorageDirectory().getPath() + "/SentinelPolicies/";
         writeToFile("Policy.xml", R.raw.policy, c, where);
         writeToFile("Policy_App_SMS_1.xml", R.raw.policy_appsms1, c, where);

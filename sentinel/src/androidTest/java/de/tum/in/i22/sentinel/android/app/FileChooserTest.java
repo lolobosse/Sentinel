@@ -33,7 +33,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class FileChooserTest {
 
     @Rule
-    public ActivityTestRule<FileChooser> mFC = new ActivityTestRule<FileChooser>(FileChooser.class){
+    public ActivityTestRule<FileChooser> mFC = new ActivityTestRule<FileChooser>(FileChooser.class) {
         @Override
         protected Intent getActivityIntent() {
             Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -44,7 +44,7 @@ public class FileChooserTest {
     };
 
     @BeforeClass
-    public static void createFiles(){
+    public static void createFiles() {
         File f = new File("/sdcard/a");
         f.mkdirs();
         File fa = new File("/sdcard/a/ab.txt");
@@ -67,7 +67,7 @@ public class FileChooserTest {
     }
 
     @AfterClass
-    public static void deleteCreatedFiles(){
+    public static void deleteCreatedFiles() {
         File f = new File("/sdcard/a");
         File fa = new File("/sdcard/a/ab.txt");
         File fb = new File("/sdcard/a/abc.jpg");

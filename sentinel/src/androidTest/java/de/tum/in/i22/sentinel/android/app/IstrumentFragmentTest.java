@@ -39,11 +39,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class IstrumentFragmentTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mFC = new ActivityTestRule<MainActivity>(MainActivity.class){
+    public ActivityTestRule<MainActivity> mFC = new ActivityTestRule<MainActivity>(MainActivity.class) {
     };
 
     @BeforeClass
-    public static void createFolder(){
+    public static void createFolder() {
         File a = new File("/sdcard/a");
         File b = new File("/sdcard/b");
         File c = new File("/sdcard/c");
@@ -99,7 +99,7 @@ public class IstrumentFragmentTest {
     }
 
     @AfterClass
-    public static void deleteFiles(){
+    public static void deleteFiles() {
         File a = new File("/sdcard/a");
         File b = new File("/sdcard/b");
         File c = new File("/sdcard/c");

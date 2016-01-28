@@ -31,7 +31,7 @@ import de.tum.in.i22.uc.pdp.android.pdpService;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class StatusFragment extends Fragment{
+public class StatusFragment extends Fragment {
 
     private static de.tum.in.i22.uc.pdp.android.RemoteServiceConnection deployPolicyConnection = new de.tum.in.i22.uc.pdp.android.RemoteServiceConnection();
 
@@ -41,6 +41,7 @@ public class StatusFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.status_fragment, container, false);
+        getActivity().setTitle("Status");
 
         final Switch pdpServiceSwitch = (Switch) view.findViewById(R.id.pdpSwitch);
         Button deployPolicy = (Button) view.findViewById(R.id.deployPolicy);
@@ -61,7 +62,7 @@ public class StatusFragment extends Fragment{
         pdpServiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     if (isChecked) {
                         // Activate the PDP
                         // WARNING: This line won't work on 5.0 devices because Google enforces explicit intent!
@@ -84,8 +85,7 @@ public class StatusFragment extends Fragment{
                                             deployPolicy(currentPolicyFile);
                                         }
                                     });
-                        }
-                        else {
+                        } else {
                             Log.d("MainViewFragment", "PDP is bound");
                         }
                     } else {
@@ -138,7 +138,7 @@ public class StatusFragment extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == 0){
+        if (resultCode == Activity.RESULT_OK && requestCode == 0) {
             String pathToPolicy = data.getStringExtra(Constants.ABSOLUTE_PATH);
             deployPolicy(new File(pathToPolicy));
         }

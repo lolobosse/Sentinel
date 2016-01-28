@@ -26,6 +26,7 @@ import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKSender;
 import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
@@ -108,7 +109,12 @@ public class ToServerFragment extends Fragment {
                                 }
                             });
                         } else {
-                            throw new RuntimeException(e);
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.toastMaker(getActivity(), "No server connection");
+                                }
+                            });
                         }
                     }
                 }, logo, appName, packageName);
@@ -130,11 +136,10 @@ public class ToServerFragment extends Fragment {
                                     notReady.setVisibility(View.VISIBLE);
                                 }
                             });
-                            if (APKUtils.isInstalled(getActivity(), packageName)){
+                            if (APKUtils.isInstalled(getActivity(), packageName)) {
                                 resultPath = result.getAbsolutePath();
                                 APKReceiver.getInstance().uninstallApk(ToServerFragment.this, packageName);
-                            }
-                            else {
+                            } else {
                                 APKReceiver.getInstance().installApk(ToServerFragment.this, result.getAbsolutePath());
                             }
                         } else {
@@ -154,20 +159,17 @@ public class ToServerFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == APKReceiver.REQUEST_UNINSTALLATION){
-            if (resultCode == Activity.RESULT_OK){
+        if (requestCode == APKReceiver.REQUEST_UNINSTALLATION) {
+            if (resultCode == Activity.RESULT_OK) {
                 APKReceiver.getInstance().installApk(this, resultPath);
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
             }
-            else{
-                Toast.makeText(getActivity(),"Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if (requestCode == APKReceiver.REQUEST_INSTALLATION){
-            if (resultCode == Activity.RESULT_OK){
-                Toast.makeText(getActivity(),"Yepee, app installed", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(getActivity(),"Something went wrong during the installation", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == APKReceiver.REQUEST_INSTALLATION) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(getActivity(), "Yepee, app installed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong during the installation", Toast.LENGTH_SHORT).show();
             }
         }
     }
