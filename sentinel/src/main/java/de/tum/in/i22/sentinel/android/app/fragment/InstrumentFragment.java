@@ -33,9 +33,18 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 /**
  * Created by laurentmeyer on 23/12/15.
  */
+
+/**
+ * This class is responsible for selecting the files to be sent to the server
+ */
 public class InstrumentFragment extends Fragment implements AppPickerDialog.onFileChooseTriggered {
 
-    static final int PICK_APPLICATION_REQUEST = 1, PICK_SINKS_REQUEST = 2, PICK_SOURCE_REQUEST = 3, PICK_TAINT_REQUEST = 4;
+    // Request codes
+    private static final int PICK_APPLICATION_REQUEST = 1;
+    private static final int PICK_SINKS_REQUEST = 2;
+    private static final int PICK_SOURCE_REQUEST = 3;
+    private static final int PICK_TAINT_REQUEST = 4;
+
     public boolean emptyAPK;
     private View view;
 
@@ -44,6 +53,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     public static String applicationPath, sinksPath, sourcePath, taintPath;
 
     TextView taintInputText, sourceInputText, sinksInputText, appInputText;
+
     Dialog packageDialog;
 
     @Nullable
@@ -80,9 +90,8 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         Button clearInputs = (Button) view.findViewById(R.id.clearButton);
 
         // Opens a dialog with installed packages the user can choose from, alternatively the user
-        // can pick one from the file system
+        // can pick apk from the file system
         pickApplicationButton.setOnClickListener(new PickApplicationListener());
-
         appInputText.setOnClickListener(new PickApplicationListener());
 
         pickSinksButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +100,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 getFile(PICK_SINKS_REQUEST);
             }
         });
-
         sinksInputText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +113,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 getFile(PICK_SOURCE_REQUEST);
             }
         });
-
         sourceInputText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +126,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 getFile(PICK_TAINT_REQUEST);
             }
         });
-
         taintInputText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +135,10 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
 
         // Creates a new fragment and delivers the path to selected files
         nextActivity.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Inherited method to handle the user click when he is done with the choice of his files
+             * @param v: View being clicked
+             */
             @Override
             public void onClick(View v) {
                 if (emptyAPK) {
@@ -141,12 +151,17 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                     b.putString(Constants.SOURCES, sourcePath);
                     b.putString(Constants.SINKS, sinksPath);
                     b.putString(Constants.TAINT, taintPath);
+                    // If the selectedPackage is not null, it means that the app is already installed
+                    // on the system and we can retrieve lots of information from the package manager
                     if (selectedPackage != null) {
                         b.putString(Constants.LOGO, createFileFromDrawable(selectedPackage.getPackagePicture()).getAbsolutePath());
                         b.putString(Constants.APP_NAME, selectedPackage.getName());
                         b.putString(Constants.PACKAGE_NAME, selectedPackage.getPackageName());
                     }
+                    // Pass this bundle full of information to the ServerFragment in order that the
+                    // user can check them before upload
                     toServerFragment.setArguments(b);
+                    // Start the server fragment
                     ft.replace(R.id.mainViewContainer, toServerFragment);
                     ft.addToBackStack(null);
                     ft.commit();
@@ -154,6 +169,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             }
         });
 
+        // Clears user input and restores default state of the fragment
         clearInputs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,6 +178,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
                 setSinksPath(null);
                 setSourcePath(null);
                 setTaintPath(null);
+                selectedPackage = null;
             }
         });
 
@@ -183,7 +200,9 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      * defined in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
      */
     private void showDialog() {
-        packageDialog.show();
+        if (packageDialog != null) {
+            packageDialog.show();
+        }
     }
 
     /**
@@ -326,7 +345,7 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
      * @return
      */
     public static Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;

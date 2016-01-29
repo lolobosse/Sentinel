@@ -3,23 +3,13 @@ package de.tum.in.i22.sentinel.android.app.backend;
  * Created by laurentmeyer on 15/12/15.
  */
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PictureDrawable;
-
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpPost;
 import com.koushikdutta.async.http.body.MultipartFormDataBody;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.UUID;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
-import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 
 /**
  * Class which is responsible for sending the APK to the server, it doesn't deal with the PlayStore at all
@@ -41,6 +31,12 @@ public class APKSender {
 
     /**
      * Send the files to the server as a multipart upload
+     *
+     * The difference between meta and no meta is due to the fact that the server has two endpoints
+     * (because of a RAML-Code-Generation Limitation) -> one endpoint is used when the clients send
+     * metadata with the package (appName, packageName, logo) and the other when they just send
+     * the sources, sinks, taint and apk.
+     *
      * @param pathToSources         : the file containing the sources (NOT NULL)
      * @param pathToSinks           : the file containing the sinks (NOT NULL)
      * @param pathToTaintWrapper    : the file containing the taintWrapper (NOT NULL)

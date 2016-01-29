@@ -41,7 +41,11 @@ public class APKReceiver {
         return instance;
     }
 
-
+    /**
+     * This method is needed because we need to get the hash from the json list we get.
+     * @param downloadUrl: the download url from the list
+     * @param callback: what has to be done when the file is downloaded {@see com.koushikdutta.async.http.AsyncHttpClient.FileCallback}
+     */
     public void getFileFromDownloadUrl(String downloadUrl, AsyncHttpClient.FileCallback callback) {
         // TODO: Could be better
         getFile(downloadUrl.replace("http://lapbroyg58.informatik.tu-muenchen.de:443/instrument/", ""), callback);
@@ -66,34 +70,34 @@ public class APKReceiver {
     /**
      * This method installs the APK on the system
      *
-     * @param c:    #Fragment is needed to start the intent
+     * @param fragment:    #Fragment is needed to start the intent
      * @param path: Path to APK
      * @see <a href="http://www.stackoverflow.com/a/4969421/2545832">This thread</a>
      */
-    public void installApk(Fragment c, String path) {
+    public void installApk(Fragment fragment, String path) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), Constants.APK_TYPE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-        c.startActivityForResult(intent, REQUEST_INSTALLATION);
+        fragment.startActivityForResult(intent, REQUEST_INSTALLATION);
     }
 
     /**
      * This methods uninstall an APK by prompting the user a dialog to confirm
      *
-     * @param c:           #Fragment needed to start an Activity
+     * @param fragment:           #Fragment needed to start an Activity
      * @param packageName: The package to be removed
      * @see <a href="http://stackoverflow.com/a/21854473/2545832">This thread</a>
      */
-    public void uninstallApk(final Fragment c, String packageName) {
+    public void uninstallApk(final Fragment fragment, String packageName) {
         Intent intent = new Intent(Intent.ACTION_DELETE);
         intent.setData(Uri.parse(packageName));
-        if (!c.getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty()) {
-            c.startActivityForResult(intent, REQUEST_UNINSTALLATION);
+        if (!fragment.getActivity().getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty()) {
+            fragment.startActivityForResult(intent, REQUEST_UNINSTALLATION);
         } else {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(c.getActivity(), "Please uninstall the application manually, we cannot do it without being root", Toast.LENGTH_LONG).show();
+                    Toast.makeText(fragment.getActivity(), "Please uninstall the application manually, we cannot do it without being root", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -102,37 +106,37 @@ public class APKReceiver {
     /**
      * This method installs the APK on the system
      *
-     * @param c:    #Fragment is needed to start the intent
+     * @param activity:    #Fragment is needed to start the intent
      * @param path: Path to APK
      * @see <a href="http://www.stackoverflow.com/a/4969421/2545832">This thread</a>
      */
-    public void installApk(Activity c, String path) {
+    public void installApk(Activity activity, String path) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), Constants.APK_TYPE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-        c.startActivityForResult(intent, REQUEST_INSTALLATION);
+        activity.startActivityForResult(intent, REQUEST_INSTALLATION);
     }
 
     /**
      * This methods uninstall an APK by prompting the user a dialog to confirm
      *
-     * @param c:           #Fragment needed to start an Activity
+     * @param activity:           #Fragment needed to start an Activity
      * @param packageName: The package to be removed
      * @see <a href="http://stackoverflow.com/a/21854473/2545832">This thread</a>
      */
-    public void uninstallApk(final Activity c, String packageName) {
+    public void uninstallApk(final Activity activity, String packageName) {
         Intent intent = new Intent(Intent.ACTION_DELETE);
         intent.setData(Uri.parse(packageName));
-        if (!c.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty()) {
-            c.startActivityForResult(intent, REQUEST_UNINSTALLATION);
+        if (!activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty()) {
+            activity.startActivityForResult(intent, REQUEST_UNINSTALLATION);
         } else {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(c, "Please uninstall the application manually, we cannot do it without being root", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, "Please uninstall the application manually, we cannot do it without being root", Toast.LENGTH_LONG).show();
                 }
             });
         }
-        c.startActivityForResult(intent, REQUEST_UNINSTALLATION);
+        activity.startActivityForResult(intent, REQUEST_UNINSTALLATION);
     }
 }

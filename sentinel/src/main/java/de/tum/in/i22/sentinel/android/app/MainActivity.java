@@ -1,6 +1,5 @@
 package de.tum.in.i22.sentinel.android.app;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -12,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment;
-import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.PlayStoreFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.PolicyEditor;
 import de.tum.in.i22.sentinel.android.app.fragment.PostInstrumentFragment;
 import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_playstore) { // PlayStore fragment
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.mainViewContainer, new PlaystoreFragment());
+            ft.replace(R.id.mainViewContainer, new PlayStoreFragment());
             clearFragmentStack();
             ft.addToBackStack(null);
             ft.commit();

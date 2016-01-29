@@ -26,7 +26,7 @@ public class DirectoryChooser extends ListActivity {
     private String storageDirectoryPath;
 
     /**
-     * Get the storage path to be displays and fire the view building method.
+     * Assign the path to start from and fire the view creation method
      *
      * @param savedInstanceState
      */
@@ -94,19 +94,25 @@ public class DirectoryChooser extends ListActivity {
     }
 
     /**
-     * @param l
-     * @param v
-     * @param position
-     * @param id
+     * Inherited method to handle the click on a item:
+     * We have two possibilities:
+     *  - It is a folder and has been clicked, so we get in this folder
+     *  - It is the "Choose this directory" button and then we need to return
+     * @param l: the list view
+     * @param v: the clicked view
+     * @param position: the position of the view in the ListView
+     * @param id: the id of the View
      */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         MenuObj obj = adapter.getItem(position);
         if (obj.getState() == MenuObj.STATE.FOLDER) {
+            // It is a folder, we do nothing
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else {
+            // It's not a folder, if it's a File, we do nothing, however, we need to check that it is not the "Choose this directory" button
             boolean isChooseDirectoryButton = obj.getName().equals(SET_DIRECTORY);
             if (isChooseDirectoryButton) {
                 directoryChosen();
@@ -114,6 +120,10 @@ public class DirectoryChooser extends ListActivity {
         }
     }
 
+    /**
+     * Once the directory has been chosen by the user, we return an Ok Status
+     * {@see android.app.Activity#RESULT_OK}
+     */
     private void directoryChosen() {
         Intent intent = new Intent();
         intent.putExtra(Constants.DIRECTORY_PATH, workingDir.toString());

@@ -32,33 +32,39 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
 
     public FileArrayAdapter(Context context, int resource, int textViewResourceId, List<MenuObj> objects) {
         super(context, resource, textViewResourceId, objects);
-
         this.c = context;
         this.id = textViewResourceId;
         this.objects = objects;
     }
 
+    /**
+     * Inherited method for creating the row view. It makes the difference between files and folders
+     * @param position: which position will be drawn
+     * @param convertView: the view which could be recycled
+     * @param parent: the parent view containing all these subviews
+     * @return: The row view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-
-        if (v == null) {
+        // Saves memory <- inflates only if needed
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(id, null);
+            convertView = inflater.inflate(id, null);
         }
 
         final MenuObj obj = objects.get(position);
         if (obj != null) {
             // Finds the views
-            TextView textName = (TextView) v.findViewById(R.id.TextViewName);
-            TextView textSize = (TextView) v.findViewById(R.id.TextViewSize);
-            TextView textDate = (TextView) v.findViewById(R.id.TextViewDate);
+            TextView textName = (TextView) convertView.findViewById(R.id.TextViewName);
+            TextView textSize = (TextView) convertView.findViewById(R.id.TextViewSize);
+            TextView textDate = (TextView) convertView.findViewById(R.id.TextViewDate);
 
-            ImageView icon = (ImageView) v.findViewById(R.id.Icon);
+            ImageView icon = (ImageView) convertView.findViewById(R.id.Icon);
             String uri = DRAWABLE_IDENTIFIER + obj.getIcon();
 
             int imageResource = c.getResources().getIdentifier(uri, null, c.getPackageName());
             Drawable image = null;
+            // To have no deprecated code
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     image = c.getResources().getDrawable(imageResource, null);
@@ -81,6 +87,6 @@ public class FileArrayAdapter extends ArrayAdapter<MenuObj> {
             }
 
         }
-        return v;
+        return convertView;
     }
 }

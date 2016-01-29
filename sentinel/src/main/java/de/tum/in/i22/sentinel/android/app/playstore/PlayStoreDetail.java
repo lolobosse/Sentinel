@@ -23,7 +23,7 @@ import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.backend.APKReceiver;
 import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
-import de.tum.in.i22.sentinel.android.app.fragment.PlaystoreFragment;
+import de.tum.in.i22.sentinel.android.app.fragment.PlayStoreFragment;
 
 public class PlayStoreDetail extends Activity implements View.OnClickListener {
 
@@ -40,7 +40,7 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
     private TextView permissionsLabel;
     private TextView featuresLabel;
 
-    private PlaystoreFragment.ServerPackageInformation spi;
+    private PlayStoreFragment.ServerPackageInformation spi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
 
         // Implementation
         Gson g = new Gson();
-        spi = g.fromJson(getIntent().getStringExtra(Constants.DETAILS_TO_DISPLAY_KEY), PlaystoreFragment.ServerPackageInformation.class);
+        spi = g.fromJson(getIntent().getStringExtra(Constants.DETAILS_TO_DISPLAY_KEY), PlayStoreFragment.ServerPackageInformation.class);
         Picasso.with(this).load(spi.logoUrl).into(packageView);
         packageName.setText(spi.appName);
         if (!TextUtils.isEmpty(spi.description)) {

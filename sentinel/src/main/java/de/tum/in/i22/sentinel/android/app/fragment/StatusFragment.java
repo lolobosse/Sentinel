@@ -63,36 +63,32 @@ public class StatusFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (isChecked) {
-                        // Activate the PDP
-                        // WARNING: This line won't work on 5.0 devices because Google enforces explicit intent!
-                        Intent start = new Intent("de.tum.in.i22.uc.pdp.android.pdpService");
-                        getActivity().startService(start);
-                        if (!deployPolicyConnection.isBound()) {
-                            Intent intent = new Intent();
-                            intent.setClassName("de.tum.in.i22.sentinel.android.app",
-                                    "de.tum.in.i22.uc.pdp.android.pdpService");
-                            intent.setAction(pdpService.ACTION_PDP_SETPOLICY);
-                            getActivity().bindService(intent, deployPolicyConnection,
-                                    Context.BIND_AUTO_CREATE);
-                            deployPolicyConnection
-                                    .addOnServiceBoundListener(new ServiceBoundListener() {
+                    // Activate the PDP
+                    // WARNING: This line won't work on 5.0 devices because Google enforces explicit intent!
+                    Intent start = new Intent("de.tum.in.i22.uc.pdp.android.pdpService");
+                    getActivity().startService(start);
+                    if (!deployPolicyConnection.isBound()) {
+                        Intent intent = new Intent();
+                        intent.setClassName("de.tum.in.i22.sentinel.android.app",
+                                "de.tum.in.i22.uc.pdp.android.pdpService");
+                        intent.setAction(pdpService.ACTION_PDP_SETPOLICY);
+                        getActivity().bindService(intent, deployPolicyConnection,
+                                Context.BIND_AUTO_CREATE);
+                        deployPolicyConnection
+                                .addOnServiceBoundListener(new ServiceBoundListener() {
 
-                                        @Override
-                                        public void serviceBound(
-                                                de.tum.in.i22.uc.pdp.android.RemoteServiceConnection connection) {
-                                            Log.i("LOLO IS TESTING", "serviceBound");
-                                            deployPolicy(currentPolicyFile);
-                                        }
-                                    });
-                        } else {
-                            Log.d("MainViewFragment", "PDP is bound");
-                        }
+                                    @Override
+                                    public void serviceBound(
+                                            de.tum.in.i22.uc.pdp.android.RemoteServiceConnection connection) {
+                                        Log.i("LOLO IS TESTING", "serviceBound");
+                                        deployPolicy(currentPolicyFile);
+                                    }
+                                });
                     } else {
-                        Log.d("MainViewFragment", "Lol");
+                        Log.d("MainViewFragment", "PDP is bound");
                     }
                 } else {
-                    // pdpService off
+                    Log.d("MainViewFragment", "Lol");
                 }
             }
         });

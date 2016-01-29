@@ -30,6 +30,11 @@ public class FileChooser extends ListActivity {
     private String fileExt;
     private String storageDirectoryPath;
 
+    /**
+     * Retrieves and assigns the extension we're looking for
+     * Fires the view creation methods
+     * @param savedInstanceState: not used, inherited
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,10 @@ public class FileChooser extends ListActivity {
         fill(workingDir);
     }
 
+    /**
+     * Fills the view with all available files and folders available in the current #workingDir
+     * @param workingDir: where the explorer is.
+     */
     private void fill(File workingDir) {
 
         File[] folder = workingDir.listFiles();
@@ -47,14 +56,14 @@ public class FileChooser extends ListActivity {
         List<MenuObj> files = new ArrayList<MenuObj>();
 
         try {
+            // Look for every file in the current folder in order to display them
             for (File f : folder) {
                 // Sets the last modified date in the directory
                 Date modifiedDate = new Date(f.lastModified());
                 DateFormat formatter = DateFormat.getDateTimeInstance();
                 String formattedDate = formatter.format(modifiedDate);
 
-                // If there is a sub directory, it displays the count of contained files
-                // Condition: If it is not a hidden directory
+                // If the current file is a non-hidden directory, we display the number it contains
                 if (f.isDirectory() && !f.isHidden()) {
                     File[] subDir = f.listFiles();
                     int amount = 0;
@@ -72,14 +81,14 @@ public class FileChooser extends ListActivity {
                     // Creates a directory MenuObj
                     dirs.add(new MenuObj(f.getName(), numItem, formattedDate, f.getAbsolutePath(), Constants.DIRECTORY_ICON));
 
-                    // Condition: If it is not a hidden file
+                    // Only displayed if not hidden
                 } else if (!f.isHidden()) {
                     // Creates a file MenuObj
                     files.add(new MenuObj(f.getName(), f.length() / 1000 + " kB", formattedDate, f.getAbsolutePath(), Constants.FILE_ICON));
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+
         }
 
         // Sort both lists in alphabetical order and then appends all MenuObj's in 'files' to 'dirs'
@@ -92,16 +101,30 @@ public class FileChooser extends ListActivity {
         if (!workingDir.getPath().equalsIgnoreCase(storageDirectoryPath)) {
             dirs.add(0, new MenuObj("..", Constants.PARENT_DIRECTORY, "", workingDir.getParent(), Constants.DIRECTORY_UP));
         }
+        // Create the adapter with all the data we just collected
         adapter = new FileArrayAdapter(FileChooser.this, R.layout.instrument_fragment, R.layout.file_explorer, dirs);
+        // Set it to the list view
         this.setListAdapter(adapter);
     }
 
+    /**
+     * Inherited method to handle item click events
+     * We have 3 options:
+     *  - It is a folder, so we do a recursive call to display its content
+     *  - It is a file with the extension we were looking for, we return with OK
+     *  - It is a file with a different file extension, we give visual feedback to the user ({@see android.widget.Toast})
+     * @param l: listView being clicked
+     * @param v: View clicked
+     * @param position: position of the view in the listView
+     * @param id: id of the view
+     */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
         MenuObj obj = adapter.getItem(position);
         if (obj.getState() == MenuObj.STATE.FOLDER) {
+            // Display the content of this folder
             workingDir = new File(obj.getPath());
             fill(workingDir);
         } else if (!obj.getName().endsWith(fileExt)) {
@@ -112,10 +135,15 @@ public class FileChooser extends ListActivity {
 
     }
 
+    /**
+     * Return to the previous activity with result ok and the path to the selected file
+     * @param obj: the Pseudo object containing the selected file
+     */
     private void onFileClick(MenuObj obj) {
         Intent intent = new Intent();
         intent.putExtra(Constants.ABSOLUTE_PATH, obj.getPath());
         setResult(RESULT_OK, intent);
+        // Close the file finder activity
         finish();
     }
 }
