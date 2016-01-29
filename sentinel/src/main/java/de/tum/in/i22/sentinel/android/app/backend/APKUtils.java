@@ -80,7 +80,6 @@ public class APKUtils {
      * @return if the package is already on the device
      */
     public static boolean isInstalled (Context c, String packageName) {
-        Log.d("APKUtils", packageName);
         List<ApplicationInfo> infos = installedApplications(c);
         for (ApplicationInfo i : infos) {
             if (i.packageName.equals(packageName)) {
