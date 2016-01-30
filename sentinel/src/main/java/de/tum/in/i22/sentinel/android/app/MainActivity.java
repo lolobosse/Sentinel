@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sp = getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
         SettingsFragment.saveAPK = sp.getBoolean(Constants.SP_SAVE_APK, false);
         SettingsFragment.savedAPKFolder = sp.getString(Constants.SP_SAVE_APK_FOLDER, null);
-        SettingsFragment.postInstallAPK = sp.getBoolean(Constants.SP_POST_INSTALL, false);
     }
 
     @Override

@@ -29,7 +29,6 @@ public class Constants {
         // Used in Settings
     public static final String SP_SAVE_APK          = "saveAPK";
     public static final String SP_SAVE_APK_FOLDER   = "saveFolderAPK";
-    public static final String SP_POST_INSTALL      = "postInstall";
 
         // Used by ToServerFragment when retrieving paths to selected files
     public static final String APK      = "apkPath";

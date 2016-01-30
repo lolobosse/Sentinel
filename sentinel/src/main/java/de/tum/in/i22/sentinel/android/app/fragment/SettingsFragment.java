@@ -26,11 +26,10 @@ public class SettingsFragment extends Fragment {
 
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
-    private Switch saveToSwitch, postInstallSwitch;
+    private Switch saveToSwitch;
 
     public static String savedAPKFolder;
     public static boolean saveAPK;
-    public static boolean postInstallAPK;
 
     @Nullable
     @Override
@@ -40,7 +39,6 @@ public class SettingsFragment extends Fragment {
 
         saveToSwitch = (Switch) view.findViewById(R.id.saveToSwitch);
         saveToPath = (TextView) view.findViewById(R.id.saveToPath);
-        postInstallSwitch = (Switch) view.findViewById(R.id.installSwitch);
 
         // Toggles if the user automatically wants to save applications retrieved from the server
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -64,7 +62,7 @@ public class SettingsFragment extends Fragment {
                             startActivityForResult(intent, FOLDER_REQUEST);
                         }
                     });
-
+                    
                 } else {
                     // Switch is inactive
                     saveAPK = false;
@@ -74,33 +72,15 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        // Toggles if the user wants to install given application retrieved from the server upon completion
-        postInstallSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    postInstallAPK = true;
-                } else {
-                    postInstallAPK = false;
-                }
-            }
-        });
-
         // Set switch to active and if folder has been specified it also displays that in
         // the TextView
         // Condition: User has enabled this setting from previous session
-        if (saveAPK){
+        if (saveAPK) {
             saveToSwitch.performClick();
         }
         // Outside 'if statement' so path is still visible
         String folderPath = (savedAPKFolder != null) ? savedAPKFolder : Environment.getExternalStorageDirectory() + "/instrumentedApk/";
         saveToPath.setText(folderPath);
-
-        // Set switch to active
-        // Condition: User has enabled this setting from previous session
-        if (postInstallAPK){
-            postInstallSwitch.setChecked(true);
-        }
 
         return view;
     }
@@ -121,7 +101,6 @@ public class SettingsFragment extends Fragment {
                 saveToPath.setText(savedAPKFolder);
             }
         }
-
     }
 
     /**
@@ -136,7 +115,6 @@ public class SettingsFragment extends Fragment {
 
         editor.putString(Constants.SP_SAVE_APK_FOLDER, path);
         editor.putBoolean(Constants.SP_SAVE_APK, saveAPK);
-        editor.putBoolean(Constants.SP_POST_INSTALL, postInstallAPK);
         editor.apply();
     }
 }
