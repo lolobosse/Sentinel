@@ -25,7 +25,7 @@ public class SettingsFragment extends Fragment {
     private TextView saveToPath;
     private Switch saveToSwitch, postInstallSwitch;
 
-    public static String savedAPKfolder;
+    public static String savedAPKFolder;
     public static boolean saveAPK = false;
     public static boolean postInstallAPK = false;
 
@@ -98,8 +98,8 @@ public class SettingsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FOLDER_REQUEST) {
             if (resultCode == getActivity().RESULT_OK) {
-                savedAPKfolder = String.valueOf(data.getStringExtra(Constants.DIRECTORY_PATH));
-                saveToPath.setText(savedAPKfolder);
+                savedAPKFolder = String.valueOf(data.getStringExtra(Constants.DIRECTORY_PATH));
+                saveToPath.setText(savedAPKFolder);
             }
         }
 

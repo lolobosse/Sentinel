@@ -29,7 +29,7 @@ public class Utils {
         }
     }
 
-    private static void writeToFile(String filename, int definitionRes, Context c, String filePath) {
+    public static void writeToFile(String filename, int definitionRes, Context c, String filePath) {
         try {
             InputStream in = c.getResources().openRawResource(definitionRes);
             FileOutputStream out;
