@@ -98,7 +98,7 @@ public class PlayStoreFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("PlaystoreFragment", "error:" + error);
+                Log.d("PlayStoreFragment", "error:" + error);
             }
         });
 
