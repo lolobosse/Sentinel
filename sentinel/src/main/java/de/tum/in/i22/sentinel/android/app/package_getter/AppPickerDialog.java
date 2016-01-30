@@ -24,6 +24,11 @@ import de.tum.in.i22.sentinel.android.app.R;
 /**
  * Created by laurentmeyer on 31/12/15.
  */
+
+/**
+ * This class displays dialog with an infinite list view of all apps available on the device (3rd party apps)
+ * Triggers the #PackageGetter.Callback when the user makes his choice
+ */
 public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
 
     ListView lv;
@@ -37,6 +42,12 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
     OnPackageChosen callback;
     onFileChooseTriggered startActivityCallback;
 
+    /**
+     * Triggers the view creation methods
+     * @param context: the context needs to be there to start every dialog.
+     * @param callback: the callback to be called once the user makes his choice
+     * @param onClickListener: the file chooser activity trigger which will be called if the user clicks the "Pick" button
+     */
     public AppPickerDialog(Context context, OnPackageChosen callback, onFileChooseTriggered onClickListener) {
         super(context, R.style.CustomPontusStyle);
         this.startActivityCallback = onClickListener;
@@ -44,6 +55,10 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         init();
     }
 
+
+    /**
+     * Very big method setting all the view parameters and starting the search of the installed package in an external thread
+     */
     private void init(){
         packages = new ArrayList<>();
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,11 +76,14 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
                 startActivityCallback.onClick();
             }
         });
+        // Nothing but the ProgressBar should be visible until the package are loaded
         b.setVisibility(View.INVISIBLE);
         tv.setVisibility(View.INVISIBLE);
         lv.setVisibility(View.INVISIBLE);
         pb.setVisibility(View.VISIBLE);
         setContentView(v);
+
+        // Look for installed packages
         Thread t = new Thread(){
             @Override
             public void run() {
@@ -94,10 +112,12 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (callback != null){
+                            // The modulo is due to the infinite listView
                             callback.onPackageSet(packages.get(i % packages.size()));
                         }
                     }
                 });
+                // We have the packages yet, we can display them
                 lv.setSelectionFromTop(adapter.MIDDLE, 0);
                 tv.setVisibility(View.VISIBLE);
                 b.setVisibility(View.VISIBLE);
@@ -106,15 +126,26 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
         });
     }
 
-
+    /**
+     * This interface is implemented on the other side to detect when the user chooses a
+     * package to be instrumented
+     */
     public interface OnPackageChosen {
         void onPackageSet(PackageGetter.Package selectedPackage);
     }
 
+
+    /**
+     * This interface is implemented on the other side to detect when the user chooses to pick a
+     * File as APK to be instrumented
+     */
     public interface onFileChooseTriggered{
         void onClick();
     }
 
+    /**
+     * Infinite listView adapter
+     */
     private class AllApkAdapter extends BaseAdapter {
 
         public static final int HALF_MAX_VALUE = Integer.MAX_VALUE/2;
@@ -124,21 +155,25 @@ public class AppPickerDialog extends Dialog implements PackageGetter.Callback {
             MIDDLE = HALF_MAX_VALUE - HALF_MAX_VALUE % packages.size();
         }
 
+        // Should be as big a possible
         @Override
         public int getCount() {
             return Integer.MAX_VALUE;
         }
 
+        // Use modulo, be clever ;)
         @Override
         public Object getItem(int i) {
             return packages.get(i % packages.size());
         }
 
+        // Not used anyway
         @Override
         public long getItemId(int i) {
             return i;
         }
 
+        // Set a standard view to the row
         @Override
         public View getView(int i, View v, ViewGroup viewGroup) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

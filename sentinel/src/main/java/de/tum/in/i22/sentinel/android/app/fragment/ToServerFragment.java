@@ -47,6 +47,10 @@ public class ToServerFragment extends Fragment {
 
     String resultPath;
 
+    /**
+     * Main idea of this method is to retrieve the path of the different file we want to send to the server
+     * @param savedInstanceState: not used
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +66,19 @@ public class ToServerFragment extends Fragment {
         sourceFile = getFile(source, Constants.SOURCES);
         sinkFile = getFile(sink, Constants.SINKS);
         taintFile = getFile(taintWrapper, Constants.TAINT);
+        // Ternary assigning null or the File corresponding to the path to the #logo variable
         logo = logoPath == null ? null : new File(logoPath);
     }
 
+    /**
+     * We create a summary view for the user in order that he checks a last time what he is about
+     * to send to the server.
+     * To do that we build a small text with a #StringBuilder and a #Spanned
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return the view to be displayed
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,6 +106,11 @@ public class ToServerFragment extends Fragment {
         Button toServerButton = (Button) view.findViewById(R.id.launchServer);
         final Button getAPK = (Button) view.findViewById(R.id.getAPK);
         toServerButton.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * That's where we send the data to the server in order that it instruments the app.
+             * @param view: the button being clicked (not important for us yet)
+             */
             @Override
             public void onClick(View view) {
                 APKSender.getInstance().sendFiles(sourceFile, sinkFile, taintFile, apkFile, new AsyncHttpClient.StringCallback() {
@@ -103,6 +122,10 @@ public class ToServerFragment extends Fragment {
                             hash = Hash.createHashForFile(apkFile);
                             Log.d("ToServerFragment", hash);
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                /**
+                                 * Once the server returned a 202 (Accepted) we can display the button
+                                 * to retrieve the APK
+                                 */
                                 @Override
                                 public void run() {
                                     getAPK.setVisibility(View.VISIBLE);
@@ -121,6 +144,11 @@ public class ToServerFragment extends Fragment {
             }
         });
         getAPK.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Once the button to retrieve the app is clicked, we need to download the app and try
+             * to install it.
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 APKReceiver.getInstance().getFile(hash, new AsyncHttpClient.FileCallback() {
@@ -136,6 +164,7 @@ public class ToServerFragment extends Fragment {
                                     notReady.setVisibility(View.VISIBLE);
                                 }
                             });
+                            // If an app with the same package name is already installed on the device, we try to uninstall it first
                             if (APKUtils.isInstalled(getActivity(), packageName)) {
                                 resultPath = result.getAbsolutePath();
                                 APKReceiver.getInstance().uninstallApk(ToServerFragment.this, packageName);
@@ -157,19 +186,25 @@ public class ToServerFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called when the user come back from the different install/uninstall
+     * @param requestCode: the code the #APKUtils sent with intent to the system
+     * @param resultCode: if it was successful
+     * @param data: not used
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == APKReceiver.REQUEST_UNINSTALLATION) {
             if (resultCode == Activity.RESULT_OK) {
                 APKReceiver.getInstance().installApk(this, resultPath);
             } else {
-                Toast.makeText(getActivity(), "Something went wrong during the uninstallation", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Something went wrong during the uninstall", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == APKReceiver.REQUEST_INSTALLATION) {
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(getActivity(), "Yepee, app installed", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getActivity(), "Something went wrong during the installation", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Something went wrong during the install", Toast.LENGTH_SHORT).show();
             }
         }
     }

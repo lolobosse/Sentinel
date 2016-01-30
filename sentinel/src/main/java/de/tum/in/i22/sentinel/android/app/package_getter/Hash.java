@@ -15,6 +15,11 @@ import org.apache.commons.io.IOUtils;
  */
 public class Hash {
 
+    /**
+     * Hash the file with the SHA512 algorithm
+     * @param f: the file being hashed
+     * @return a SHA512 Hash
+     */
     public static String createHashForFile(File f){
         MessageDigest messageDigest;
         try {

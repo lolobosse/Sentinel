@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
 public class PackageGetter {
 
     /**
-     * You get with this command every single app of the device.
-     *
+     * You get with this command every single third party app of the device.
+     * Convenience method for #getThirdPartyPackages
      * @param callback: callback object to be called when the system is done with the execution of the command.
      */
     public static void getPackages(Callback callback, Context c) {
@@ -41,6 +41,14 @@ public class PackageGetter {
         }
     }
 
+    /**
+     * Used to retrieve the 3rd party apps of the device which are the only ones which can be accessed
+     * without being root.
+     * @param c: context to get the icon
+     * @param callback: the callback is only used here in case of error; the #getPackages manage the
+     *                success.
+     * @return
+     */
     private static ArrayList<Package> getThirdPartyPackages(Context c, Callback callback) {
         String command = "pm list packages -f -3";
         Process process;
@@ -65,6 +73,12 @@ public class PackageGetter {
         }
     }
 
+    /**
+     * Matches the regex and create a package from the results.
+     * @param fromDevice: what the device returned us
+     * @param c: the context, needed for the icon
+     * @return
+     */
     private static Package createPackageObjectFromString(String fromDevice, Context c) {
         Pattern p = Pattern.compile(buildPackageAndPathRegex());
         Matcher m = p.matcher(fromDevice);
@@ -75,6 +89,11 @@ public class PackageGetter {
         return null;
     }
 
+    /**
+     * Here is the heart of the logic, all is based on the parsing of what the system returns us as
+     * found packages.
+     * @return
+     */
     private static String buildPackageAndPathRegex() {
         /*
         "package" is always there, then it's the path of the app to be, potentially, extracted.
@@ -83,11 +102,18 @@ public class PackageGetter {
         return "(package:)([a-zA-Z\\/.\\-0-9\\_]*)(=)([A-Za-z\\.\\d\\_]*)";
     }
 
+    /**
+     * Implemented on the other side, needed to execute different behaviour in case of error or success.
+     */
     public interface Callback {
         void onError(Exception e);
         void onSuccess(List<Package> packages);
     }
 
+    /**
+     * Very simple class representing an app on the Android system.
+     * Can be compared at #ApplicationInfo
+     */
     public static class Package {
 
         boolean isThirdParty;
@@ -102,6 +128,7 @@ public class PackageGetter {
             this.isThirdParty = isThirdParty;
             this.packageName = packageName;
             this.path = path;
+            // We try to get the icon from the package manager, that's why we needed the context.
             try {
                 this.packagePicture = c.getPackageManager().getApplicationIcon(this.packageName);
             } catch (PackageManager.NameNotFoundException e) {
@@ -142,6 +169,11 @@ public class PackageGetter {
             this.path = path;
         }
 
+        /**
+         * Equals is purely based on the packageName.
+         * @param o: object to be compared to
+         * @return is the package name the same as the one of the object being compared to.
+         */
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -179,6 +211,12 @@ public class PackageGetter {
             this.name = name;
         }
 
+        /**
+         * To retrieve the commercial name of the apps being displayed
+         * @param packageName: packageName of the seached app
+         * @param c: the context is useful to call the package manager
+         * @return: the commercial name of the app.
+         */
         private String getProperlyFormattedPackageName(String packageName, Context c) {
             PackageManager pm = c.getPackageManager();
             ApplicationInfo ai;

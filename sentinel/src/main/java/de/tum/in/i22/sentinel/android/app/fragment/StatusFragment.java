@@ -37,6 +37,15 @@ public class StatusFragment extends Fragment {
 
     private File currentPolicyFile = null;
 
+    /**
+     * Very ugly and not satisfying method which starts an instance of the PDP as a Service.
+     * The code is coming from the original project (appPDPj) and wasn't even refactored.
+     * It works as is and we still have issue to bind it with policies as you can see in the report
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,6 +115,10 @@ public class StatusFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This methods comes also from the original appPDPj as-is
+     * @param pathToPolicy: which policy do we wanna deploy
+     */
     private void deployPolicy(File pathToPolicy) {
         try {
             // Read in the policy file
@@ -132,6 +145,12 @@ public class StatusFragment extends Fragment {
         }
     }
 
+    /**
+     * Called when the user chose the his policy, supposed to deploy it
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == 0) {

@@ -27,12 +27,24 @@ import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 /**
  * Created by Moderbord on 2016-01-18.
  */
+
+/**
+ * This fragment is used to display which installed apps have been instrumented
+ */
 public class PostInstrumentFragment extends Fragment implements PackageGetter.Callback {
 
     ListView listView;
     RowPackageAdapter adapter;
     LayoutInflater inflater;
 
+    /**
+     * Inherited method which will allow us to create the view.
+     * We start a new Thread to get all packages installed on the devices
+     * @param inflater: inflater is used to inflate the XML
+     * @param container: container of the view
+     * @param savedInstanceState: not used
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,17 +64,26 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
         return view;
     }
 
+    /**
+     * Triggered when the parsing of the packages is not correctly done
+     * Because it makes no sense to continue if an exception happens there, we crash the app.
+     * @param e: what happened
+     */
     @Override
     public void onError(Exception e) {
         throw new RuntimeException(e);
     }
 
+    /**
+     * The parsing was successful, let's display our installed apps!
+     * @param packages: which packages have been retrieved
+     */
     @Override
     public void onSuccess(final List<PackageGetter.Package> packages) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                adapter = new RowPackageAdapter(getActivity(), packages);
+                adapter = new RowPackageAdapter(packages);
                 adapter.notifyDataSetChanged();
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,13 +99,14 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
 
     }
 
+    /**
+     * Very basic adapter to display the apps in a list view.
+     */
     private class RowPackageAdapter extends BaseAdapter {
 
-        private Context context;
         private List<PackageGetter.Package> data;
 
-        public RowPackageAdapter(Context c, List<PackageGetter.Package> packages) {
-            context = c;
+        public RowPackageAdapter(List<PackageGetter.Package> packages) {
             data = packages;
         }
 
@@ -103,6 +125,13 @@ public class PostInstrumentFragment extends Fragment implements PackageGetter.Ca
             return position;
         }
 
+        /**
+         * We display the name of the app, the path of it, the icon and if it's instrumented or not.
+         * @param position: the position of the view we wanna build
+         * @param v: existing view (for memory optimization)
+         * @param parent: the listView containing all these views
+         * @return the inflated view
+         */
         @Override
         public View getView(int position, View v, ViewGroup parent) {
             v = inflater.inflate(R.layout.post_app_list_row, null);

@@ -186,26 +186,6 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
-     * Dismisses the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
-     * shown in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
-     */
-    private void dismissDialog() {
-        if (packageDialog != null) {
-            packageDialog.dismiss();
-        }
-    }
-
-    /**
-     * Displays the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
-     * defined in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
-     */
-    private void showDialog() {
-        if (packageDialog != null) {
-            packageDialog.show();
-        }
-    }
-
-    /**
      * Opens up a file explorer via an intent and lets the user choose files from the local file system.
      * Here the user is limited to .txt files as the source, sinks, and taint wrapper definitions are contained
      * within these type of files.
@@ -329,41 +309,13 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
-     * Implemented interface method from AppPickerDialog so the path to chosen APK file can be passed to this fragment
+     * This method is responsible for defining what happens when the user clicks on the "Pick" button
      */
     @Override
     public void onClick() {
         Intent intent = new Intent(getActivity(), FileChooser.class);
         intent.putExtra(Constants.EXTENSION, Constants.INPUT_APK);
         startActivityForResult(intent, PICK_APPLICATION_REQUEST);
-    }
-
-    /**
-     * Creates a Bitmap object from a Drawable object
-     *
-     * @param drawable The drawable resource that is to be converted
-     * @return
-     */
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     /**
@@ -395,6 +347,26 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
     }
 
     /**
+     * Dismisses the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
+     * shown in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
+     */
+    private void dismissDialog() {
+        if (packageDialog != null) {
+            packageDialog.dismiss();
+        }
+    }
+
+    /**
+     * Displays the dialog from {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
+     * defined in {@see de.tum.in.i22.sentinel.android.app.fragment.InstrumentFragment.PickApplicationListener}
+     */
+    private void showDialog() {
+        if (packageDialog != null) {
+            packageDialog.show();
+        }
+    }
+
+    /**
      * Private OnClickListener class that opens a {@see de.tum.in.i22.sentinel.android.app.package_getter.AppPickerDialog}
      * that allows the user to pick from installed package.
      */
@@ -412,6 +384,34 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
             }, InstrumentFragment.this);
             showDialog();
         }
+    }
+
+    /**
+     * Creates a Bitmap object from a Drawable object
+     *
+     * @param drawable The drawable resource that is to be converted
+     * @return
+     */
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
 }
