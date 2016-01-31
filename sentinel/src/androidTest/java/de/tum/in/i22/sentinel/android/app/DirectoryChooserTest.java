@@ -1,5 +1,6 @@
 package de.tum.in.i22.sentinel.android.app;
 
+import android.os.Environment;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;

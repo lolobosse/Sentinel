@@ -4,10 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
-
     <string name="switch_pdp_service">PDP Service</string>
     <string name="pdp_service_running">Running</string>
     <string name="pdp_service_stopped">Stopped</string>
-    <string name="activityNoFileManager">No Suitable File Manager Found</string>
 </resources>

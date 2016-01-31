@@ -4,28 +4,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_editor"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_build_black_24dp"
             android:title="Editor" />
         <item
             android:id="@+id/nav_status"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_account_box_black_24dp"
             android:title="Status" />
         <item
             android:id="@+id/nav_instrument"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_system_update_alt_black_24dp"
             android:title="Instrument" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_settings_applications_black_24dp"
             android:title="Settings" />
         <item
             android:id="@+id/nav_playstore"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="PlayStore"/>
         <item
             android:id="@+id/nav_PostInstrument"
-            android:icon="@drawable/ic_menu_send"
-            android:title="PostInstrument"/>
+            android:icon="@drawable/ic_check_circle_black_24dp"
+            android:title="App status"/>
     </group>
 
 </menu>
