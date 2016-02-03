@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.koushikdutta.async.http.AsyncHttpClient;
@@ -43,12 +44,14 @@ public class APKReceiver {
 
     /**
      * This method is needed because we need to get the hash from the json list we get.
+     * BUT THIS IS UGLY
      * @param downloadUrl: the download url from the list
      * @param callback: what has to be done when the file is downloaded {@see com.koushikdutta.async.http.AsyncHttpClient.FileCallback}
      */
     public void getFileFromDownloadUrl(String downloadUrl, AsyncHttpClient.FileCallback callback) {
-        // TODO: Could be better
-        getFile(downloadUrl.replace("http://lapbroyg58.informatik.tu-muenchen.de:443/instrument/", ""), callback);
+        String[] segments = downloadUrl.split("/");
+        String last = segments[segments.length-1];
+        getFile(last, callback);
     }
 
     /**
@@ -63,6 +66,7 @@ public class APKReceiver {
         repo.mkdirs();
         File output = new File(repo, hash + ".apk");
         String filename = output.getAbsolutePath();
+        Log.d("APKReceiver", Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash);
         AsyncHttpClient.getDefaultInstance().executeFile(new AsyncHttpGet(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash), filename, callback);
     }
 

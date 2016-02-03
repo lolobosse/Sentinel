@@ -47,7 +47,7 @@ public class VolleyClient {
      * @param errorListener: Called if error {@see com.android.volley.Response.ErrorListener}
      */
     public void requestAllMetaData(Response.Listener listener, Response.ErrorListener errorListener){
-        JsonObjectRequest request = new JsonObjectRequest("http://lapbroyg58.informatik.tu-muenchen.de:443/metadata/instrumented", listener, errorListener);
+        JsonObjectRequest request = new JsonObjectRequest("https://lapbroyg58.informatik.tu-muenchen.de/metadata/instrumented", listener, errorListener);
         mRequestQueue.add(request);
     }
 }
