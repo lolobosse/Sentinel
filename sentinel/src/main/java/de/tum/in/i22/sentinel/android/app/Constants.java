@@ -26,6 +26,9 @@ public class Constants {
     public static final String SP_PATH_SINKS    = "pathSinks";
     public static final String SP_PATH_SOURCES  = "pathSources";
     public static final String SP_PATH_TAINT    = "pathTaint";
+        // Used in Settings
+    public static final String SP_SAVE_APK          = "saveAPK";
+    public static final String SP_SAVE_APK_FOLDER   = "saveFolderAPK";
 
         // Used by ToServerFragment when retrieving paths to selected files
     public static final String APK      = "apkPath";
@@ -37,7 +40,7 @@ public class Constants {
     public static final String COLOR_DARK = "#202020";
     public static final String COLOR_GREY = "#c5c5c5";
 
-    // Used by PlaystoreFragment, PlayStoreDetail
+    // Used by PlayStoreFragment, PlayStoreDetail
     public static final String DETAILS_TO_DISPLAY_KEY = "DetailsOf";
 
 

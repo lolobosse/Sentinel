@@ -20,22 +20,25 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.List;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
 import de.tum.in.i22.sentinel.android.app.backend.APKUtils;
 import de.tum.in.i22.sentinel.android.app.file_explorer.FileChooser;
+import de.tum.in.i22.sentinel.android.app.package_getter.PackageGetter;
 import de.tum.in.i22.uc.pdp.android.ServiceBoundListener;
 import de.tum.in.i22.uc.pdp.android.pdpService;
 
 /**
  * Created by laurentmeyer on 23/12/15.
  */
-public class StatusFragment extends Fragment {
+public class StatusFragment extends Fragment implements PackageGetter.Callback{
 
     private static de.tum.in.i22.uc.pdp.android.RemoteServiceConnection deployPolicyConnection = new de.tum.in.i22.uc.pdp.android.RemoteServiceConnection();
 
     private File currentPolicyFile = null;
+    private int numberOfApps = 0;
 
     /**
      * Very ugly and not satisfying method which starts an instance of the PDP as a Service.
@@ -104,7 +107,7 @@ public class StatusFragment extends Fragment {
 
         // Displays the amount of packages installed on the device
         TextView applicationCounter = (TextView) view.findViewById(R.id.statusLeftFrameNmr);
-        int numberOfApps = APKUtils.installedApplications(getActivity()).size();
+        PackageGetter.getPackages(StatusFragment.this, getActivity());
         applicationCounter.setText(String.valueOf(numberOfApps));
 
         // Displays the amount of instrumented applications on the device
@@ -157,5 +160,15 @@ public class StatusFragment extends Fragment {
             String pathToPolicy = data.getStringExtra(Constants.ABSOLUTE_PATH);
             deployPolicy(new File(pathToPolicy));
         }
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    @Override
+    public void onSuccess(List<PackageGetter.Package> packages) {
+        numberOfApps = packages.size();
     }
 }

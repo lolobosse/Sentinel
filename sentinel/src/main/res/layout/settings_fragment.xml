@@ -60,33 +60,5 @@
 
         </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:background="#fff"
-            android:elevation="3sp" >
-
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/installSwitch"
-                android:layout_gravity="right|center_vertical"
-                android:checked="false"
-                android:paddingRight="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Install after instrumentation"
-                android:id="@+id/installTextView"
-                android:layout_gravity="left|center_vertical"
-                android:paddingLeft="12dp"
-                android:textColor="#000"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </FrameLayout>
     </LinearLayout>
 </ScrollView>

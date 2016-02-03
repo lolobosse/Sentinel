@@ -17,6 +17,7 @@ import com.koushikdutta.async.http.AsyncHttpGet;
 import java.io.File;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
+import de.tum.in.i22.sentinel.android.app.fragment.SettingsFragment;
 
 /**
  * Created by laurentmeyer on 18/01/16.
@@ -62,7 +63,9 @@ public class APKReceiver {
      */
 
     public void getFile(String hash, AsyncHttpClient.FileCallback callback) {
-        File repo = new File(Environment.getExternalStorageDirectory() + "/instrumentedApk/");
+        File defaultRepo = new File(Environment.getExternalStorageDirectory() + "/instrumentedApk/");
+        File userSpecifiedRepo = (SettingsFragment.savedAPKFolder != null) ? new File(SettingsFragment.savedAPKFolder) : defaultRepo;
+        File repo = (SettingsFragment.saveAPK) ? userSpecifiedRepo : defaultRepo;
         repo.mkdirs();
         File output = new File(repo, hash + ".apk");
         String filename = output.getAbsolutePath();

@@ -1,5 +1,7 @@
 package de.tum.in.i22.sentinel.android.app;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -44,6 +46,11 @@ public class MainActivity extends AppCompatActivity
 
         Utils.passPoliciesFromRawToFile(this);
         Utils.initDefaultFiles(this);
+
+        // Retrieves values set in the SettingsFragment from previous instances
+        SharedPreferences sp = getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+        SettingsFragment.saveAPK = sp.getBoolean(Constants.SP_SAVE_APK, false);
+        SettingsFragment.savedAPKFolder = sp.getString(Constants.SP_SAVE_APK_FOLDER, null);
     }
 
     @Override
