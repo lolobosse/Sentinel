@@ -87,12 +87,21 @@ public class SettingsFragment extends Fragment {
         serverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity()).setTitle("Choose server");
-                final EditText input = new EditText(getActivity());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
+                lp.setMargins(10,0,10,0);
+                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity()).setTitle("Choose server");
+                LinearLayout ll = new LinearLayout(getActivity());
+                ll.setOrientation(LinearLayout.VERTICAL);
+                TextView tv = new TextView(getActivity());
+                tv.setText("Format is \"http(s)://<ip>:<port>\"");
+                tv.setLayoutParams(lp);
+                final EditText input = new EditText(getActivity());
                 input.setLayoutParams(lp);
+                input.setHint(Constants.getServerAddress(getActivity()));
+                ll.addView(tv);
+                ll.addView(input);
                 adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -108,7 +117,7 @@ public class SettingsFragment extends Fragment {
                         dialogInterface.dismiss();
                     }
                 });
-                adb.setView(input);
+                adb.setView(ll);
                 adb.show();
             }
         });

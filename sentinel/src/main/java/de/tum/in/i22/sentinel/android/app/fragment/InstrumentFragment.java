@@ -74,6 +74,9 @@ public class InstrumentFragment extends Fragment implements AppPickerDialog.onFi
         String sinks = sp.getString(Constants.SP_PATH_SINKS, null);
         String sources = sp.getString(Constants.SP_PATH_SOURCES, null);
         String taint = sp.getString(Constants.SP_PATH_TAINT, null);
+        sinksInputText.setHint(sinks == null ? "Default": sinks);
+        sourceInputText.setHint(sources == null ? "Default": sources);
+        taintInputText.setHint(taint == null ? "Default": taint);
 
         // Displays them in the textViews
         setApplicationPath(app);

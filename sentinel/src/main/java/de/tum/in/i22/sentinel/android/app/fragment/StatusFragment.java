@@ -3,6 +3,7 @@ package de.tum.in.i22.sentinel.android.app.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -75,6 +76,11 @@ public class StatusFragment extends Fragment implements PackageGetter.Callback{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    // First prevent the program from crashing by checking the build version of the system
+                    if (Build.VERSION.SDK_INT> 19){
+                        Toast.makeText(getActivity(), "Doesn't work on Android >= 5.0", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     // Activate the PDP
                     // WARNING: This line won't work on 5.0 devices because Google enforces explicit intent!
                     Intent start = new Intent("de.tum.in.i22.uc.pdp.android.pdpService");
