@@ -1,6 +1,7 @@
 package de.tum.in.i22.sentinel.android.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -76,6 +77,17 @@ public class Utils {
         writeToFile("Policy_No_Imei_to_12345.xml", R.raw.policy_no_imei_to_12345, c, where);
         writeToFile("Policy_No_Location.xml", R.raw.policy_no_location, c, where);
         writeToFile("Policy_Old.xml", R.raw.policy_old, c, where);
+    }
 
+    public static void saveServerAddress(String newServerAddress, Context c){
+        SharedPreferences p = c.getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+        SharedPreferences.Editor e = p.edit();
+        e.putString("serverAddress", newServerAddress);
+        e.commit();
+    }
+
+    public static String getServerAddress(Context c){
+        SharedPreferences p = c.getSharedPreferences(Constants.SENTINEL, Context.MODE_PRIVATE);
+        return p.getString("serverAddress", "https://lapbroyg58.informatik.tu-muenchen.de");
     }
 }

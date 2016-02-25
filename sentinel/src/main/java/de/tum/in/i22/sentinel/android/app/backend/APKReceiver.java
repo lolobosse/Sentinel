@@ -1,6 +1,7 @@
 package de.tum.in.i22.sentinel.android.app.backend;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -49,10 +50,10 @@ public class APKReceiver {
      * @param downloadUrl: the download url from the list
      * @param callback: what has to be done when the file is downloaded {@see com.koushikdutta.async.http.AsyncHttpClient.FileCallback}
      */
-    public void getFileFromDownloadUrl(String downloadUrl, AsyncHttpClient.FileCallback callback) {
+    public void getFileFromDownloadUrl(String downloadUrl, AsyncHttpClient.FileCallback callback, Context c) {
         String[] segments = downloadUrl.split("/");
         String last = segments[segments.length-1];
-        getFile(last, callback);
+        getFile(last, callback, c);
     }
 
     /**
@@ -62,15 +63,15 @@ public class APKReceiver {
      * @param callback: the callback fot the network call, it should use the {@see de.tum.in.i22.sentinel.android.app.backend.APKReceiver#installApk(android.content.Context, java.lang.String)}
      */
 
-    public void getFile(String hash, AsyncHttpClient.FileCallback callback) {
+    public void getFile(String hash, AsyncHttpClient.FileCallback callback, Context c) {
         File defaultRepo = new File(Environment.getExternalStorageDirectory() + "/instrumentedApk/");
         File userSpecifiedRepo = (SettingsFragment.savedAPKFolder != null) ? new File(SettingsFragment.savedAPKFolder) : defaultRepo;
         File repo = (SettingsFragment.saveAPK) ? userSpecifiedRepo : defaultRepo;
         repo.mkdirs();
         File output = new File(repo, hash + ".apk");
         String filename = output.getAbsolutePath();
-        Log.d("APKReceiver", Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash);
-        AsyncHttpClient.getDefaultInstance().executeFile(new AsyncHttpGet(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash), filename, callback);
+        Log.d("APKReceiver", Constants.getServerAddress(c) + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash);
+        AsyncHttpClient.getDefaultInstance().executeFile(new AsyncHttpGet(Constants.getServerAddress(c) + Constants.SERVER_INSTRUMENTATION_ENDPOINT + "/" + hash), filename, callback);
     }
 
 

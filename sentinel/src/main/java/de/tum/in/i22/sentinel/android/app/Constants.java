@@ -1,5 +1,7 @@
 package de.tum.in.i22.sentinel.android.app;
 
+import android.content.Context;
+
 /**
  * Created by Moderbord on 2016-01-22.
  */
@@ -56,7 +58,11 @@ public class Constants {
     public static final String APK_TYPE         = "application/vnd.android.package-archive";
 
     // Every key for the server (multipart and so on)
-    public static final String SERVER_ADDRESS                           = "https://lapbroyg58.informatik.tu-muenchen.de";
+
+    public static String getServerAddress(Context c){
+        return Utils.getServerAddress(c);
+    }
+
     public static final String SERVER_APK_FILE                          = "apkFile";
     public static final String SERVER_SOURCE_FILE                       = "sourceFile";
     public static final String SERVER_SINK_FILE                         = "sinkFile";

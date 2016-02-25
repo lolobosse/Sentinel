@@ -1,6 +1,8 @@
 package de.tum.in.i22.sentinel.android.app.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,15 +10,20 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import de.tum.in.i22.sentinel.android.app.Constants;
 import de.tum.in.i22.sentinel.android.app.R;
+import de.tum.in.i22.sentinel.android.app.Utils;
 import de.tum.in.i22.sentinel.android.app.file_explorer.DirectoryChooser;
 
 /**
@@ -27,6 +34,8 @@ public class SettingsFragment extends Fragment {
     private final int FOLDER_REQUEST = 1;
     private TextView saveToPath;
     private Switch saveToSwitch;
+    private LinearLayout serverLayout;
+    private TextView serverAddress;
 
     public static String savedAPKFolder;
     public static boolean saveAPK;
@@ -39,6 +48,9 @@ public class SettingsFragment extends Fragment {
 
         saveToSwitch = (Switch) view.findViewById(R.id.saveToSwitch);
         saveToPath = (TextView) view.findViewById(R.id.saveToPath);
+        serverLayout = (LinearLayout) view.findViewById(R.id.serverAddressLayout);
+        serverAddress = (TextView) view.findViewById(R.id.serverAddress);
+        serverAddress.setText(Constants.getServerAddress(getActivity()));
 
         // Toggles if the user automatically wants to save applications retrieved from the server
         saveToSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -69,6 +81,35 @@ public class SettingsFragment extends Fragment {
                     saveToPath.setTextColor(inactive);
                     saveToPath.setEnabled(false); // Disables the component, but remains visible
                 }
+            }
+        });
+
+        serverLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity()).setTitle("Choose server");
+                final EditText input = new EditText(getActivity());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String newServerAddress = input.getText().toString();
+                        Utils.saveServerAddress(newServerAddress, getActivity());
+                        serverAddress.setText(newServerAddress);
+
+                    }
+                });
+                adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                adb.setView(input);
+                adb.show();
             }
         });
 

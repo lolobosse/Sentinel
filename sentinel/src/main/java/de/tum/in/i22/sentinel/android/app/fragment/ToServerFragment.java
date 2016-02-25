@@ -140,7 +140,7 @@ public class ToServerFragment extends Fragment {
                             });
                         }
                     }
-                }, logo, appName, packageName);
+                }, logo, appName, packageName, getActivity());
             }
         });
         getAPK.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +180,7 @@ public class ToServerFragment extends Fragment {
                             });
                         }
                     }
-                });
+                }, getActivity());
             }
         });
         return view;

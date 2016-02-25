@@ -3,6 +3,8 @@ package de.tum.in.i22.sentinel.android.app.backend;
  * Created by laurentmeyer on 15/12/15.
  */
 
+import android.content.Context;
+
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpPost;
 import com.koushikdutta.async.http.body.MultipartFormDataBody;
@@ -46,17 +48,17 @@ public class APKSender {
      * @param appName               : the name of the app to instrument (as a String) and also OPTIONAL
      * @param packageName           : the package name of the app to instrument and also OPTIONAL
      */
-    public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback, File logo, String appName, String packageName) {
+    public void sendFiles(File pathToSources, File pathToSinks, File pathToTaintWrapper, File apk, AsyncHttpClient.StringCallback callback, File logo, String appName, String packageName, Context c) {
         AsyncHttpPost post;
         MultipartFormDataBody body = new MultipartFormDataBody();
         if (appName != null && logo != null && packageName != null){
-            post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT_META);
+            post = new AsyncHttpPost(Constants.getServerAddress(c) + Constants.SERVER_INSTRUMENTATION_ENDPOINT_META);
             body.addFilePart(Constants.SERVER_LOGO_FILE, logo);
             body.addStringPart(Constants.SERVER_APP_NAME, appName);
             body.addStringPart(Constants.SERVER_PACKAGE_NAME, packageName);
         }
         else {
-            post = new AsyncHttpPost(Constants.SERVER_ADDRESS + Constants.SERVER_INSTRUMENTATION_ENDPOINT_NO_META);
+            post = new AsyncHttpPost(Constants.getServerAddress(c) + Constants.SERVER_INSTRUMENTATION_ENDPOINT_NO_META);
         }
         body.addFilePart(Constants.SERVER_APK_FILE, apk);
         body.addFilePart(Constants.SERVER_SOURCE_FILE, pathToSources);

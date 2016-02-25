@@ -136,7 +136,7 @@ public class PlayStoreDetail extends Activity implements View.OnClickListener {
                             Log.d("PlayStoreDetail", "e:" + e);
                         }
                     }
-                });
+                }, this);
                 break;
         }
     }
